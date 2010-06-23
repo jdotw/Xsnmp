@@ -8,7 +8,9 @@
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 #include "xsanStripeGroupTable.h"
 #include "xsanNodeTable.h"
+#include "xsanAffinityTable.h"
 #include <pcre.h>
+#include "log.h"
 #include "util.h"
 
 #define OVECCOUNT 90
@@ -325,7 +327,7 @@ xsanStripeGroupTable_handler(
                     continue;
                 }
                 snmp_set_var_typed_value( request->requestvb, ASN_COUNTER64,
-                                            (char *)&table_entry->xsanStripeGroupTotalBlocks, sizeof(U64));
+                                            (u_char *)&table_entry->xsanStripeGroupTotalBlocks, sizeof(U64));
                 break;
             case COLUMN_XSANSTRIPEGROUPRESERVEDBLOCKS:
                 if ( !table_entry ) {

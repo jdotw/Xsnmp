@@ -8,6 +8,7 @@
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 #include "xsanNodeTable.h"
 #include <pcre.h>
+#include "log.h"
 #include "util.h"
 
 #define OVECCOUNT 90

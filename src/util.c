@@ -6,6 +6,7 @@
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
+#include "log.h"
 #include "util.h"
 
 #define OVECCOUNT 90
@@ -13,7 +14,7 @@
 uint32_t extract_uint_in_range (char *start, size_t len)
 {
   char *val_str;
-  asprintf (&val_str, "%.*s", len, start);
+  asprintf (&val_str, "%.*s", (int) len, start);
   uint32_t val = strtoul(val_str, NULL, 10);
   free (val_str);
   return val;
@@ -55,7 +56,7 @@ void extract_string_in_range (char *start, size_t len, char **dest, size_t *dest
   if (*dest) free (*dest);
   *dest = NULL;
   *dest_len = 0;
-  asprintf (&*dest, "%.*s", len, start);
+  asprintf (&*dest, "%.*s", (int) len, start);
   trim_end(*dest);
   *dest_len = strlen (*dest);
 }

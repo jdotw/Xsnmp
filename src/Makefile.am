@@ -4,7 +4,6 @@ xsnmp_SOURCES = main.c \
 command.c \
 fsTable.c \
 log.c \
-main.c \
 ram.c \
 util.c \
 xsanAffinityTable.c \

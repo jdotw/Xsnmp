@@ -8,9 +8,11 @@
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 #include <fcntl.h>
 #include <pcre.h>
+#include "log.h"
 #include "util.h"
 #include "command.h"
 #include "xsanVolumeTable.h"
+#include "xsanStripeGroupTable.h"
 
 static struct timeval vollist_cache_timestamp = { 0, 0 };
 static int last_index_used = 0;
@@ -194,7 +196,7 @@ void update_vollist ()
 
      // Debug
      int fd;
-     fd = open ("fsmlist_example2.txt", O_RDONLY);
+     fd = open ("../examples/fsmlist_example2.txt", O_RDONLY);
      char *data = malloc (65536);
      size_t data_len =  read (fd, data, 65535);
      data[data_len] = '\0';     
@@ -338,7 +340,7 @@ void update_volume(struct xsanVolumeTable_entry *entry)
   // size_t data_len = strlen(data);
 
   int fd;
-  fd = open ("show_long_example_AM_01.txt", O_RDONLY);
+  fd = open ("../examples/show_long_example_AM_01.txt", O_RDONLY);
   char *data = malloc (65536);
   size_t data_len =  read (fd, data, 65536);
   data[data_len] = '\0';     

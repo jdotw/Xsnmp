@@ -32,7 +32,11 @@ AC_CHECK_HEADER(netdb.h, , AC_MSG_ERROR([Error : construct requires netdb.h]))
 AC_CHECK_HEADER(errno.h, , AC_MSG_ERROR([Error : construct requires errno.h]))
 AC_CHECK_HEADER(string.h, , AC_MSG_ERROR([Error : construct requires string.h]))
 
-AC_SEARCH_LIBS(init_snmp,  netsnmp.15)
+AC_HAVE_LIBRARY(pcre)
+AC_HAVE_LIBRARY(netsnmp)
+AC_HAVE_LIBRARY(netsnmplibs)
+AC_HAVE_LIBRARY(netsnmphelpers)
+AC_HAVE_LIBRARY(netsnmpagent)
 
 AC_OUTPUT(	Makefile 		\
 		src/Makefile		\
