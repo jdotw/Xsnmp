@@ -1,0 +1,9 @@
+# cvadmin -e 'fsmlist'
+Select FSM "none"
+
+
+FSM Processes on gdsan03.apple.com
+
+*AM_01[0]  port 49177, pid 126
+   State: REGISTERED 2010-05-29 21:58:59
+   Launches 1, core dumps 0, flags <CONFIGURED,AUTO-START>

@@ -1,0 +1,885 @@
+XSNMP-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE,
+        enterprises, Integer32, Counter32, Counter64, Gauge32
+        FROM SNMPv2-SMI
+        DisplayString 
+        FROM RFC1213-MIB;         
+
+lcorp MODULE-IDENTITY
+
+    LAST-UPDATED "201006110000Z"
+
+    ORGANIZATION "LithiumCorp Pty Ltd"
+    CONTACT-INFO "LithiumCorp Support
+          Postal: 40 Brooke St
+                  ENGADINE NSW 2233
+                  Australia
+             Tel: +61 2 8517 1001
+          E-mail: support@lithiumcorp.com"
+    DESCRIPTION "Xsnmp MIB"
+
+    REVISION "201006110000Z"
+        DESCRIPTION "First release"
+::= { enterprises 20038 }
+
+-- Structure
+--
+-- xsnmp
+-- |-> xsnmpObjects
+--     |-> xsan (1)
+--     |-> xserve (2)
+--     |-> ram (3)
+--     |-> fs (4)
+--     |-> xsnmpInternal (5)
+
+xsnmp                OBJECT IDENTIFIER ::= { lcorp 2 }
+xsnmpObjects         OBJECT IDENTIFIER ::= { xsnmp 1 }
+   
+-- Xsan Group
+
+xsan OBJECT IDENTIFIER ::= { xsnmpObjects 1 }
+   
+-- Xsan Information (static table)
+    
+-- Xsan Volumes
+
+xsanVolumeTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF XsanVolumeEntry
+    MAX-ACCESS not-accessible
+    STATUS  current
+    DESCRIPTION
+    "Volumes (FSS) reported by cvadmin"
+::= { xsan 1 }
+
+xsanVolumeEntry OBJECT-TYPE
+    SYNTAX     XsanVolumeEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+        "An entry per unique Volume (FSS) reported by cvadmin"
+    INDEX      { xsanVolumeIndex }
+::= { xsanVolumeTable 1 }
+
+XsanVolumeEntry ::= SEQUENCE {
+    xsanVolumeIndex                 Integer32,
+    xsanVolumeName                  DisplayString,
+    xsanVolumeFSSIndex              Integer32,
+    xsanVolumeState                 Integer32,
+    xsanVolumeStateMessage          DisplayString,
+    xsanVolumeLastAdminAction       DisplayString,
+    xsanVolumeLastTermination       DisplayString,
+    xsanVolumeLaunchCount           Counter32,
+    xsanVolumeCoreDumpCount         Counter32,
+    xsanVolumeFlags                 DisplayString,
+    xsanVolumeCreated               DisplayString,
+    xsanVolumeActiveConnections     Gauge32,
+    xsanVolumeFsBlockSize           Gauge32,
+    xsanVolumeMsgBufferSize         Gauge32,
+    xsanVolumeDiskDevices           Gauge32,
+    xsanVolumeStripeGroups          Gauge32,
+    xsanVolumeTotalKBlocks          Gauge32,
+    xsanVolumeFreeKBlocks           Gauge32,
+    xsanVolumeTotalBlocks           Counter64,
+    xsanVolumeFreeBlocks            Counter64,
+    xsanVolumeUtilization           Gauge32,
+    xsanVolumePid                   Gauge32,
+    xsanVolumePort                  Gauge32
+}
+
+xsanVolumeIndex OBJECT-TYPE
+    SYNTAX  Integer32 (1..65535)
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Volume index assigned by Xsnmp."
+::= { xsanVolumeEntry 1 }
+
+xsanVolumeName OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The name of the FSS as reported in fsmlist"
+::= { xsanVolumeEntry 2 }
+
+xsanVolumeFSSIndex OBJECT-TYPE
+    SYNTAX  Integer32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The index of the FSS as reported in fsmlist"
+::= { xsanVolumeEntry 3 }
+
+xsanVolumeState OBJECT-TYPE
+    SYNTAX  Integer32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The state of the FSS as reported in fsmlist"
+::= { xsanVolumeEntry 4 }
+
+xsanVolumeStateMessage OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The state messge for the FSS as reported in fsmlist"
+::= { xsanVolumeEntry 5 }
+
+xsanVolumeLastAdminAction OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The last admin action message for the FSS as reported in fsmlist"
+::= { xsanVolumeEntry 6 }
+
+xsanVolumeLastTermination OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The last termination message for the FSS as reported in fsmlist"
+::= { xsanVolumeEntry 7 }
+
+xsanVolumeLaunchCount OBJECT-TYPE
+    SYNTAX  Counter32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of launches for the FSS as reported in fsmlist"
+::= { xsanVolumeEntry 8 }
+
+xsanVolumeCoreDumpCount OBJECT-TYPE
+    SYNTAX  Counter32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of crashes and core dumps for the FSS as reported in fsmlist"
+::= { xsanVolumeEntry 9 }
+
+xsanVolumeFlags OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The operating flags for the FSS as reported in fsmlist"
+::= { xsanVolumeEntry 10 }
+
+xsanVolumeCreated OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Date the Volume was created (e.g. Tue Jun  9 17:34:52 2009)"
+::= { xsanVolumeEntry 11 }
+
+xsanVolumeActiveConnections OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "connections"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Number of active connections"
+::= { xsanVolumeEntry 12 }
+
+xsanVolumeFsBlockSize OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "Bytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "File system block size in bytes"
+::= { xsanVolumeEntry 13 }
+
+xsanVolumeMsgBufferSize OBJECT-TYPE
+    SYNTAX  Gauge32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Message buffer size"
+::= { xsanVolumeEntry 14 }
+
+xsanVolumeDiskDevices OBJECT-TYPE
+    SYNTAX  Gauge32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Number of disk devices used by the volume"
+::= { xsanVolumeEntry 15 }
+
+xsanVolumeStripeGroups OBJECT-TYPE
+    SYNTAX  Gauge32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Number of stripe groups configured for the volume"
+::= { xsanVolumeEntry 16 }
+
+xsanVolumeTotalKBlocks OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "KBlocks"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Total number of blocks divided by 1,000 (KiloBlocks)"
+::= { xsanVolumeEntry 17 }
+
+xsanVolumeFreeKBlocks OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "KBlocks"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Number of free blocks divided by 1,000 (KiloBlocks)"
+::= { xsanVolumeEntry 18 }
+
+xsanVolumeTotalBlocks OBJECT-TYPE
+    SYNTAX  Counter64
+    UNITS   "Blocks"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Total number of blocks"
+::= { xsanVolumeEntry 19 }
+
+xsanVolumeFreeBlocks OBJECT-TYPE
+    SYNTAX  Counter64
+    UNITS   "Blocks"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Number of free blocks"
+::= { xsanVolumeEntry 20 }
+
+xsanVolumeUtilization OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "%"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The Utilization of the drive expressed as free space over total size."
+::= { xsanVolumeEntry 21 }
+
+xsanVolumePid OBJECT-TYPE
+    SYNTAX  Gauge32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The process ID of the FSS as reported by fsmlist."
+::= { xsanVolumeEntry 22 }
+
+xsanVolumePort OBJECT-TYPE
+    SYNTAX  Gauge32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The port of the FSS as reported by fsmlist."
+::= { xsanVolumeEntry 23 }
+
+-- Xsan Storage Pools
+
+-- Lithium Site table
+-- This table contains one entry for each site
+-- configured under a particular
+
+xsanStripeGroupTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF xsanStripeGroupEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+    "The table of stripe groups indexed by xsanVolume"
+::= { xsan 2 }
+
+xsanStripeGroupEntry OBJECT-TYPE
+    SYNTAX      XsanStripeGroupEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+     "An Xsan Stripe Group (Storage Pool)"
+    INDEX { xsanVolumeIndex, xsanStripeGroupIndex }
+::= { xsanStripeGroupTable 1 }
+
+XsanStripeGroupEntry ::= SEQUENCE
+{
+    xsanVolumeIndex         Integer32,
+    xsanStripeGroupIndex    Integer32,
+    xsanStripeGroupName     DisplayString,
+    xsanStripeGroupStatus              Integer32,
+    xsanStripeGroupTotalBlocks  Counter64,
+    xsanStripeGroupReservedBlocks   Counter64,
+    xsanStripeGroupFreeBlocks   Counter64,
+    xsanStripeGroupTotalKBlocks Gauge32,
+    xsanStripeGroupReservedKBlocks  Gauge32,
+    xsanStripeGroupFreeKBlocks  Gauge32,
+    xsanStripeGroupUtilization Gauge32,
+    xsanStripeGroupMultiPathMethod  DisplayString,
+    xsanStripeGroupStripeDepth  Integer32,
+    xsanStripeGroupStripeBreadth    Integer32,
+    xsanStripeGroupAffinityKey  DisplayString,
+    xsanStripeGroupRTLimitIOPerSecond   Gauge32,
+    xsanStripeGroupNonRTReserveIOPerSecond  Gauge32,
+    xsanStripeGroupRTCommittedIOPerSecond   Gauge32,
+    xsanStripeGroupNonRTClients Gauge32,
+    xsanStripeGroupNonRTHostIOPerSecond Gauge32
+}
+
+xsanVolumeIndex OBJECT-TYPE
+    SYNTAX      Integer32
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+    "The index of the xsanVolume to which this stripe group belongs"
+::= { xsanStripeGroupEntry 1 }
+
+xsanStripeGroupIndex OBJECT-TYPE
+    SYNTAX      Integer32
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+    "The index of the Stripe Group"
+::= { xsanStripeGroupEntry 2 }
+
+xsanStripeGroupName OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The name of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 3 }
+
+xsanStripeGroupStatus OBJECT-TYPE
+    SYNTAX Integer32 {
+        unknown (0),
+        up (1)
+    }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The state of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 4 }
+
+xsanStripeGroupTotalBlocks OBJECT-TYPE
+    SYNTAX Counter64
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The number of blocks in the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 5 }
+
+xsanStripeGroupReservedBlocks OBJECT-TYPE
+    SYNTAX Counter64
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The number of reserved blocks in the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 6 }
+
+xsanStripeGroupFreeBlocks OBJECT-TYPE
+    SYNTAX Counter64
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The number of free blocks in the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 7 }
+
+xsanStripeGroupTotalKBlocks OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The number of blocks in the Stripe Group as reported in 'show long' divided by 1000 (KiloBlocks)"
+::= { xsanStripeGroupEntry 8 }
+
+xsanStripeGroupReservedKBlocks OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The number of reserved blocks in the Stripe Group as reported in 'show long' divided by 1000 (KiloBlocks)"
+::= { xsanStripeGroupEntry 9 }
+
+xsanStripeGroupFreeKBlocks OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The number of free blocks in the Stripe Group as reported in 'show long' divided by 1000 (KiloBlocks)"
+::= { xsanStripeGroupEntry 10 }
+
+xsanStripeGroupUtilization OBJECT-TYPE
+    SYNTAX Gauge32
+    UNITS "%"
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The Utilization of the Stripe Group as reported in 'show long' (reserved blocks over total blocks)"
+::= { xsanStripeGroupEntry 11 }
+
+xsanStripeGroupMultiPathMethod OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The MultipPath Method of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 12 }
+
+xsanStripeGroupStripeDepth OBJECT-TYPE
+    SYNTAX Integer32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The stripe depth of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 13 }
+
+xsanStripeGroupStripeBreadth OBJECT-TYPE
+    SYNTAX Integer32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The stripe breadth (in blocks) of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 14 }
+
+xsanStripeGroupAffinityKey OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The affinity of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 15 }
+
+xsanStripeGroupRTLimitIOPerSecond OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The 'Realtime limit IO/sec' of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 16 }
+
+xsanStripeGroupNonRTReserveIOPerSecond OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The 'Non-Realtime reserve IO/sec' of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 17 }
+
+xsanStripeGroupRTCommittedIOPerSecond OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The 'Committed RTIO/sec' of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 18 }
+
+xsanStripeGroupNonRTClients OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The 'Non-RTIO clients' of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 19 }
+
+xsanStripeGroupNonRTHostIOPerSecond OBJECT-TYPE
+    SYNTAX Gauge32
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The 'Non-RTIO hint IO/sec' of the Stripe Group as reported in 'show long'"
+::= { xsanStripeGroupEntry 20 }
+
+-- Xsan Nodes (LUNs in Stripe Groups)
+
+xsanNodeTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF xsanNodeEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+    "The table of LUNs in a Stripe Group indexed by xsanVolumeIndex.xsanStripeGroupIndex.xsanNodeIndex"
+::= { xsan 3 }
+
+xsanNodeEntry OBJECT-TYPE
+    SYNTAX      XsanNodeEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+     "An Xsan Node (LUN in a Stripe Group)"
+    INDEX { xsanVolumeIndex, xsanStripeGroupIndex, xsanNodeIndex }
+::= { xsanNodeTable 1 }
+
+XsanNodeEntry ::= SEQUENCE
+{
+    xsanVolumeIndex         Integer32,
+    xsanStripeGroupIndex    Integer32,
+    xsanNodeIndex           Integer32,
+    xsanNodeName            DisplayString,
+}
+
+xsanVolumeIndex OBJECT-TYPE
+    SYNTAX      Integer32
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+    "The index of the xsanVolume to which this stripe group belongs"
+::= { xsanNodeEntry 1 }
+
+xsanStripeGroupIndex OBJECT-TYPE
+    SYNTAX      Integer32
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+    "The index of the Stripe Group that this Node belongs to"
+::= { xsanNodeEntry 2 }
+
+xsanNodeIndex OBJECT-TYPE
+    SYNTAX      Integer32
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+    "The index of the Node (LUN)"
+::= { xsanNodeEntry 3 }
+
+xsanNodeName OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The name of the LUN as reported in 'show long'"
+::= { xsanNodeEntry 4 }
+
+-- Xsan Affinities
+
+xsanAffinityTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF XsanAffinityEntry
+    MAX-ACCESS not-accessible
+    STATUS  current
+    DESCRIPTION
+    "Affinitys groups as reported in 'show long' with utilisation calculated by Xsnmp"
+::= { xsan 4 }
+
+xsanAffinityEntry OBJECT-TYPE
+    SYNTAX     XsanAffinityEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+        "An entry per Affinity as reported in the AffinityKey in 'show long' indexed by xsanVolumeIndex.xsanAffinityIndex"
+    INDEX      { xsanVolumeIndex, xsanAffinityIndex }
+::= { xsanAffinityTable 1 }
+
+XsanAffinityEntry ::= SEQUENCE {
+    xsanVolumeIndex                 Integer32,
+    xsanAffinityIndex                Integer32,
+    xsanAffinityName                  DisplayString,
+    xsanAffinityStripeGroups          Gauge32,
+    xsanAffinityTotalKBlocks          Gauge32,
+    xsanAffinityFreeKBlocks           Gauge32,
+    xsanAffinityTotalBlocks           Counter64,
+    xsanAffinityFreeBlocks            Counter64,
+    xsanAffinityUtilization              Gauge32,
+}
+
+xsanVolumeIndex OBJECT-TYPE
+    SYNTAX  Integer32 (1..65535)
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Volume index that the affinity belongs to."
+::= { xsanAffinityEntry 1 }
+
+xsanAffinityIndex OBJECT-TYPE
+    SYNTAX  Integer32 (1..65535)
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Volume index assigned by Xsnmp."
+::= { xsanAffinityEntry 2 }
+
+xsanAffinityName OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The name of the FSS as reported in fsmlist"
+::= { xsanAffinityEntry 3 }
+
+xsanAffinityStripeGroups OBJECT-TYPE
+    SYNTAX  Integer32
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of stripe groups in the Affinity Group"
+::= { xsanAffinityEntry 4 }
+
+xsanAffinityTotalKBlocks OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "KBlocks"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Total number of blocks divided by 1,000 (KiloBlocks) calculated as a sum of all Stripe Groups in the Affinity"
+::= { xsanAffinityEntry 5 }
+
+xsanAffinityFreeKBlocks OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "KBlocks"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Number of free blocks divided by 1,000 (KiloBlocks) calculated as a sum of all Stripe Groups in the Affinity"
+::= { xsanAffinityEntry 6 }
+
+xsanAffinityTotalBlocks OBJECT-TYPE
+    SYNTAX  Counter64
+    UNITS   "Blocks"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Total number of blocks calculated as a sum of all Stripe Groups in the Affinity"
+::= { xsanAffinityEntry 7 }
+
+xsanAffinityFreeBlocks OBJECT-TYPE
+    SYNTAX  Counter64
+    UNITS   "Blocks"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Number of free blocks calculated as a sum of all Stripe Groups in the Affinity"
+::= { xsanAffinityEntry 8 }
+
+xsanAffinityUtilization OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "%"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The Utilization of the drive expressed as free space over total sizecalculated as an average of all Stripe Groups in the Affinity"
+::= { xsanAffinityEntry 9 }
+
+-- Xsan Visible Disks
+    
+-- Xsan Computers 
+
+--
+-- Xserve Intel Hardware LOM
+--
+
+xserve OBJECT IDENTIFIER ::= { xsnmpObjects 2 }
+
+--
+-- Host Filesystems
+--
+
+fs OBJECT IDENTIFIER ::= { xsnmpObjects 4 }
+
+fsTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF FsEntry
+    MAX-ACCESS not-accessible
+    STATUS  current
+    DESCRIPTION
+    "Filesystrems reported by df"
+::= { fs 1 }
+
+fsEntry OBJECT-TYPE
+    SYNTAX     FsEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+        "An entry per line in df"
+    INDEX      { fsIndex }
+::= { fsTable 1 }
+
+FsEntry ::= SEQUENCE {
+    fsIndex      Integer32,
+    fsFilesystem DisplayString,
+    fsMountpoint DisplayString,
+    fsSize       Gauge32,
+    fsUsed       Gauge32,
+    fsAvail      Gauge32,
+    fsUtilization   Gauge32
+}
+
+fsIndex OBJECT-TYPE
+    SYNTAX  Integer32 (1..65535)
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Row number for the output from df."
+::= { fsEntry 1 }
+
+fsFilesystem OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The filesystem (e.g. /dev/disk0s2)"
+::= { fsEntry 2 }
+
+fsMountpoint OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The mount point (e.g. /Volumes/Data)"
+::= { fsEntry 3 }
+
+fsSize OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The size of the volume in bytes"
+::= { fsEntry 4 }
+
+fsUsed OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of bytes used on the volume"
+::= { fsEntry 5 }
+
+fsAvail OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of bytes available on the volume"
+::= { fsEntry 6 }
+
+fsUtilization OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "%"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The Utilization of the drive expressed as a percentage of space used"
+::= { fsEntry 7 }
+
+fsWriteable OBJECT-TYPE
+    SYNTAX  Integer32 {
+      Unknown (-1),
+      Yes (1),
+      No (0)
+    }
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Indicates whether the file system is writeable as indicated by diskutil"
+::= { fsEntry 8 }
+
+fsRemovable OBJECT-TYPE
+    SYNTAX  Integer32 {
+      Unknown (-1),
+      Yes (1),
+      No (0)
+    }
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Indicates whether the file system is removable as indicated by diskutil"
+::= { fsEntry 9 }
+
+fsBootable OBJECT-TYPE
+    SYNTAX  Integer32 {
+      Unknown (-1),
+      Yes (1),
+      No (0)
+    }
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Indicates whether the file system is bootable as indicated by diskutil"
+::= { fsEntry 10 }
+
+fsSmartStatus OBJECT-TYPE
+    SYNTAX  Integer32 {
+      Unknown (-1),
+      NotSupported (0),
+      Verified (1),
+      Warning (2)
+    }
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The SMART status of the disk as reported by diskutil"
+::= { fsEntry 11 }
+
+fsSmartMessage OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The SMART status message for the disk as reported by diskutil"
+::= { fsEntry 12 }
+
+--
+-- Host RAM
+--
+
+ram OBJECT IDENTIFIER ::= { xsnmpObjects 3 }
+
+ramWired OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Wired memory as reported by top in Megabytes"
+    ::= { ram 1 }
+
+ramActive OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Active memory as reported by top in Megabytes"
+    ::= { ram 2 }
+
+ramInactive OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Inactive memory as reported by top in Megabytes"
+    ::= { ram 3 }
+
+ramUsed OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Used memory as reported by top in Megabytes"
+    ::= { ram 4 }
+
+ramFree OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Free memory as reported by top in Megabytes"
+    ::= { ram 5 }
+
+--
+-- Xsnmp Internal
+--
+
+xsnmpInternal OBJECT IDENTIFIER ::= { xsnmpObjects 5 }
+
+xsnmpVersion OBJECT-TYPE
+    SYNTAX  Gauge32
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "Version number for Xsnmp"
+    ::= { xsnmpInternal 1 }
+
+END

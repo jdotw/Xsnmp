@@ -1,0 +1,10 @@
+Yep[0] 
+  State: STOPPED (manual intervention required) 2010-05-15 18:33:13
+  Last Termination: exit(21) 2010-05-15 18:33:13
+  Launches 1, core dumps 0, flags <CONFIGURED,!AUTO-START>
+
+AnotherVolume_1112[0] 
+  State: STOPPED (manual intervention required) 2010-06-14 18:34:07
+  Last Admin: START 2010-06-14 18:34:06
+  Last Termination: exit(21) 2010-06-14 18:34:07
+  Launches 2, core dumps 0, flags <CONFIGURED,!AUTO-START>

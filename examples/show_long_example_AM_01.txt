@@ -1,0 +1,166 @@
+Xsan Administrator
+
+Enter command(s)
+For command help, enter "help" or "?".
+
+List FSS
+
+File System Services (* indicates service is in control of FS):
+ 1>*AM_01[0]             located on 10.0.0.98:49177 (pid 126)
+ 2> AM_01[1]             located on 10.0.0.99:49333 (pid 206)
+
+Select FSM "AM_01"
+
+ Created           :	Tue Jun  9 17:34:52 2009
+ Active Connections:	8
+ Fs Block Size     :	64K
+ Msg Buffer Size   :	4K
+ Disk Devices      :	21
+ Stripe Groups     :	11
+ Fs Blocks         :	1831050880 (109.14 TB)
+ Fs Blocks Free    :	898845014 (53.58 TB) (49%)
+
+
+Xsanadmin (AM_01) > Select FSM "1"
+
+ Created           :	Tue Jun  9 17:34:52 2009
+ Active Connections:	8
+ Fs Block Size     :	64K
+ Msg Buffer Size   :	4K
+ Disk Devices      :	21
+ Stripe Groups     :	11
+ Fs Blocks         :	1831050880 (109.14 TB)
+ Fs Blocks Free    :	898845014 (53.58 TB) (49%)
+
+Show stripe groups (File System "AM_01")
+
+Stripe Group 0 [MetadataAndJournal]  Status:Up,MetaData,Journal,Exclusive
+  Total Blocks:7630336 (465.72 GB)  Reserved:0 (0.00 B) Free:6810494 (415.68 GB) (89%)
+  MultiPath Method:Rotate
+  Stripe Depth:1  Stripe Breadth:256 blocks (16.00 MB)
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [MetadataAndJournal]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_MD]
+
+Stripe Group 1 [Data-1]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:73398424 (4.37 TB) (40%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data-1]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_01]
+      Node 1 [GD03_LUN_02]
+
+Stripe Group 2 [Data-2]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:67478291 (4.02 TB) (36%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data-2]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_03]
+      Node 1 [GD03_LUN_04]
+
+Stripe Group 3 [Data2-1]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:71066863 (4.24 TB) (38%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data2
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data2-1]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_05]
+      Node 1 [GD03_LUN_06]
+
+Stripe Group 4 [Data2-2]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:74462652 (4.44 TB) (40%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data2
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data2-2]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_07]
+      Node 1 [GD03_LUN_08]
+
+Stripe Group 5 [Data3-1]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:74292971 (4.43 TB) (40%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data3
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data3-1]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_09]
+      Node 1 [GD03_LUN_10]
+
+Stripe Group 6 [Data3-2]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:73824171 (4.40 TB) (40%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data3
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data3-2]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_11]
+      Node 1 [GD03_LUN_12]
+
+Stripe Group 7 [Data5]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:116080871 (6.92 TB) (63%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data5
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data5]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_17]
+      Node 1 [GD03_LUN_18]
+
+Stripe Group 8 [Data5-2]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:116080364 (6.92 TB) (63%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data5
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data5-2]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_19]
+      Node 1 [GD03_LUN_20]
+
+Stripe Group 9 [Data4]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:116080720 (6.92 TB) (63%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data4
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data4]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_13]
+      Node 1 [GD03_LUN_14]
+
+Stripe Group 10 [Data4-2]  Status:Up
+  Total Blocks:183105088 (10.91 TB)  Reserved:67680 (4.13 GB) Free:116079687 (6.92 TB) (63%)
+  MultiPath Method:Rotate
+  Stripe Depth:2  Stripe Breadth:32 blocks (2.00 MB)
+  Affinity Key:Data4
+  Realtime limit IO/sec:0 (~0 mb/sec) Non-Realtime reserve IO/sec:0
+    Committed RTIO/sec:0 Non-RTIO clients:0 Non-RTIO hint IO/sec:0
+  Disk stripes:
+    Primary  Stripe [Data4-2]  Read:Enabled  Write:Enabled
+      Node 0 [GD03_LUN_15]
+      Node 1 [GD03_LUN_16]
+
