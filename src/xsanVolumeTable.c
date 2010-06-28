@@ -49,7 +49,7 @@ initialize_table_xsanVolumeTable(void)
                            ASN_INTEGER,  /* index: xsanVolumeIndex */
                            0);
     table_info->min_column = COLUMN_XSANVOLUMEINDEX;
-    table_info->max_column = COLUMN_XSANVOLUMEPORT;
+    table_info->max_column = COLUMN_XSANVOLUMEUSEDMBYTES;
     
     iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
     iinfo->get_first_data_point = xsanVolumeTable_get_first_data_point;
@@ -95,6 +95,12 @@ struct xsanVolumeTable_entry {
     U64 xsanVolumeTotalBlocks;
     U64 xsanVolumeFreeBlocks;
     u_long xsanVolumeUtilization;
+    
+    /* Calculated */
+    u_long xsanVolumeTotalMBytes;
+    u_long xsanVolumeFreeMBytes;
+    u_long xsanVolumeUsedMBytes;
+    
     
     /* From 'fsmlist' */
     u_long xsanVolumePid;
@@ -200,6 +206,7 @@ void update_vollist ()
      char *data = malloc (65536);
      size_t data_len =  read (fd, data, 65535);
      data[data_len] = '\0';     
+     close (fd);
      
      const char *error;
      int erroffset;
@@ -217,7 +224,7 @@ void update_vollist ()
 
          if (ovector[0] == ovector[1])
          {
-             if (ovector[0] == data_len) break;
+             if (ovector[0] == (int)data_len) break;
          }
 
          int rc = pcre_exec(
@@ -343,7 +350,8 @@ void update_volume(struct xsanVolumeTable_entry *entry)
   fd = open ("../examples/show_long_example_AM_01.txt", O_RDONLY);
   char *data = malloc (65536);
   size_t data_len =  read (fd, data, 65536);
-  data[data_len] = '\0';     
+  data[data_len] = '\0';    
+  close (fd);
   
   extract_string_from_regex (data, data_len, "^[ ]*Created[ ]*:[ \\t]+(.*)$", &entry->xsanVolumeCreated, &entry->xsanVolumeCreated_len);
   entry->xsanVolumeActiveConnections = extract_uint_from_regex (data, data_len, "^[ ]*Active Connections[ ]*:[ \\t]+(.*)$");
@@ -357,7 +365,15 @@ void update_volume(struct xsanVolumeTable_entry *entry)
   entry->xsanVolumeFreeKBlocks = scale_U64_to_K (&entry->xsanVolumeFreeBlocks);
   entry->xsanVolumeUtilization = 100 - extract_uint_from_regex (data, data_len, "^[ ]*Fs Blocks Free[ ]*:[ \\t]+\\d+ \\(.*\\) \\((\\d+)%\\)$");
   
+  /* Calculate bytes */
+  entry->xsanVolumeTotalMBytes = entry->xsanVolumeFsBlockSize * entry->xsanVolumeTotalKBlocks;    /* Both are in K units, hence multiple to M */
+  entry->xsanVolumeFreeMBytes = entry->xsanVolumeFsBlockSize * entry->xsanVolumeFreeKBlocks;      /* Both are in K units, hence multiple to M */
+  entry->xsanVolumeUsedMBytes = entry->xsanVolumeFsBlockSize * (entry->xsanVolumeTotalKBlocks - entry->xsanVolumeFreeKBlocks);      /* Both are in K units, hence multiple to M */
+  
+  /* Update stripe groups */
   update_stripegroups (data, data_len, entry->xsanVolumeIndex);
+  
+  /* Cleanup */
   free (data);
   data = NULL;
   data_len = 0;
@@ -614,6 +630,33 @@ xsanVolumeTable_handler(
                 snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
                                             table_entry->xsanVolumePort);
                 break;
+            case COLUMN_XSANVOLUMETOTALMBYTES:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanVolumeTotalMBytes);
+                break;
+            case COLUMN_XSANVOLUMEFREEMBYTES:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanVolumeFreeMBytes);
+                break;
+            case COLUMN_XSANVOLUMEUSEDMBYTES:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanVolumeUsedMBytes);
+                break;
             default:
                 netsnmp_set_request_error(reqinfo, request,
                                           SNMP_NOSUCHOBJECT);
@@ -624,4 +667,15 @@ xsanVolumeTable_handler(
 
     }
     return SNMP_ERR_NOERROR;
+}
+
+u_long blockSizeForVolumeIndex (long volumeIndex)
+{
+  struct xsanVolumeTable_entry *entry = xsanVolumeTable_head;
+  while (entry)
+  {
+    if (entry->xsanVolumeIndex == volumeIndex) return entry->xsanVolumeFsBlockSize;
+    entry = entry->next;
+  }
+  return 0;
 }

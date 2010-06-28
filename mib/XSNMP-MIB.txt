@@ -85,7 +85,10 @@ XsanVolumeEntry ::= SEQUENCE {
     xsanVolumeFreeBlocks            Counter64,
     xsanVolumeUtilization           Gauge32,
     xsanVolumePid                   Gauge32,
-    xsanVolumePort                  Gauge32
+    xsanVolumePort                  Gauge32,
+    xsanVolumeTotalMBytes           Gauge32,
+    xsanVolumeFreeMBytes            Gauge32,
+    xsanVolumeUsedMBytes            Gauge32
 }
 
 xsanVolumeIndex OBJECT-TYPE
@@ -187,11 +190,11 @@ xsanVolumeActiveConnections OBJECT-TYPE
 
 xsanVolumeFsBlockSize OBJECT-TYPE
     SYNTAX  Gauge32
-    UNITS   "Bytes"
+    UNITS   "KBytes"
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
-    "File system block size in bytes"
+    "File system block size in KBytes"
 ::= { xsanVolumeEntry 13 }
 
 xsanVolumeMsgBufferSize OBJECT-TYPE
@@ -279,6 +282,35 @@ xsanVolumePort OBJECT-TYPE
     "The port of the FSS as reported by fsmlist."
 ::= { xsanVolumeEntry 23 }
 
+xsanVolumeTotalMBytes OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Total number of bytes divided by 1024 * 1024 (Megabytes)"
+::= { xsanVolumeEntry 24 }
+
+xsanVolumeFreeMBytes OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of free bytes divided by 1024 * 1024 (Megabytes)"
+::= { xsanVolumeEntry 25 }
+
+xsanVolumeUsedMBytes OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of used bytes divided by 1024 * 1024 (Megabytes)"
+::= { xsanVolumeEntry 26 }
+
+
+
 -- Xsan Storage Pools
 
 -- Lithium Site table
@@ -323,7 +355,10 @@ XsanStripeGroupEntry ::= SEQUENCE
     xsanStripeGroupNonRTReserveIOPerSecond  Gauge32,
     xsanStripeGroupRTCommittedIOPerSecond   Gauge32,
     xsanStripeGroupNonRTClients Gauge32,
-    xsanStripeGroupNonRTHostIOPerSecond Gauge32
+    xsanStripeGroupNonRTHostIOPerSecond Gauge32,
+    xsanStripeGroupTotalMBytes Gauge32,
+    xsanStripeGroupFreeMBytes Gauge32,
+    xsanStripeGroupUsedMBytes Gauge32
 }
 
 xsanVolumeIndex OBJECT-TYPE
@@ -490,6 +525,34 @@ xsanStripeGroupNonRTHostIOPerSecond OBJECT-TYPE
     "The 'Non-RTIO hint IO/sec' of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 20 }
 
+xsanStripeGroupTotalMBytes OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Total number of bytes in the Stripe Group divided by 1024 * 1024 (Megabytes)"
+::= { xsanStripeGroupEntry 21 }
+
+xsanStripeGroupFreeMBytes OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of free bytes in the Stripe Group divided by 1024 * 1024 (Megabytes)"
+::= { xsanStripeGroupEntry 22 }
+
+xsanStripeGroupUsedMBytes OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of used bytes in the Stripe Group divided by 1024 * 1024 (Megabytes)"
+::= { xsanStripeGroupEntry 23 }
+
+
 -- Xsan Nodes (LUNs in Stripe Groups)
 
 xsanNodeTable OBJECT-TYPE
@@ -570,14 +633,17 @@ xsanAffinityEntry OBJECT-TYPE
 
 XsanAffinityEntry ::= SEQUENCE {
     xsanVolumeIndex                 Integer32,
-    xsanAffinityIndex                Integer32,
-    xsanAffinityName                  DisplayString,
-    xsanAffinityStripeGroups          Gauge32,
-    xsanAffinityTotalKBlocks          Gauge32,
-    xsanAffinityFreeKBlocks           Gauge32,
-    xsanAffinityTotalBlocks           Counter64,
-    xsanAffinityFreeBlocks            Counter64,
-    xsanAffinityUtilization              Gauge32,
+    xsanAffinityIndex               Integer32,
+    xsanAffinityName                DisplayString,
+    xsanAffinityStripeGroups        Gauge32,
+    xsanAffinityTotalKBlocks        Gauge32,
+    xsanAffinityFreeKBlocks         Gauge32,
+    xsanAffinityTotalBlocks         Counter64,
+    xsanAffinityFreeBlocks          Counter64,
+    xsanAffinityUtilization         Gauge32,
+    xsanAffinityTotalMBytes         Gauge32,
+    xsanAffinityFreeMBytes     Gauge32,
+    xsanAffinityUsedMBytes     Gauge32
 }
 
 xsanVolumeIndex OBJECT-TYPE
@@ -654,8 +720,36 @@ xsanAffinityUtilization OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
-    "The Utilization of the drive expressed as free space over total sizecalculated as an average of all Stripe Groups in the Affinity"
+    "The Utilization of the drive expressed as free space over total size calculated as an average of all Stripe Groups in the Affinity"
 ::= { xsanAffinityEntry 9 }
+
+xsanAffinityTotalMBytes OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Total number of bytes in the Affinity divided by 1024 * 1024 (Megabytes)"
+::= { xsanAffinityEntry 10 }
+
+xsanAffinityFreeMBytes OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of free bytes in the Affinity divided by 1024 * 1024 (Megabytes)"
+::= { xsanAffinityEntry 11 }
+
+xsanAffinityUsedMBytes OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of used bytes in the Affinity divided by 1024 * 1024 (Megabytes)"
+::= { xsanAffinityEntry 12 }
+
 
 -- Xsan Visible Disks
     
@@ -730,7 +824,7 @@ fsSize OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
-    "The size of the volume in bytes"
+    "The size of the volume in Megabytes"
 ::= { fsEntry 4 }
 
 fsUsed OBJECT-TYPE
@@ -739,7 +833,7 @@ fsUsed OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
-    "The number of bytes used on the volume"
+    "The number of bytes used on the volume in Megabytes"
 ::= { fsEntry 5 }
 
 fsAvail OBJECT-TYPE
@@ -748,7 +842,7 @@ fsAvail OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
-    "The number of bytes available on the volume"
+    "The number of bytes available on the volume in Megabytes"
 ::= { fsEntry 6 }
 
 fsUtilization OBJECT-TYPE

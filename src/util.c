@@ -43,8 +43,8 @@ void extract_U64_from_regex (char *data, size_t data_len, char *expression, U64 
   if (extract_string_from_regex(data, data_len, expression, &val_str, &val_len))
   { 
     unsigned long long ullval = strtoull(val_str, NULL, 10);
-    val->low  = ullval & 0x00000000ffffffff;
-    val->high = (ullval & 0xffffffff00000000) >> 32;
+    val->low  = ullval & 0x00000000ffffffffLL;
+    val->high = (unsigned long long) (ullval & 0xffffffff00000000LL) >> 32;
     free (val_str);
   } 
   else
@@ -70,7 +70,6 @@ char* extract_string_from_regex (char *data, size_t data_len, char *expression, 
   const char *error;
   int erroffset;
   int ovector[OVECCOUNT];
-  char *match_str;
   
   pcre *re = pcre_compile(expression, PCRE_MULTILINE, &error, &erroffset, NULL);
   if (re == NULL) { x_printf ("extract_string_from_regex failed to compile regex '%s'", expression); return NULL; }
@@ -111,7 +110,7 @@ int extract_boolean_from_regex (char *data, size_t data_len, char *expression)
 
 uint32_t scale_U64_to_K (U64 *val)
 {
-  unsigned long long raw = (val->high << 32) + val->low;
+  unsigned long long raw = ((unsigned long long) val->high << 32) + val->low;
   return (uint32_t) raw / 1000;
 }
 
@@ -130,7 +129,7 @@ U64 sum_U64 (U64 x, U64 y)
     unsigned long long xull = x.low + ((unsigned long long) x.high << 32);
     unsigned long long yull = y.low + ((unsigned long long) y.high << 32);   
     U64 result;
-    result.low  =  (xull + yull) & 0x00000000ffffffff;
-    result.high = ((xull + yull) & 0xffffffff00000000) >> 32;
+    result.low  =  (xull + yull) & 0x00000000ffffffffLL;
+    result.high = ((xull + yull) & 0xffffffff00000000LL) >> 32;
     return result;
 }

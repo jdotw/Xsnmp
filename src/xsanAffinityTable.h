@@ -22,6 +22,9 @@ Netsnmp_Next_Data_Point   xsanAffinityTable_get_next_data_point;
        #define COLUMN_XSANAFFINITYTOTALBLOCKS		7
        #define COLUMN_XSANAFFINITYFREEBLOCKS		8
        #define COLUMN_XSANAFFINITYUTILIZATION		9
+       #define COLUMN_XSANAFFINITYTOTALMBYTES		10
+       #define COLUMN_XSANAFFINITYFREEMBYTES		11
+       #define COLUMN_XSANAFFINITYUSEDMBYTES		12
 #endif /* XSANAFFINITYTABLE_H */
 
 long find_or_create_affinity_index (long volumeIndex, char *affinityKey);

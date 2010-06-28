@@ -182,7 +182,7 @@ void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGrou
 
         if (ovector[0] == ovector[1])
         {
-            if (ovector[0] == data_len) break;
+            if (ovector[0] == (int)data_len) break;
         }
 
         int rc = pcre_exec(

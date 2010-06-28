@@ -8,6 +8,7 @@
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 #include "xsanStripeGroupTable.h"
 #include "xsanNodeTable.h"
+#include "xsanVolumeTable.h"
 #include "xsanAffinityTable.h"
 #include <pcre.h>
 #include "log.h"
@@ -45,7 +46,7 @@ initialize_table_xsanStripeGroupTable(void)
                            ASN_INTEGER,  /* index: xsanStripeGroupIndex */
                            0);
     table_info->min_column = COLUMN_XSANSTRIPEGROUPINDEX;
-    table_info->max_column = COLUMN_XSANSTRIPEGROUPNONRTHINTIOPERSECOND;
+    table_info->max_column = COLUMN_XSANSTRIPEGROUPUSEDMBYTES;
     
     iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
     iinfo->get_first_data_point = xsanStripeGroupTable_get_first_data_point;
@@ -158,7 +159,7 @@ void update_stripegroups (char *data, size_t data_len, long xsanVolumeIndex)
 
          if (ovector[0] == ovector[1])
          {
-             if (ovector[0] == data_len) break;
+             if (ovector[0] == (int)data_len) break;
          }
 
          int rc = pcre_exec(
@@ -239,6 +240,11 @@ void update_stripegroups (char *data, size_t data_len, long xsanVolumeIndex)
              entry->xsanStripeGroupRTCommittedIOPerSecond = extract_uint_from_regex(stripegroup_data, stripegroup_data_len, "Committed RTIO/sec:(\\d+)");
              entry->xsanStripeGroupNonRTClients = extract_uint_from_regex(stripegroup_data, stripegroup_data_len, "Non-RTIO clients:(\\d+)");
              entry->xsanStripeGroupNonRTHintIOPerSecond = extract_uint_from_regex(stripegroup_data, stripegroup_data_len, "Non-RTIO hint IO/sec:(\\d+)");
+
+             u_long blockSize = blockSizeForVolumeIndex(entry->xsanVolumeIndex);
+             entry->xsanStripeGroupTotalMBytes = blockSize * entry->xsanStripeGroupTotalKBlocks;    // Both are in K values and multiple to M 
+             entry->xsanStripeGroupFreeMBytes = blockSize * entry->xsanStripeGroupFreeKBlocks;
+             entry->xsanStripeGroupUsedMBytes = blockSize * (entry->xsanStripeGroupTotalKBlocks - entry->xsanStripeGroupFreeKBlocks);
              
              update_nodes(stripegroup_data, stripegroup_data_len, entry->xsanVolumeIndex, entry->xsanStripeGroupIndex);
              
@@ -465,6 +471,33 @@ xsanStripeGroupTable_handler(
                 }
                 snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
                                             table_entry->xsanStripeGroupNonRTHintIOPerSecond);
+                break;
+            case COLUMN_XSANSTRIPEGROUPTOTALMBYTES:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanStripeGroupTotalMBytes);
+                break;
+            case COLUMN_XSANSTRIPEGROUPFREEMBYTES:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanStripeGroupFreeMBytes);
+                break;
+            case COLUMN_XSANSTRIPEGROUPUSEDMBYTES:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanStripeGroupUsedMBytes);
                 break;
             default:
                 netsnmp_set_request_error(reqinfo, request,

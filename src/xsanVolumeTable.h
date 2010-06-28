@@ -11,6 +11,7 @@ void initialize_table_xsanVolumeTable(void);
 Netsnmp_Node_Handler xsanVolumeTable_handler;
 Netsnmp_First_Data_Point  xsanVolumeTable_get_first_data_point;
 Netsnmp_Next_Data_Point   xsanVolumeTable_get_next_data_point;
+u_long blockSizeForVolumeIndex (long volumeIndex);
 
 /* column number definitions for table xsanVolumeTable */
        #define COLUMN_XSANVOLUMEINDEX		1
@@ -36,4 +37,7 @@ Netsnmp_Next_Data_Point   xsanVolumeTable_get_next_data_point;
        #define COLUMN_XSANVOLUMEUTILIZATION		21
        #define COLUMN_XSANVOLUMEPID		22
        #define COLUMN_XSANVOLUMEPORT		23
+       #define COLUMN_XSANVOLUMETOTALMBYTES		24
+       #define COLUMN_XSANVOLUMEFREEMBYTES		25
+       #define COLUMN_XSANVOLUMEUSEDMBYTES		26
 #endif /* XSANVOLUMETABLE_H */

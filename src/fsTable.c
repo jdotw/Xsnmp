@@ -231,7 +231,7 @@ void update_volumes()
     
     if (ovector[0] == ovector[1])
     {
-      if (ovector[0] == data_len) break;
+      if (ovector[0] == (int) data_len) break;
     }
 
     int rc = pcre_exec(

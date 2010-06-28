@@ -6,6 +6,7 @@
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
+#include "xsanVolumeTable.h"
 #include "xsanStripeGroupTable.h"
 #include "xsanAffinityTable.h"
 #include "util.h"
@@ -43,7 +44,7 @@ initialize_table_xsanAffinityTable(void)
                            ASN_INTEGER,  /* index: xsanAffinityIndex */
                            0);
     table_info->min_column = COLUMN_XSANAFFINITYINDEX;
-    table_info->max_column = COLUMN_XSANAFFINITYUTILIZATION;
+    table_info->max_column = COLUMN_XSANAFFINITYUSEDMBYTES;
     
     iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
     iinfo->get_first_data_point = xsanAffinityTable_get_first_data_point;
@@ -70,6 +71,9 @@ struct xsanAffinityTable_entry {
     U64 xsanAffinityTotalBlocks;
     U64 xsanAffinityFreeBlocks;
     u_long xsanAffinityUtilization;
+    u_long xsanAffinityTotalMBytes;
+    u_long xsanAffinityFreeMBytes;
+    u_long xsanAffinityUsedMBytes;
 
     /* Illustrate using a simple linked list */
     int   valid;
@@ -195,6 +199,9 @@ void update_affinities()
         entry->xsanAffinityFreeBlocks.high = 0;
         entry->xsanAffinityFreeBlocks.low = 0;
         entry->xsanAffinityUtilization = 0;
+        entry->xsanAffinityTotalMBytes = 0;
+        entry->xsanAffinityFreeMBytes = 0;
+        entry->xsanAffinityUsedMBytes = 0;
         
         /* Loop through stripe groups */
         struct xsanStripeGroupTable_entry *stripeGroup = xsanStripeGroupTable_head;
@@ -208,6 +215,11 @@ void update_affinities()
                 entry->xsanAffinityFreeKBlocks += stripeGroup->xsanStripeGroupFreeKBlocks;
                 entry->xsanAffinityTotalBlocks = sum_U64(entry->xsanAffinityTotalBlocks, stripeGroup->xsanStripeGroupTotalBlocks);
                 entry->xsanAffinityFreeBlocks = sum_U64(entry->xsanAffinityFreeBlocks, stripeGroup->xsanStripeGroupFreeBlocks);
+                
+                u_long blockSize = blockSizeForVolumeIndex(stripeGroup->xsanVolumeIndex);
+                entry->xsanAffinityTotalMBytes += stripeGroup->xsanStripeGroupTotalKBlocks * blockSize;   // Both are in K units, and multiply to M -- same for the next two
+                entry->xsanAffinityFreeMBytes += stripeGroup->xsanStripeGroupFreeKBlocks * blockSize;
+                entry->xsanAffinityUsedMBytes += (stripeGroup->xsanStripeGroupTotalKBlocks - stripeGroup->xsanStripeGroupFreeKBlocks) * blockSize;
             }
             
             /* Move to next */
@@ -335,6 +347,33 @@ xsanAffinityTable_handler(
                 }
                 snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
                                             table_entry->xsanAffinityUtilization);
+                break;
+            case COLUMN_XSANAFFINITYTOTALMBYTES:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanAffinityTotalMBytes);
+                break;
+            case COLUMN_XSANAFFINITYFREEMBYTES:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanAffinityFreeMBytes);
+                break;
+            case COLUMN_XSANAFFINITYUSEDMBYTES:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanAffinityUsedMBytes);
                 break;
             default:
                 netsnmp_set_request_error(reqinfo, request,

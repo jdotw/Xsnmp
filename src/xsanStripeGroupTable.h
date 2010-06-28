@@ -34,13 +34,16 @@ struct xsanStripeGroupTable_entry
     u_long xsanStripeGroupRTCommittedIOPerSecond;
     u_long xsanStripeGroupNonRTClients;
     u_long xsanStripeGroupNonRTHintIOPerSecond;
+    u_long xsanStripeGroupTotalMBytes;
+    u_long xsanStripeGroupFreeMBytes;
+    u_long xsanStripeGroupUsedMBytes;
 
     /* Obsolescence */
     time_t last_seen;
 
     /* Affinity */
     long xsanAffinityIndex;
-
+    
     /* Illustrate using a simple linked list */
     int   valid;
     struct xsanStripeGroupTable_entry *next;
@@ -74,6 +77,10 @@ Netsnmp_Next_Data_Point   xsanStripeGroupTable_get_next_data_point;
        #define COLUMN_XSANSTRIPEGROUPRTCOMMITTEDIOPERSECOND		18
        #define COLUMN_XSANSTRIPEGROUPNONRTCLIENTS		19
        #define COLUMN_XSANSTRIPEGROUPNONRTHINTIOPERSECOND		20
+       #define COLUMN_XSANSTRIPEGROUPTOTALMBYTES		21
+       #define COLUMN_XSANSTRIPEGROUPFREEMBYTES		22
+       #define COLUMN_XSANSTRIPEGROUPUSEDMBYTES		23
+       
 #endif /* XSANSTRIPGROUPTABLE_H */
 
 void update_stripegroups (char *data, size_t data_len, long xsanVolumeIndex);
