@@ -17,6 +17,8 @@ Netsnmp_Next_Data_Point   xsanNodeTable_get_next_data_point;
        #define COLUMN_XSANSTRIPEGROUPINDEX		2
        #define COLUMN_XSANNODEINDEX		3
        #define COLUMN_XSANNODENAME		4
+       #define COLUMN_XSANNODECONTROLLERWWN		5
+       #define COLUMN_XSANNODEWWN		6
 #endif /* XSANNODETABLE_H */
 
 void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGroupIndex);

@@ -578,6 +578,8 @@ XsanNodeEntry ::= SEQUENCE
     xsanStripeGroupIndex    Integer32,
     xsanNodeIndex           Integer32,
     xsanNodeName            DisplayString,
+    xsanNodeControllerWWN   DisplayString,
+    xsanNodeWWN             DisplayString
 }
 
 xsanVolumeIndex OBJECT-TYPE
@@ -611,6 +613,22 @@ xsanNodeName OBJECT-TYPE
     DESCRIPTION
     "The name of the LUN as reported in 'show long'"
 ::= { xsanNodeEntry 4 }
+
+xsanNodeControllerWWN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The WWN ('serial') of the Controller as reported by cvlabel"
+::= { xsanNodeEntry 5 }
+
+xsanNodeWWN OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The WWN ('serial') of the Node as reported by cvlabel"
+::= { xsanNodeEntry 6 }
 
 -- Xsan Affinities
 

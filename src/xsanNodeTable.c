@@ -17,62 +17,64 @@
 void
 init_xsanNodeTable(void)
 {
-  /* here we initialize all the tables we're planning on supporting */
-    initialize_table_xsanNodeTable();
+  initialize_table_xsanNodeTable();
 }
 
 /** Initialize the xsanNodeTable table by defining its contents and how it's structured */
 void
 initialize_table_xsanNodeTable(void)
 {
-    static oid xsanNodeTable_oid[] = {1,3,6,1,4,1,20038,2,1,1,3};
-    size_t xsanNodeTable_oid_len   = OID_LENGTH(xsanNodeTable_oid);
-    netsnmp_handler_registration    *reg;
-    netsnmp_iterator_info           *iinfo;
-    netsnmp_table_registration_info *table_info;
+  static oid xsanNodeTable_oid[] = {1,3,6,1,4,1,20038,2,1,1,3};
+  size_t xsanNodeTable_oid_len   = OID_LENGTH(xsanNodeTable_oid);
+  netsnmp_handler_registration    *reg;
+  netsnmp_iterator_info           *iinfo;
+  netsnmp_table_registration_info *table_info;
 
-    reg = netsnmp_create_handler_registration(
-              "xsanNodeTable",     xsanNodeTable_handler,
-              xsanNodeTable_oid, xsanNodeTable_oid_len,
-              HANDLER_CAN_RONLY
-              );
+  reg = netsnmp_create_handler_registration(
+            "xsanNodeTable",     xsanNodeTable_handler,
+            xsanNodeTable_oid, xsanNodeTable_oid_len,
+            HANDLER_CAN_RONLY
+            );
 
-    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
-    netsnmp_table_helper_add_indexes(table_info,
-                           ASN_INTEGER,  /* index: xsanVolumeIndex */
-                           ASN_INTEGER,  /* index: xsanStripeGroupIndex */
-                           ASN_INTEGER,  /* index: xsanNodeIndex */
-                           0);
-    table_info->min_column = COLUMN_XSANNODEINDEX;
-    table_info->max_column = COLUMN_XSANNODENAME;
-    
-    iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
-    iinfo->get_first_data_point = xsanNodeTable_get_first_data_point;
-    iinfo->get_next_data_point  = xsanNodeTable_get_next_data_point;
-    iinfo->table_reginfo        = table_info;
-    
-    netsnmp_register_table_iterator( reg, iinfo );
-
-    /* Initialise the contents of the table here */
+  table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+  netsnmp_table_helper_add_indexes(table_info,
+                         ASN_INTEGER,  /* index: xsanVolumeIndex */
+                         ASN_INTEGER,  /* index: xsanStripeGroupIndex */
+                         ASN_INTEGER,  /* index: xsanNodeIndex */
+                         0);
+  table_info->min_column = COLUMN_XSANNODEINDEX;
+  table_info->max_column = COLUMN_XSANNODEWWN;
+  
+  iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
+  iinfo->get_first_data_point = xsanNodeTable_get_first_data_point;
+  iinfo->get_next_data_point  = xsanNodeTable_get_next_data_point;
+  iinfo->table_reginfo        = table_info;
+  
+  netsnmp_register_table_iterator( reg, iinfo );
 }
 
-    /* Typical data structure for a row entry */
-struct xsanNodeTable_entry {
-    /* Index values */
-    long xsanVolumeIndex;
-    long xsanStripeGroupIndex;
-    long xsanNodeIndex;
+/* Typical data structure for a row entry */
+struct xsanNodeTable_entry 
+{
+  /* Index values */
+  long xsanVolumeIndex;
+  long xsanStripeGroupIndex;
+  long xsanNodeIndex;
 
-    /* Column values */
-    char *xsanNodeName;
-    size_t xsanNodeName_len;
-    
-    /* Obsolescence */
-    time_t last_seen;
+  /* Column values */
+  char *xsanNodeName;
+  size_t xsanNodeName_len;
+  char *xsanNodeControllerWWN;
+  size_t xsanNodeControllerWWN_len;
+  char *xsanNodeWWN;
+  size_t xsanNodeWWN_len;
+  
+  /* Obsolescence */
+  time_t last_seen;
 
-    /* Illustrate using a simple linked list */
-    int   valid;
-    struct xsanNodeTable_entry *next;
+  /* Illustrate using a simple linked list */
+  int   valid;
+  struct xsanNodeTable_entry *next;
 };
 
 struct xsanNodeTable_entry  *xsanNodeTable_head;
@@ -82,46 +84,47 @@ struct xsanNodeTable_entry *
 xsanNodeTable_createEntry(
                  long  xsanVolumeIndex,
                  long  xsanStripeGroupIndex,
-                 long  xsanNodeIndex) {
-    struct xsanNodeTable_entry *entry;
+                 long  xsanNodeIndex) 
+{
+  struct xsanNodeTable_entry *entry;
 
-    entry = SNMP_MALLOC_TYPEDEF(struct xsanNodeTable_entry);
-    if (!entry)
-        return NULL;
+  entry = SNMP_MALLOC_TYPEDEF(struct xsanNodeTable_entry);
+  if (!entry) return NULL;
 
-    entry->xsanVolumeIndex = xsanVolumeIndex;
-    entry->xsanStripeGroupIndex = xsanStripeGroupIndex;
-    entry->xsanNodeIndex = xsanNodeIndex;
-    entry->next = xsanNodeTable_head;
-    xsanNodeTable_head = entry;
-    return entry;
+  entry->xsanVolumeIndex = xsanVolumeIndex;
+  entry->xsanStripeGroupIndex = xsanStripeGroupIndex;
+  entry->xsanNodeIndex = xsanNodeIndex;
+  entry->next = xsanNodeTable_head;
+  xsanNodeTable_head = entry;
+  return entry;
 }
 
 /* remove a row from the table */
 void
-xsanNodeTable_removeEntry( struct xsanNodeTable_entry *entry ) {
-    struct xsanNodeTable_entry *ptr, *prev;
+xsanNodeTable_removeEntry( struct xsanNodeTable_entry *entry ) 
+{
+  struct xsanNodeTable_entry *ptr, *prev;
 
-    if (!entry)
-        return;    /* Nothing to remove */
+  if (!entry)
+      return;    /* Nothing to remove */
 
-    for ( ptr  = xsanNodeTable_head, prev = NULL;
-          ptr != NULL;
-          prev = ptr, ptr = ptr->next ) {
-        if ( ptr == entry )
-            break;
-    }
-    if ( !ptr )
-        return;    /* Can't find it */
+  for ( ptr  = xsanNodeTable_head, prev = NULL;
+        ptr != NULL;
+        prev = ptr, ptr = ptr->next ) {
+      if ( ptr == entry )
+          break;
+  }
+  if ( !ptr )
+      return;    /* Can't find it */
 
-    if ( prev == NULL )
-        xsanNodeTable_head = ptr->next;
-    else
-      prev->next = ptr->next;
+  if ( prev == NULL )
+      xsanNodeTable_head = ptr->next;
+  else
+    prev->next = ptr->next;
 
-    if (entry->xsanNodeName) free(entry->xsanNodeName);
+  if (entry->xsanNodeName) free(entry->xsanNodeName);
 
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+  SNMP_FREE( entry );   /* XXX - release any other internal resources */
 }
 
 
@@ -132,9 +135,9 @@ xsanNodeTable_get_first_data_point(void **my_loop_context,
                           netsnmp_variable_list *put_index_data,
                           netsnmp_iterator_info *mydata)
 {
-    *my_loop_context = xsanNodeTable_head;
-    return xsanNodeTable_get_next_data_point(my_loop_context, my_data_context,
-                                    put_index_data,  mydata );
+  *my_loop_context = xsanNodeTable_head;
+  return xsanNodeTable_get_next_data_point(my_loop_context, my_data_context,
+                                  put_index_data,  mydata );
 }
 
 netsnmp_variable_list *
@@ -143,26 +146,30 @@ xsanNodeTable_get_next_data_point(void **my_loop_context,
                           netsnmp_variable_list *put_index_data,
                           netsnmp_iterator_info *mydata)
 {
-    struct xsanNodeTable_entry *entry = (struct xsanNodeTable_entry *)*my_loop_context;
-    netsnmp_variable_list *idx = put_index_data;
+  struct xsanNodeTable_entry *entry = (struct xsanNodeTable_entry *)*my_loop_context;
+  netsnmp_variable_list *idx = put_index_data;
 
-    if ( entry ) {
-        snmp_set_var_typed_integer( idx, ASN_INTEGER, entry->xsanVolumeIndex );
-        idx = idx->next_variable;
-        snmp_set_var_typed_integer( idx, ASN_INTEGER, entry->xsanStripeGroupIndex );
-        idx = idx->next_variable;
-        snmp_set_var_typed_integer( idx, ASN_INTEGER, entry->xsanNodeIndex );
-        idx = idx->next_variable;
-        *my_data_context = (void *)entry;
-        *my_loop_context = (void *)entry->next;
-        return put_index_data;
-    } else {
-        return NULL;
-    }
+  if ( entry ) 
+  {
+    snmp_set_var_typed_integer( idx, ASN_INTEGER, entry->xsanVolumeIndex );
+    idx = idx->next_variable;
+    snmp_set_var_typed_integer( idx, ASN_INTEGER, entry->xsanStripeGroupIndex );
+    idx = idx->next_variable;
+    snmp_set_var_typed_integer( idx, ASN_INTEGER, entry->xsanNodeIndex );
+    idx = idx->next_variable;
+    *my_data_context = (void *)entry;
+    *my_loop_context = (void *)entry->next;
+    return put_index_data;
+  } 
+  else 
+  {
+    return NULL;
+  }
 }
 
 void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGroupIndex)
 {
+  /* Updates the node list from the output of a 'show long' */
     struct timeval now;
     gettimeofday (&now, NULL);
 
@@ -257,6 +264,36 @@ void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGrou
     
 }
 
+void update_node_list ()
+{
+  /* Updates the list of visible nodes using the non-invasive 'cvlabel -l' 
+   * This data is cached and only updated periodically to ensure a current
+   * list of visible disks is presented
+   */
+}
+
+void update_node_list_if_necessary()
+{
+  struct timeval now;
+  gettimeofday (&now, NULL);
+  if (now.tv_sec - nodelist_cache_timestamp.tv_sec > MAX_CACHE_AGE) update_node_list()
+}
+
+void update_node_list_detail()
+{
+  /* Updates the list of visible nodes using the invasive 'cvlabel -L' 
+   * This is only done if the cache of detailed data is invalidated due 
+   * to a new node being discovered
+   */
+}
+
+void update_node_list_detail_if_necessary()
+{
+  if (node_list_detail_invalid) update_node_list_detail();
+}
+
+
+
 /** handles requests for the xsanNodeTable table */
 int
 xsanNodeTable_handler(
@@ -298,6 +335,26 @@ xsanNodeTable_handler(
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
                                  (u_char*)table_entry->xsanNodeName,
                                           table_entry->xsanNodeName_len);
+                break;
+            case COLUMN_XSANNODECONTROLLERWWN:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                 (u_char*)table_entry->xsanNodeControllerWWN,
+                                          table_entry->xsanNodeControllerWWN_len);
+                break;
+            case COLUMN_XSANNODEWWN:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                 (u_char*)table_entry->xsanNodeWWN,
+                                          table_entry->xsanNodeWWN_len);
                 break;
             default:
                 netsnmp_set_request_error(reqinfo, request,
