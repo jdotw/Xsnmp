@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/xsanVolumeTable.h</string>
+	<string>src/xsanNodeTable.c</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -94,6 +94,34 @@
 				<key>line</key>
 				<integer>27</integer>
 			</dict>
+		</dict>
+		<key>src/xsanNodeTable.c</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>171</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>306</integer>
+		</dict>
+		<key>src/xsanNodeTable.h</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>30</integer>
+				<key>line</key>
+				<integer>20</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>src/xsanStripeGroupTable.c</key>
 		<dict>
@@ -191,6 +219,8 @@
 		<string>src/xsanStripeGroupTable.h</string>
 		<string>src/xsanVolumeTable.c</string>
 		<string>src/xsanVolumeTable.h</string>
+		<string>src/xsanNodeTable.h</string>
+		<string>src/xsanNodeTable.c</string>
 		<string>src/xsanAffinityTable.c</string>
 		<string>src/xsanAffinityTable.h</string>
 	</array>
