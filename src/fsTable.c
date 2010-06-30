@@ -220,7 +220,7 @@ void update_volumes()
   int erroffset;
   int ovector[OVECCOUNT];
   pcre *re = pcre_compile("^(.*)[ ]+(\\d+)[ ]+(\\d+)[ ]+(\\d+)[ ]+(\\d+)%[ ]+(.*)$", PCRE_MULTILINE, &error, &erroffset, NULL);
-  if (re == NULL) { x_printf ("update_ram failed to compile regex for wired"); free (data); return; }
+  if (re == NULL) { x_printf ("ERROR: update_volumes failed to compile regex"); free (data); return; }
 
   ovector[0] = 0;
   ovector[1] = 0;
@@ -291,7 +291,6 @@ void update_volumes()
     }
     else
     {
-      x_printf("Matching error %d\n", rc);
       pcre_free(re);    /* Release memory used for the compiled pattern */
       return;
     }  

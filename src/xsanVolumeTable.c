@@ -20,6 +20,7 @@ static int last_index_used = 0;
 #define MAX_CACHE_AGE 10
 #define OVECCOUNT 90
 
+
 /** Initializes the xsanVolumeTable module */
 void
 init_xsanVolumeTable(void)
@@ -28,38 +29,6 @@ init_xsanVolumeTable(void)
   initialize_table_xsanVolumeTable();
 }
 
-/** Initialize the xsanVolumeTable table by defining its contents and how it's structured */
-void
-initialize_table_xsanVolumeTable(void)
-{
-  static oid xsanVolumeTable_oid[] = {1,3,6,1,4,1,20038,2,1,1,1};
-  size_t xsanVolumeTable_oid_len   = OID_LENGTH(xsanVolumeTable_oid);
-  netsnmp_handler_registration    *reg;
-  netsnmp_iterator_info           *iinfo;
-  netsnmp_table_registration_info *table_info;
-
-  reg = netsnmp_create_handler_registration(
-            "xsanVolumeTable",     xsanVolumeTable_handler,
-            xsanVolumeTable_oid, xsanVolumeTable_oid_len,
-            HANDLER_CAN_RONLY
-            );
-
-  table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
-  netsnmp_table_helper_add_indexes(table_info,
-                         ASN_INTEGER,  /* index: xsanVolumeIndex */
-                         0);
-  table_info->min_column = COLUMN_XSANVOLUMEINDEX;
-  table_info->max_column = COLUMN_XSANVOLUMEUSEDMBYTES;
-  
-  iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
-  iinfo->get_first_data_point = xsanVolumeTable_get_first_data_point;
-  iinfo->get_next_data_point  = xsanVolumeTable_get_next_data_point;
-  iinfo->table_reginfo        = table_info;
-    
-  netsnmp_register_table_iterator( reg, iinfo );
-}
-
-/* Typical data structure for a row entry */
 struct xsanVolumeTable_entry {
   /* Index values */
   long xsanVolumeIndex;
@@ -113,8 +82,51 @@ struct xsanVolumeTable_entry {
   struct xsanVolumeTable_entry *next;
 };
 
+void update_vollist();
+void update_volume(struct xsanVolumeTable_entry *entry);
+
 struct xsanVolumeTable_entry  *xsanVolumeTable_head;
 
+/** Initialize the xsanVolumeTable table by defining its contents and how it's structured */
+void
+initialize_table_xsanVolumeTable(void)
+{
+  static oid xsanVolumeTable_oid[] = {1,3,6,1,4,1,20038,2,1,1,1};
+  size_t xsanVolumeTable_oid_len   = OID_LENGTH(xsanVolumeTable_oid);
+  netsnmp_handler_registration    *reg;
+  netsnmp_iterator_info           *iinfo;
+  netsnmp_table_registration_info *table_info;
+
+  reg = netsnmp_create_handler_registration(
+            "xsanVolumeTable",     xsanVolumeTable_handler,
+            xsanVolumeTable_oid, xsanVolumeTable_oid_len,
+            HANDLER_CAN_RONLY
+            );
+
+  table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+  netsnmp_table_helper_add_indexes(table_info,
+                         ASN_INTEGER,  /* index: xsanVolumeIndex */
+                         0);
+  table_info->min_column = COLUMN_XSANVOLUMEINDEX;
+  table_info->max_column = COLUMN_XSANVOLUMEUSEDMBYTES;
+  
+  iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
+  iinfo->get_first_data_point = xsanVolumeTable_get_first_data_point;
+  iinfo->get_next_data_point  = xsanVolumeTable_get_next_data_point;
+  iinfo->table_reginfo        = table_info;
+    
+  netsnmp_register_table_iterator( reg, iinfo );
+  
+  update_vollist();
+  struct xsanVolumeTable_entry *entry = xsanVolumeTable_head;
+  while (entry)
+  {
+    update_volume(entry);
+    entry = entry->next;
+  }
+}
+
+/* Typical data structure for a row entry */
 /* create a new row in the (unsorted) table */
 struct xsanVolumeTable_entry *xsanVolumeTable_createEntry(long  xsanVolumeIndex) 
 {
@@ -192,25 +204,24 @@ void update_vollist ()
   struct timeval now;
   gettimeofday (&now, NULL);
 
-  // char *data = x_command_run("cvadmin -e 'fsmlist'", 0);
-  // if (!data) return;
-  // x_printf ("data is %p", data);
-  // size_t data_len = strlen(data);
+  char *data = x_command_run("cvadmin -e 'fsmlist'", 0);
+  if (!data) return;
+  size_t data_len = strlen(data);
 
   // Debug
-  int fd;
-  fd = open ("../examples/fsmlist_example2.txt", O_RDONLY);
-  char *data = malloc (65536);
-  size_t data_len =  read (fd, data, 65535);
-  data[data_len] = '\0';     
-  close (fd);
+  // int fd;
+  // fd = open ("../examples/fsmlist_example2.txt", O_RDONLY);
+  // char *data = malloc (65536);
+  // size_t data_len =  read (fd, data, 65535);
+  // data[data_len] = '\0';     
+  // close (fd);
    
   const char *error;
   int erroffset;
   int ovector[OVECCOUNT];
   pcre *re = pcre_compile("^\\*?([^ \\[\\n]+)\\[(\\d+)\\](?:[ ]+port (\\d+), pid (\\d+))?.*\\n[ ]*State: (\\w+) (.*)\\n(?:[ ]*Last Admin: ([^\\n]+)\\n)?(?:[ ]*Last Termination: ([^\\n]+)\\n)?(?:[ ]*Launches (\\d+), core dumps (\\d+), flags (.*))$", PCRE_MULTILINE, &error, &erroffset, NULL);
 
-  if (re == NULL) { x_printf ("update_vollist failed to compile regex for wired"); free (data); return; }
+  if (re == NULL) { x_printf ("ERROR: update_vollist failed to compile regex"); free (data); return; }
 
   ovector[0] = 0;
   ovector[1] = 0;
@@ -233,11 +244,8 @@ void update_vollist ()
                          ovector,              /* output vector for substring information */
                          OVECCOUNT);           /* number of elements in the output vector */
                          
-    x_printf ("rc=%i", rc);
-
     if (rc == PCRE_ERROR_NOMATCH)
     {
-      x_printf ("No match");
       if (options == 0) break;
       ovector[1] = start_offset + 1;
       continue;    /* Go round the loop again */
@@ -292,7 +300,6 @@ void update_vollist ()
     }
     else
     {
-      x_printf("Matching error %d\n", rc);
       pcre_free(re);    /* Release memory used for the compiled pattern */
       return;
     }  
@@ -337,17 +344,17 @@ void update_volume(struct xsanVolumeTable_entry *entry)
 
   char *command_str;
   asprintf (&command_str, "echo 'select %s'; show long", entry->xsanVolumeName);
-  // char *data = x_command_run(command_str, 0);
+  char *data = x_command_run(command_str, 0);
   free (command_str);
-  // if (!data) return;
-  // size_t data_len = strlen(data);
+  if (!data) return;
+  size_t data_len = strlen(data);
 
-  int fd;
-  fd = open ("../examples/show_long_example_AM_01.txt", O_RDONLY);
-  char *data = malloc (65536);
-  size_t data_len =  read (fd, data, 65536);
-  data[data_len] = '\0';    
-  close (fd);
+  // int fd;
+  // fd = open ("../examples/show_long_example_AM_01.txt", O_RDONLY);
+  // char *data = malloc (65536);
+  // size_t data_len =  read (fd, data, 65536);
+  // data[data_len] = '\0';    
+  // close (fd);
   
   extract_string_from_regex (data, data_len, "^[ ]*Created[ ]*:[ \\t]+(.*)$", &entry->xsanVolumeCreated, &entry->xsanVolumeCreated_len);
   entry->xsanVolumeActiveConnections = extract_uint_from_regex (data, data_len, "^[ ]*Active Connections[ ]*:[ \\t]+(.*)$");

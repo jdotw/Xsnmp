@@ -51,7 +51,23 @@ void extract_U64_from_regex (char *data, size_t data_len, char *expression, U64 
   { return; }
 }
 
-void extract_string_in_range (char *start, size_t len, char **dest, size_t *dest_len)
+void extract_U64_in_range (char *start, size_t len, U64 *val)
+{
+  char *val_str = NULL;
+  size_t val_len = 0;
+  
+  if (extract_string_in_range(start, len, &val_str, &val_len))
+  { 
+    unsigned long long ullval = strtoull(val_str, NULL, 10);
+    val->low  = ullval & 0x00000000ffffffffLL;
+    val->high = (unsigned long long) (ullval & 0xffffffff00000000LL) >> 32;
+    free (val_str);
+  } 
+  else
+  { return; }  
+}
+
+char* extract_string_in_range (char *start, size_t len, char **dest, size_t *dest_len)
 {
   if (*dest) free (*dest);
   *dest = NULL;
@@ -59,6 +75,7 @@ void extract_string_in_range (char *start, size_t len, char **dest, size_t *dest
   asprintf (&*dest, "%.*s", (int) len, start);
   trim_end(*dest);
   *dest_len = strlen (*dest);
+  return *dest;
 }
 
 char* extract_string_from_regex (char *data, size_t data_len, char *expression, char **dest, size_t *dest_len)
@@ -72,7 +89,7 @@ char* extract_string_from_regex (char *data, size_t data_len, char *expression, 
   int ovector[OVECCOUNT];
   
   pcre *re = pcre_compile(expression, PCRE_MULTILINE, &error, &erroffset, NULL);
-  if (re == NULL) { x_printf ("extract_string_from_regex failed to compile regex '%s'", expression); return NULL; }
+  if (re == NULL) { x_printf ("ERROR: extract_string_from_regex failed to compile regex '%s'", expression); return NULL; }
   
   int rc = pcre_exec(re, NULL, data, data_len, 0, 0, ovector, OVECCOUNT);
   if (rc >= 2)  
@@ -81,7 +98,7 @@ char* extract_string_from_regex (char *data, size_t data_len, char *expression, 
     *dest_len = strlen (*dest);
     trim_end(*dest);
   }
-  else x_printf ("extract_string_from_regex got no match for '%s' (rc=%i)", expression, rc);
+  else x_printf ("ERROR: extract_string_from_regex got no match for '%s' (rc=%i)", expression, rc);
   
   pcre_free(re);    /* Release memory used for the compiled pattern */
   

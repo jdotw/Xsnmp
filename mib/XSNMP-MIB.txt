@@ -574,12 +574,22 @@ xsanNodeEntry OBJECT-TYPE
 
 XsanNodeEntry ::= SEQUENCE
 {
-    xsanVolumeIndex         Integer32,
-    xsanStripeGroupIndex    Integer32,
-    xsanNodeIndex           Integer32,
-    xsanNodeName            DisplayString,
-    xsanNodeControllerWWN   DisplayString,
-    xsanNodeWWN             DisplayString
+    xsanVolumeIndex             Integer32,
+    xsanStripeGroupIndex        Integer32,
+    xsanNodeIndex               Integer32,
+    xsanNodeName                DisplayString,
+    xsanNodeController          DisplayString,
+    xsanNodeSerial              DisplayString,
+    xsanNodeGUID                DisplayString,
+    xsanNodeDevice              DisplayString,
+    xsanNodeDeviceLabel         DisplayString,
+    xsanNodeFSType              DisplayString,
+    xsanNodeSectorSize          Gauge32,
+    xsanNodeSectors             Counter64,
+    xsanNodeMaxSectors          Counter64,
+    xsanNodeKSectors            Gauge32,
+    xsanNodeMaxKSectors         Gauge32,
+    xsanNodeVisible             Integer32
 }
 
 xsanVolumeIndex OBJECT-TYPE
@@ -614,21 +624,110 @@ xsanNodeName OBJECT-TYPE
     "The name of the LUN as reported in 'show long'"
 ::= { xsanNodeEntry 4 }
 
-xsanNodeControllerWWN OBJECT-TYPE
+xsanNodeController OBJECT-TYPE
     SYNTAX DisplayString
     ACCESS read-only
     STATUS mandatory
     DESCRIPTION
-    "The WWN ('serial') of the Controller as reported by cvlabel"
+    "The Controller of the Node as reported by cvlabel"
 ::= { xsanNodeEntry 5 }
 
-xsanNodeWWN OBJECT-TYPE
+xsanNodeSerial OBJECT-TYPE
     SYNTAX DisplayString
     ACCESS read-only
     STATUS mandatory
     DESCRIPTION
-    "The WWN ('serial') of the Node as reported by cvlabel"
+    "The Serial of the Node (WWN for FibreChannel) as reported by cvlabel"
 ::= { xsanNodeEntry 6 }
+
+xsanNodeGUID OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The GUID of the Node as reported by cvlabel"
+::= { xsanNodeEntry 7 }
+
+xsanNodeDevice OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The Disk Device of the Node (e.g. /dev/rdisk0) as reported by cvlabel"
+::= { xsanNodeEntry 8 }
+
+xsanNodeDeviceLabel OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The Disk Device Label of the Node as reported by cvlabel"
+::= { xsanNodeEntry 9 }
+
+xsanNodeFSType OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION
+    "The File System used by the Node as reported by cvlabel"
+::= { xsanNodeEntry 10 }
+
+xsanNodeSectorSize OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "Bytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of bytes per sector on the Node as reported by cvlabel"
+::= { xsanNodeEntry 11 }
+
+xsanNodeSectors OBJECT-TYPE
+    SYNTAX  Counter64
+    UNITS   "Sectors"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of sectors on the Node as reported by cvlabel"
+::= { xsanNodeEntry 12 }
+
+xsanNodeMaxSectors OBJECT-TYPE
+    SYNTAX  Counter64
+    UNITS   "Sectors"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The maximum number of sectors on the Node as reported by cvlabel"
+::= { xsanNodeEntry 13 }
+
+xsanNodeKSectors OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "KSectors"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The number of sectors on the Node as reported by cvlabel divided by 1000 (KSectors)"
+::= { xsanNodeEntry 14 }
+
+xsanNodeMaxKSectors OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "KSectors"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The maximum number of sectors on the Node as reported by cvlabel divided by 1000 (KSectors)"
+::= { xsanNodeEntry 15 }
+
+xsanNodeVisible OBJECT-TYPE
+    SYNTAX  Integer32 {
+        Yes (1),
+        No (0)
+    }
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Indicates whether the Node is shown in the output from cvlabel"
+::= { xsanNodeEntry 16 }
+
 
 -- Xsan Affinities
 

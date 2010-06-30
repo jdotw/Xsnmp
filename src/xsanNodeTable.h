@@ -13,12 +13,23 @@ Netsnmp_First_Data_Point  xsanNodeTable_get_first_data_point;
 Netsnmp_Next_Data_Point   xsanNodeTable_get_next_data_point;
 
 /* column number definitions for table xsanNodeTable */
-       #define COLUMN_XSANVOLUMEINDEX		1
-       #define COLUMN_XSANSTRIPEGROUPINDEX		2
-       #define COLUMN_XSANNODEINDEX		3
-       #define COLUMN_XSANNODENAME		4
-       #define COLUMN_XSANNODECONTROLLERWWN		5
-       #define COLUMN_XSANNODEWWN		6
+ #define COLUMN_XSANVOLUMEINDEX		1
+ #define COLUMN_XSANSTRIPEGROUPINDEX		2
+ #define COLUMN_XSANNODEINDEX		3
+ #define COLUMN_XSANNODENAME		4
+ #define COLUMN_XSANNODECONTROLLER		5
+ #define COLUMN_XSANNODESERIAL		6
+ #define COLUMN_XSANNODEGUID		7
+ #define COLUMN_XSANNODEDEVICE		8
+ #define COLUMN_XSANNODEDEVICELABEL		9
+ #define COLUMN_XSANNODEFSTYPE		10
+ #define COLUMN_XSANNODESECTORSIZE		11
+ #define COLUMN_XSANNODESECTORS		12
+ #define COLUMN_XSANNODEMAXSECTORS		13
+ #define COLUMN_XSANNODEKSECTORS		14
+ #define COLUMN_XSANNODEMAXKSECTORS		15
+ #define COLUMN_XSANNODEVISIBLE 16
+       
 #endif /* XSANNODETABLE_H */
 
-void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGroupIndex);
+void update_nodes_for_stripe_group(char *data, size_t data_len, long volumeIndex, long stripeGroupIndex);

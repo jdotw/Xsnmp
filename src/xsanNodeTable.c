@@ -8,10 +8,20 @@
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 #include "xsanNodeTable.h"
 #include <pcre.h>
+#include <fcntl.h>
 #include "log.h"
 #include "util.h"
+#include "command.h"
 
 #define OVECCOUNT 90
+
+static int node_list_detail_invalid = 1;
+static struct timeval nodelist_cache_timestamp = {0, 0};
+
+void update_node_list ();
+void update_node_list_detail();
+
+#define MAX_CACHE_AGE 10
 
 /** Initializes the xsanNodeTable module */
 void
@@ -43,7 +53,7 @@ initialize_table_xsanNodeTable(void)
                          ASN_INTEGER,  /* index: xsanNodeIndex */
                          0);
   table_info->min_column = COLUMN_XSANNODEINDEX;
-  table_info->max_column = COLUMN_XSANNODEWWN;
+  table_info->max_column = COLUMN_XSANNODEVISIBLE;
   
   iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
   iinfo->get_first_data_point = xsanNodeTable_get_first_data_point;
@@ -51,6 +61,9 @@ initialize_table_xsanNodeTable(void)
   iinfo->table_reginfo        = table_info;
   
   netsnmp_register_table_iterator( reg, iinfo );
+  
+  update_node_list();
+  update_node_list_detail();
 }
 
 /* Typical data structure for a row entry */
@@ -64,13 +77,28 @@ struct xsanNodeTable_entry
   /* Column values */
   char *xsanNodeName;
   size_t xsanNodeName_len;
-  char *xsanNodeControllerWWN;
-  size_t xsanNodeControllerWWN_len;
-  char *xsanNodeWWN;
-  size_t xsanNodeWWN_len;
+  char *xsanNodeController;
+  size_t xsanNodeController_len;
+  char *xsanNodeSerial;
+  size_t xsanNodeSerial_len;
+  char *xsanNodeGUID;
+  size_t xsanNodeGUID_len;
+  char *xsanNodeDevice;
+  size_t xsanNodeDevice_len;
+  char *xsanNodeDeviceLabel;
+  size_t xsanNodeDeviceLabel_len;
+  char *xsanNodeFSType;
+  size_t xsanNodeFSType_len;
+  u_long xsanNodeSectorSize;
+  U64 xsanNodeSectors;
+  U64 xsanNodeMaxSectors;
+  u_long xsanNodeKSectors;
+  u_long xsanNodeMaxKSectors;
+  long xsanNodeVisible;
   
   /* Obsolescence */
-  time_t last_seen;
+  time_t last_seen_in_stripe_group;
+  time_t last_seen_in_cvlabel;
 
   /* Illustrate using a simple linked list */
   int   valid;
@@ -96,6 +124,7 @@ xsanNodeTable_createEntry(
   entry->xsanNodeIndex = xsanNodeIndex;
   entry->next = xsanNodeTable_head;
   xsanNodeTable_head = entry;
+  node_list_detail_invalid = 1;
   return entry;
 }
 
@@ -167,7 +196,7 @@ xsanNodeTable_get_next_data_point(void **my_loop_context,
   }
 }
 
-void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGroupIndex)
+void update_nodes_for_stripe_group(char *data, size_t data_len, long volumeIndex, long stripeGroupIndex)
 {
   /* Updates the node list from the output of a 'show long' */
     struct timeval now;
@@ -178,7 +207,7 @@ void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGrou
     int ovector[OVECCOUNT];
     pcre *re = pcre_compile("^[ ]*Node (\\d+) \\[(.*)\\]", PCRE_MULTILINE, &error, &erroffset, NULL);
 
-    if (re == NULL) { x_printf ("update_nodes failed to compile regex"); return; }
+    if (re == NULL) { x_printf ("ERROR: update_nodes_for_stripe_group failed to compile regex"); return; }
 
     ovector[0] = 0;
     ovector[1] = 0;
@@ -202,11 +231,8 @@ void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGrou
                             ovector,              /* output vector for substring information */
                             OVECCOUNT);           /* number of elements in the output vector */
 
-        x_printf ("update_nodes rc=%i", rc);
-
         if (rc == PCRE_ERROR_NOMATCH)
         {
-            x_printf ("update_nodes No match");
             if (options == 0) break;
             ovector[1] = start_offset + 1;
             continue;    /* Go round the loop again */
@@ -221,8 +247,6 @@ void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGrou
              *    2(4) = Node Name
              */
              
-             printf ("Node: '%.*s'\n", ovector[1] - ovector[0], data + ovector[0]);
-                          
             long nodeIndex = extract_uint_in_range (data + ovector[2], ovector[3] - ovector[2]);
 
             struct xsanNodeTable_entry *entry = xsanNodeTable_head;
@@ -235,13 +259,12 @@ void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGrou
             {
                 entry = xsanNodeTable_createEntry (volumeIndex, stripeGroupIndex, nodeIndex);
             }
-            entry->last_seen = now.tv_sec;
+            entry->last_seen_in_stripe_group = now.tv_sec;
             
             extract_string_in_range (data + ovector[4], ovector[5] - ovector[4], &entry->xsanNodeName, &entry->xsanNodeName_len);
         }
         else
         {
-            x_printf("Matching error %d\n", rc);
             pcre_free(re);    /* Release memory used for the compiled pattern */
             return;
         }  
@@ -254,7 +277,7 @@ void update_nodes(char *data, size_t data_len, long volumeIndex, long stripeGrou
     while (entry)
     {
         struct xsanNodeTable_entry *next = entry->next;
-        if (entry->xsanVolumeIndex == volumeIndex && entry->xsanStripeGroupIndex == stripeGroupIndex && entry->last_seen != now.tv_sec)
+        if (entry->xsanVolumeIndex == volumeIndex && entry->xsanStripeGroupIndex == stripeGroupIndex && entry->last_seen_in_stripe_group != now.tv_sec)
         {
             /* Entry is obsolete */
             xsanNodeTable_removeEntry(entry);
@@ -270,13 +293,137 @@ void update_node_list ()
    * This data is cached and only updated periodically to ensure a current
    * list of visible disks is presented
    */
+   struct timeval now;
+   gettimeofday (&now, NULL);
+
+   char *data = x_command_run("cvadmin -e 'fsmlist'", 0);
+   if (!data) return;
+   size_t data_len = strlen(data);
+
+   // Debug
+   // int fd;
+   // fd = open ("../examples/cvlabel_example.txt", O_RDONLY);
+   // char *data = malloc (65536);
+   // size_t data_len =  read (fd, data, 65535);
+   // data[data_len] = '\0';     
+   // close (fd);
+
+   const char *error;
+   int erroffset;
+   int ovector[OVECCOUNT];
+   pcre *re = pcre_compile("^(/dev[^ ]+) \\[(.*)\\] ([^ ]+) \\\"([^\\\"]*)\\\"[ ]*Sectors: (\\d+)\\.[ ]*SectorSize: (\\d+)\\.[ ]*Maximum sectors: (\\d+)\\.[ ]*GUID ([^ ]+).*$", PCRE_MULTILINE, &error, &erroffset, NULL);
+
+   if (re == NULL) { x_printf ("ERROR: update_node_list failed to compile regexupdate_node_list"); free (data); return; }
+
+   ovector[0] = 0;
+   ovector[1] = 0;
+   while(1)
+   {
+     int options = 0;                 /* Normally no options */
+     int start_offset = ovector[1];   /* Start at end of previous match */
+
+     if (ovector[0] == ovector[1])
+     {
+       if (ovector[0] == (int)data_len) break;
+     }
+
+     int rc = pcre_exec( re,                   /* the compiled pattern */
+                          NULL,                 /* no extra data - we didn't study the pattern */
+                          data,              /* the subject string */
+                          data_len,       /* the length of the subject */
+                          start_offset,         /* starting offset in the subject */
+                          options,              /* options */
+                          ovector,              /* output vector for substring information */
+                          OVECCOUNT);           /* number of elements in the output vector */
+
+     if (rc == PCRE_ERROR_NOMATCH)
+     {
+       if (options == 0) break;
+       ovector[1] = start_offset + 1;
+       continue;    /* Go round the loop again */
+     }
+
+     /* Other matching errors are not recoverable. */
+     if (rc > 0)
+     {
+       /* Matched an Xsan Volume. Vectors:
+        * 0=FullString 1(2)=Disk 2(4)=DeviceName 3(6)=FSType 4(8)=NodeName
+        * 5(10)=Sectors 6(12)=SectorSize 7(14)=MaxSectors
+        * 8(16)=GUID
+       */
+       char *nodename_str;
+       asprintf (&nodename_str, "%.*s", ovector[9] - ovector[8], data + ovector[8]);
+       trim_end(nodename_str);
+
+       struct xsanNodeTable_entry *entry = xsanNodeTable_head;
+       while (entry)
+       {
+         if (!strcmp(nodename_str, entry->xsanNodeName)) break;
+         entry = entry->next;
+       }
+       if (entry)
+       {
+         entry->last_seen_in_cvlabel = now.tv_sec;
+
+         extract_string_in_range (data + ovector[2], ovector[3] - ovector[2], &entry->xsanNodeDevice, &entry->xsanNodeDevice_len);
+         extract_string_in_range (data + ovector[4], ovector[5] - ovector[4], &entry->xsanNodeDeviceLabel, &entry->xsanNodeDeviceLabel_len);
+         extract_string_in_range (data + ovector[6], ovector[7] - ovector[6], &entry->xsanNodeFSType, &entry->xsanNodeFSType_len);
+         extract_string_in_range (data + ovector[16], ovector[17] - ovector[16], &entry->xsanNodeGUID, &entry->xsanNodeGUID_len);
+
+         entry->xsanNodeSectorSize = extract_uint_in_range (data + ovector[12], ovector[13] - ovector[12]);
+
+         extract_U64_in_range (data + ovector[10], ovector[11] - ovector[10], &entry->xsanNodeSectors);
+         extract_U64_in_range (data + ovector[14], ovector[15] - ovector[14], &entry->xsanNodeMaxSectors);
+       
+         entry->xsanNodeKSectors = scale_U64_to_K(&entry->xsanNodeSectors);
+         entry->xsanNodeMaxKSectors = scale_U64_to_K(&entry->xsanNodeMaxSectors);
+       }
+       
+       free (nodename_str);
+       nodename_str = NULL;
+     }
+     else
+     {
+       pcre_free(re);    /* Release memory used for the compiled pattern */
+       return;
+     }  
+     
+     
+   }
+
+   pcre_free(re);    /* Release memory used for the compiled pattern */
+
+   /* Check for non-visible (obsolete) entries */
+   struct xsanNodeTable_entry *entry = xsanNodeTable_head;
+   while (entry)
+   {
+     if (entry->last_seen_in_cvlabel == now.tv_sec)
+     {
+       /* Entry is visible */
+       entry->xsanNodeVisible = 1;
+     }
+     else
+     {
+       /* Entry is obsolete, mark it as not visible */
+       entry->xsanNodeVisible = 0;
+     }
+     entry = entry->next;
+   }
+
+   /* Update cache timestamp */
+   gettimeofday(&nodelist_cache_timestamp, NULL);
+
+   /* Clean up */
+   free (data);
+   data = NULL;
+   data_len = 0;
 }
 
 void update_node_list_if_necessary()
 {
   struct timeval now;
   gettimeofday (&now, NULL);
-  if (now.tv_sec - nodelist_cache_timestamp.tv_sec > MAX_CACHE_AGE) update_node_list()
+  if (now.tv_sec - nodelist_cache_timestamp.tv_sec > MAX_CACHE_AGE) update_node_list();
 }
 
 void update_node_list_detail()
@@ -285,6 +432,95 @@ void update_node_list_detail()
    * This is only done if the cache of detailed data is invalidated due 
    * to a new node being discovered
    */
+
+   struct timeval now;
+   gettimeofday (&now, NULL);
+
+   char *data = x_command_run("cvadmin -e 'fsmlist'", 0);
+   if (!data) return;
+   size_t data_len = strlen(data);
+
+   // Debug
+   // int fd;
+   // fd = open ("../examples/cvlabel_detail_example.txt", O_RDONLY);
+   // char *data = malloc (65536);
+   // size_t data_len =  read (fd, data, 65535);
+   // data[data_len] = '\0';     
+   // close (fd);
+
+   const char *error;
+   int erroffset;
+   int ovector[OVECCOUNT];
+   pcre *re = pcre_compile("^/dev[^ ]+ \\[.*\\] [^ ]+ \\\"([^\\\"]*)\\\"[ ]*Controller \\'([^\\']+)\\',[ ]*Serial \\'([^\\']+)\\',.*$", PCRE_MULTILINE, &error, &erroffset, NULL);
+
+   if (re == NULL) { x_printf ("ERROR: update_node_list_detail failed to compile regex"); free (data); return; }
+
+   ovector[0] = 0;
+   ovector[1] = 0;
+   while(1)
+   {
+     int options = 0;                 /* Normally no options */
+     int start_offset = ovector[1];   /* Start at end of previous match */
+
+     if (ovector[0] == ovector[1])
+     {
+       if (ovector[0] == (int)data_len) break;
+     }
+
+     int rc = pcre_exec( re,                   /* the compiled pattern */
+                          NULL,                 /* no extra data - we didn't study the pattern */
+                          data,              /* the subject string */
+                          data_len,       /* the length of the subject */
+                          start_offset,         /* starting offset in the subject */
+                          options,              /* options */
+                          ovector,              /* output vector for substring information */
+                          OVECCOUNT);           /* number of elements in the output vector */
+
+     if (rc == PCRE_ERROR_NOMATCH)
+     {
+       if (options == 0) break;
+       ovector[1] = start_offset + 1;
+       continue;    /* Go round the loop again */
+     }
+
+     /* Other matching errors are not recoverable. */
+     if (rc > 0)
+     {
+       /* Matched an Xsan Volume. Vectors:
+        * 0=FullString 1(2)=NodeName 2(4)=Controller 3(6)=Serial
+       */
+       char *nodename_str;
+       asprintf (&nodename_str, "%.*s", ovector[3] - ovector[2], data + ovector[2]);
+       trim_end(nodename_str);
+
+       struct xsanNodeTable_entry *entry = xsanNodeTable_head;
+       while (entry)
+       {
+         if (!strcmp(nodename_str, entry->xsanNodeName)) break;
+         entry = entry->next;
+       }
+       if (entry)
+       {
+         extract_string_in_range (data + ovector[4], ovector[5] - ovector[4], &entry->xsanNodeController, &entry->xsanNodeController_len);
+         extract_string_in_range (data + ovector[6], ovector[7] - ovector[6], &entry->xsanNodeSerial, &entry->xsanNodeSerial_len);
+       }
+       
+       free (nodename_str);
+       nodename_str = NULL;
+     }
+     else
+     {
+       pcre_free(re);    /* Release memory used for the compiled pattern */
+       return;
+     }  
+   }
+
+   pcre_free(re);    /* Release memory used for the compiled pattern */
+
+   /* Clean up */
+   free (data);
+   data = NULL;
+   data_len = 0;
 }
 
 void update_node_list_detail_if_necessary()
@@ -306,12 +542,16 @@ xsanNodeTable_handler(
     netsnmp_table_request_info *table_info;
     struct xsanNodeTable_entry          *table_entry;
 
+    update_node_list_if_necessary();
+    update_node_list_detail_if_necessary();
+
     switch (reqinfo->mode) {
-        /*
-         * Read-support (also covers GetNext requests)
-         */
-    case MODE_GET:
-        for (request=requests; request; request=request->next) {
+      /*
+       * Read-support (also covers GetNext requests)
+       */
+      case MODE_GET:
+          for (request=requests; request; request=request->next) 
+          {
             table_entry = (struct xsanNodeTable_entry *)
                               netsnmp_extract_iterator_context(request);
             table_info  =     netsnmp_extract_table_info(      request);
@@ -336,25 +576,121 @@ xsanNodeTable_handler(
                                  (u_char*)table_entry->xsanNodeName,
                                           table_entry->xsanNodeName_len);
                 break;
-            case COLUMN_XSANNODECONTROLLERWWN:
+            case COLUMN_XSANNODECONTROLLER:
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                 (u_char*)table_entry->xsanNodeControllerWWN,
-                                          table_entry->xsanNodeControllerWWN_len);
+                                 (u_char*)table_entry->xsanNodeController,
+                                          table_entry->xsanNodeController_len);
                 break;
-            case COLUMN_XSANNODEWWN:
+            case COLUMN_XSANNODESERIAL:
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                 (u_char*)table_entry->xsanNodeWWN,
-                                          table_entry->xsanNodeWWN_len);
+                                 (u_char*)table_entry->xsanNodeSerial,
+                                          table_entry->xsanNodeSerial_len);
+                break;
+            case COLUMN_XSANNODEGUID:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                 (u_char*)table_entry->xsanNodeGUID,
+                                          table_entry->xsanNodeGUID_len);
+                break;
+            case COLUMN_XSANNODEDEVICE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                 (u_char*)table_entry->xsanNodeDevice,
+                                          table_entry->xsanNodeDevice_len);
+                break;
+            case COLUMN_XSANNODEDEVICELABEL:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                 (u_char*)table_entry->xsanNodeDeviceLabel,
+                                          table_entry->xsanNodeDeviceLabel_len);
+                break;
+            case COLUMN_XSANNODEFSTYPE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                 (u_char*)table_entry->xsanNodeFSType,
+                                          table_entry->xsanNodeFSType_len);
+                break;
+            case COLUMN_XSANNODESECTORSIZE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanNodeSectorSize);
+                break;
+            case COLUMN_XSANNODESECTORS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_COUNTER64,
+                                 (u_char*)&table_entry->xsanNodeSectors,
+                                          sizeof(U64));
+                break;
+            case COLUMN_XSANNODEMAXSECTORS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_COUNTER64,
+                                 (u_char*)&table_entry->xsanNodeMaxSectors,
+                                          sizeof(U64));
+                break;
+            case COLUMN_XSANNODEKSECTORS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanNodeKSectors);
+                break;
+            case COLUMN_XSANNODEMAXKSECTORS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanNodeMaxKSectors);
+                break;
+            case COLUMN_XSANNODEVISIBLE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->xsanNodeVisible);
                 break;
             default:
                 netsnmp_set_request_error(reqinfo, request,

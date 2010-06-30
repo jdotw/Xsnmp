@@ -1,0 +1,20 @@
+
+Searching for acfs disk volume headers.
+
+
+	................
+
+ Scanned 12 devices, reading labels
+
+/dev/rdisk0 [Promise VTrak E610f     1006] acfs-EFI "GD03_MD"  Controller 'default', Serial '2239000155F488CA', Sector Size 512, Sectors 1464824799 (698.5GB), GUID df910416-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk2 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_01"  Controller 'default', Serial '2239000155F488CA', Sector Size 512, Sectors 1464824799 (698.5GB), GUID df910416-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk7 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_02"  Controller 'default', Serial '223D0001552074AB', Sector Size 512, Sectors 1464824799 (698.5GB), GUID df7fdfa6-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk9 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_03"  Controller 'default', Serial '2271000155F2F31B', Sector Size 512, Sectors 11718729183 (5.5TB), GUID df87211c-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk6 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_04"  Controller 'default', Serial '223D0001552074AB', Sector Size 512, Sectors 1464824799 (698.5GB), GUID df7fdfa6-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk11 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_05"  Controller 'default', Serial '22090001552D7CFE', Sector Size 512, Sectors 1464824799 (698.5GB), GUID df727744-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk12 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_06"  Controller 'default', Serial '22090001552D7CFE', Sector Size 512, Sectors 1464824799 (698.5GB), GUID df727744-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk10 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_07"  Controller 'default', Serial '2201000155D6B7EF', Sector Size 512, Sectors 11718729183 (5.5TB), GUID df6919d8-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk14 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_08"  Controller 'default', Serial '222A0001551DC814', Sector Size 512, Sectors 1464824799 (698.5GB), GUID dfa2be18-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk13 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_10"  Controller 'default', Serial '222A0001551DC814', Sector Size 512, Sectors 1464824799 (698.5GB), GUID dfa2be18-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk1 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_11"  Controller 'default', Serial '22F30001558FEC37', Sector Size 512, Sectors 11718729183 (5.5TB), GUID df661fe4-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]
+/dev/rdisk8 [Promise VTrak E610f     1006] acfs-EFI "GD03_LUN_55"  Controller 'default', Serial '2247000155FB756E', Sector Size 512, Sectors 11718729183 (5.5TB), GUID df98e92e-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46]

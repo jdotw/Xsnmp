@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/time.h>
 
 #include "log.h"
 #include "command.h"
@@ -17,19 +18,24 @@ char* x_command_run (char *command_str, int flags)
   int num;
   int fd1[2], fd2[2];
   pid_t pid;
+  struct timeval start;
+  
+  gettimeofday(&start, NULL);
 
   num = pipe(fd1);
   if (num == -1) 
-  { x_printf ("x_command_run failed to create fd1 pipe"); return NULL; }
+  { x_printf ("ERROR: x_command_run failed to create fd1 pipe"); return NULL; }
   
   num = pipe(fd2);
   if (num == -1) 
-  { x_printf ("x_command_run failed to create fd2 pipe"); return NULL; }
+  { x_printf ("ERROR: x_command_run failed to create fd2 pipe"); return NULL; }
+
+  x_perflog ("PERF: x_command_run running '%s'", command_str);
 
   pid = fork ();
   if (pid == -1)
-  { x_printf ("x_command_run failed to fork"); return NULL; }
-
+  { x_printf ("ERROR: x_command_run failed to fork"); return NULL; }
+  
   if (pid > 0)
   {
     /* Parent process, listen for response from fd2[0] */
@@ -107,6 +113,11 @@ char* x_command_run (char *command_str, int flags)
       recvdata_len++;     
     }
     
+    /* Perf logging */
+    struct timeval end;
+    gettimeofday(&end, NULL);
+    x_perflog ("PERF: x_command_run took %lu.%u to run '%s'", (end.tv_sec - start.tv_sec), (end.tv_usec - start.tv_usec), command_str);
+    
     /* Finished receive */
     return recvdata;
   }
@@ -129,7 +140,10 @@ char* x_command_run (char *command_str, int flags)
       close(fd2[1]);
     } 
     
-    num = execlp ("sh", "sh", "-c", command_str, NULL);
+    char *redir_command_str;
+    asprintf (&redir_command_str, "%s 2>&1", command_str);
+    num = execlp ("sh", "sh", "-c", redir_command_str, NULL);
+    free (redir_command_str);
     if (num == -1)
     {
       fprintf (stdout, "execlp error");

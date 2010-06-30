@@ -28,6 +28,14 @@ void x_printf (char *format, ...)
   va_end (ap);
 }
 
+void x_perflog (char *format, ...)
+{
+  // va_list ap;
+  // va_start (ap, format);
+  // x_vaprintf (format, ap);
+  // va_end (ap);
+}
+
 void x_vaprintf (char *format, va_list ap)
 {
   int pid;

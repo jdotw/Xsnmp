@@ -1,0 +1,20 @@
+
+Searching for acfs disk volume headers.
+
+
+	................
+
+ Scanned 12 devices, reading labels
+
+/dev/rdisk0 [Promise VTrak E610f     1006] acfs "GD03_MD"  Sectors: 1464824799. SectorSize: 512.  Maximum sectors: 1464824799. GUID df910416-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk2 [Promise VTrak E610f     1006] acfs "GD03_LUN_01"  Sectors: 1464824799. SectorSize: 512.  Maximum sectors: 1464824799. GUID df910416-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk7 [Promise VTrak E610f     1006] acfs "GD03_LUN_02"  Sectors: 1464824799. SectorSize: 512.  Maximum sectors: 1464824799. GUID df7fdfa6-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk9 [Promise VTrak E610f     1006] acfs "GD03_LUN_03"  Sectors: 11718729183. SectorSize: 512.  Maximum sectors: 11718729183. GUID df87211c-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk6 [Promise VTrak E610f     1006] acfs "GD03_LUN_04"  Sectors: 1464824799. SectorSize: 512.  Maximum sectors: 1464824799. GUID df7fdfa6-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk11 [Promise VTrak E610f     1006] acfs "GD03_LUN_05"  Sectors: 1464824799. SectorSize: 512.  Maximum sectors: 1464824799. GUID df727744-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk12 [Promise VTrak E610f     1006] acfs "GD03_LUN_06"  Sectors: 1464824799. SectorSize: 512.  Maximum sectors: 1464824799. GUID df727744-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk10 [Promise VTrak E610f     1006] acfs "GD03_LUN_07"  Sectors: 11718729183. SectorSize: 512.  Maximum sectors: 11718729183. GUID df6919d8-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk14 [Promise VTrak E610f     1006] acfs "GD03_LUN_08"  Sectors: 1464824799. SectorSize: 512.  Maximum sectors: 1464824799. GUID dfa2be18-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk13 [Promise VTrak E610f     1006] acfs "GD03_LUN_10"  Sectors: 1464824799. SectorSize: 512.  Maximum sectors: 1464824799. GUID dfa2be18-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk1 [Promise VTrak E610f     1006] acfs "GD03_LUN_11"  Sectors: 11718729183. SectorSize: 512.  Maximum sectors: 11718729183. GUID df661fe4-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].
+/dev/rdisk8 [Promise VTrak E610f     1006] acfs "GD03_LUN_55"  Sectors: 11718729183. SectorSize: 512.  Maximum sectors: 11718729183. GUID df98e92e-2730-11df-95fd-002436f43246 [Wed Mar  3 17:54:30 2010 00:24:36:f4:32:46].

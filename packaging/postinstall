@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Link launch daemon into place
+ln -s /Library/Xsnmp/XsnmpAgentExtension.app/Resources/com.xsnmp.xsnmp-agentx.plist /Library/LaunchDaemons
+

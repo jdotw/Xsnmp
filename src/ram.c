@@ -42,7 +42,7 @@ void scale_value(char unit_char, uint32_t *val)
       *val *= 1024 * 1024;
       break;      
     default:
-      x_printf ("update_ram unknown unit '%c'", unit_char); 
+      x_printf ("ERROR: scale_value unknown unit '%c'", unit_char); 
   }
 }
 
@@ -56,7 +56,7 @@ void match_and_scale (char *data, size_t data_len, char *type_str, uint32_t *val
   asprintf(&match_str, "\\b(\\d+)([KMGT]) %s[,\\.]", type_str);
   pcre *re = pcre_compile(match_str, 0, &error, &erroffset, NULL);
   free (match_str);
-  if (re == NULL) { x_printf ("update_ram failed to compile regex for wired"); return; }
+  if (re == NULL) { x_printf ("ERROR: match_and_scale failed to compile regex"); return; }
   
   int rc = pcre_exec(re, NULL, data, data_len, 0, 0, ovector, OVECCOUNT);
   if (rc > 2)  
@@ -67,7 +67,7 @@ void match_and_scale (char *data, size_t data_len, char *type_str, uint32_t *val
     scale_value (*(data + ovector[4]), &ram_cache.wired);
     free (value_str);
   }
-  else x_printf ("update_ram got no match for %s", type_str);
+  else x_printf ("ERROR: match_and_scale got no match for %s", type_str);
   
   pcre_free(re);    /* Release memory used for the compiled pattern */
 }

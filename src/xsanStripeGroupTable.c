@@ -148,7 +148,7 @@ void update_stripegroups (char *data, size_t data_len, long xsanVolumeIndex)
      int ovector[OVECCOUNT];
      pcre *re = pcre_compile("\\n(Stripe Group \\d+ (?:[^\\n]+\\n)+)", 0, &error, &erroffset, NULL);
 
-     if (re == NULL) { x_printf ("update_stripegroups failed to compile regex"); return; }
+     if (re == NULL) { x_printf ("ERROR: update_stripegroups failed to compile regex"); return; }
 
      ovector[0] = 0;
      ovector[1] = 0;
@@ -172,11 +172,8 @@ void update_stripegroups (char *data, size_t data_len, long xsanVolumeIndex)
                              ovector,              /* output vector for substring information */
                              OVECCOUNT);           /* number of elements in the output vector */
                          
-         x_printf ("update_stripegroups rc=%i", rc);
-
          if (rc == PCRE_ERROR_NOMATCH)
          {
-             x_printf ("update_stripegroups No match");
              if (options == 0) break;
              ovector[1] = start_offset + 1;
              continue;    /* Go round the loop again */
@@ -246,14 +243,13 @@ void update_stripegroups (char *data, size_t data_len, long xsanVolumeIndex)
              entry->xsanStripeGroupFreeMBytes = blockSize * entry->xsanStripeGroupFreeKBlocks;
              entry->xsanStripeGroupUsedMBytes = blockSize * (entry->xsanStripeGroupTotalKBlocks - entry->xsanStripeGroupFreeKBlocks);
              
-             update_nodes(stripegroup_data, stripegroup_data_len, entry->xsanVolumeIndex, entry->xsanStripeGroupIndex);
+             update_nodes_for_stripe_group(stripegroup_data, stripegroup_data_len, entry->xsanVolumeIndex, entry->xsanStripeGroupIndex);
              
              free (stripegroup_data);
              stripegroup_data = NULL;          
          }
          else
          {
-             x_printf("Matching error %d\n", rc);
              pcre_free(re);    /* Release memory used for the compiled pattern */
              return;
          }  
