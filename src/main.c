@@ -27,6 +27,10 @@ stop_server(UNUSED int a) {
     netsnmp_running = 0;
 }
 
+static int static_xsan_debug = 0;
+int xsan_debug() 
+{ return static_xsan_debug; }
+
 static void
 usage(const char *prog)
 {
@@ -77,7 +81,7 @@ main (int argc, char **argv)
   char* cp = NULL;
   int dont_fork = 0, do_help = 0;
 
-  while ((arg = getopt(argc, argv, "dD:fhHL:"
+  while ((arg = getopt(argc, argv, "dD:fhHL:X"
 #ifndef DISABLE_MIB_LOADING
                        "m:M:"
 #endif /* DISABLE_MIB_LOADING */
@@ -99,6 +103,10 @@ main (int argc, char **argv)
 
     case 'f':
       dont_fork = 1;
+      break;
+
+    case 'X':
+      static_xsan_debug = 1;
       break;
 
     case 'h':

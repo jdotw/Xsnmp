@@ -116,7 +116,11 @@ xsanVolumeFSSIndex OBJECT-TYPE
 ::= { xsanVolumeEntry 3 }
 
 xsanVolumeState OBJECT-TYPE
-    SYNTAX  Integer32
+    SYNTAX  Integer32 {
+        Registered (1), 
+        Stopped (2),
+        Unknown (0)
+    }
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
@@ -727,6 +731,15 @@ xsanNodeVisible OBJECT-TYPE
     DESCRIPTION
     "Indicates whether the Node is shown in the output from cvlabel"
 ::= { xsanNodeEntry 16 }
+
+xsanNodeSize OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The size of the the Node calculated from the sectors and sector size in Megabytes"
+::= { xsanNodeEntry 17 }
 
 
 -- Xsan Affinities

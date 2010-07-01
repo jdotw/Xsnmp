@@ -12,6 +12,7 @@
 #include "log.h"
 #include "util.h"
 #include "command.h"
+#include "main.h"
 
 #define OVECCOUNT 90
 
@@ -53,7 +54,7 @@ initialize_table_xsanNodeTable(void)
                          ASN_INTEGER,  /* index: xsanNodeIndex */
                          0);
   table_info->min_column = COLUMN_XSANNODEINDEX;
-  table_info->max_column = COLUMN_XSANNODEVISIBLE;
+  table_info->max_column = COLUMN_XSANNODESIZE;
   
   iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
   iinfo->get_first_data_point = xsanNodeTable_get_first_data_point;
@@ -95,6 +96,7 @@ struct xsanNodeTable_entry
   u_long xsanNodeKSectors;
   u_long xsanNodeMaxKSectors;
   long xsanNodeVisible;
+  u_long xsanNodeSize;
   
   /* Obsolescence */
   time_t last_seen_in_stripe_group;
@@ -296,17 +298,25 @@ void update_node_list ()
    struct timeval now;
    gettimeofday (&now, NULL);
 
-   char *data = x_command_run("cvadmin -e 'fsmlist'", 0);
-   if (!data) return;
-   size_t data_len = strlen(data);
-
-   // Debug
-   // int fd;
-   // fd = open ("../examples/cvlabel_example.txt", O_RDONLY);
-   // char *data = malloc (65536);
-   // size_t data_len =  read (fd, data, 65535);
-   // data[data_len] = '\0';     
-   // close (fd);
+   char *data = NULL;
+   size_t data_len = 0;
+   if (xsan_debug())
+   {
+     /* Use example Xsan data */
+     int fd;
+     fd = open ("../examples/cvlabel_example.txt", O_RDONLY);
+     data = malloc (65536);
+     data_len =  read (fd, data, 65535);
+     data[data_len] = '\0';     
+     close (fd);     
+   }
+   else
+   {
+     /* Use live Xsan data */
+     data = x_command_run("cvadmin -e 'fsmlist'", 0);
+     if (!data) return;
+     data_len = strlen(data);     
+   }
 
    const char *error;
    int erroffset;
@@ -377,6 +387,8 @@ void update_node_list ()
        
          entry->xsanNodeKSectors = scale_U64_to_K(&entry->xsanNodeSectors);
          entry->xsanNodeMaxKSectors = scale_U64_to_K(&entry->xsanNodeMaxSectors);
+         
+         entry->xsanNodeSize = (entry->xsanNodeKSectors / 1000) * entry->xsanNodeSectorSize;
        }
        
        free (nodename_str);
@@ -691,6 +703,15 @@ xsanNodeTable_handler(
                 }
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
                                             table_entry->xsanNodeVisible);
+                break;
+            case COLUMN_XSANNODESIZE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
+                                            table_entry->xsanNodeSize);
                 break;
             default:
                 netsnmp_set_request_error(reqinfo, request,
