@@ -98,7 +98,6 @@ char* extract_string_from_regex (char *data, size_t data_len, char *expression, 
     *dest_len = strlen (*dest);
     trim_end(*dest);
   }
-  else x_printf ("ERROR: extract_string_from_regex got no match for '%s' (rc=%i)", expression, rc);
   
   pcre_free(re);    /* Release memory used for the compiled pattern */
   
@@ -127,8 +126,8 @@ int extract_boolean_from_regex (char *data, size_t data_len, char *expression)
 
 uint32_t scale_U64_to_K (U64 *val)
 {
-  unsigned long long raw = ((unsigned long long) val->high << 32) + val->low;
-  return (uint32_t) raw / 1000;
+  unsigned long long raw = (((unsigned long long) val->high) << 32) + val->low;
+  return (uint32_t) (raw / 1000ULL);
 }
 
 void trim_end (char *str)
@@ -144,7 +143,7 @@ void trim_end (char *str)
 U64 sum_U64 (U64 x, U64 y)
 {
     unsigned long long xull = x.low + ((unsigned long long) x.high << 32);
-    unsigned long long yull = y.low + ((unsigned long long) y.high << 32);   
+    unsigned long long yull = y.low + (((unsigned long long) y.high) << 32);   
     U64 result;
     result.low  =  (xull + yull) & 0x00000000ffffffffLL;
     result.high = ((xull + yull) & 0xffffffff00000000LL) >> 32;

@@ -29,6 +29,7 @@ Netsnmp_Next_Data_Point   xsanNodeTable_get_next_data_point;
  #define COLUMN_XSANNODEKSECTORS		14
  #define COLUMN_XSANNODEMAXKSECTORS		15
  #define COLUMN_XSANNODEVISIBLE 16
+ #define COLUMN_XSANNODESIZE 17
        
 #endif /* XSANNODETABLE_H */
 

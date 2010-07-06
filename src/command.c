@@ -24,7 +24,7 @@ char* x_command_run (char *command_str, int flags)
 
   num = pipe(fd1);
   if (num == -1) 
-  { x_printf ("ERROR: x_command_run failed to create fd1 pipe"); return NULL; }
+  { x_printf ("ERROR: x_command_run failed to create fd1 pipe (%s)", strerror(errno)); return NULL; }
   
   num = pipe(fd2);
   if (num == -1) 
@@ -34,7 +34,7 @@ char* x_command_run (char *command_str, int flags)
 
   pid = fork ();
   if (pid == -1)
-  { x_printf ("ERROR: x_command_run failed to fork"); return NULL; }
+  { x_printf ("ERROR: x_command_run failed to fork '%s'", strerror(errno)); return NULL; }
   
   if (pid > 0)
   {
@@ -117,6 +117,13 @@ char* x_command_run (char *command_str, int flags)
     struct timeval end;
     gettimeofday(&end, NULL);
     x_perflog ("PERF: x_command_run took %lu.%u to run '%s'", (end.tv_sec - start.tv_sec), (end.tv_usec - start.tv_usec), command_str);
+    
+    /* Clean */
+    close(fd1[1]);
+    close(fd2[0]);
+    
+    /* Call waitpid */
+    waitpid (-1, NULL, WNOHANG);
     
     /* Finished receive */
     return recvdata;

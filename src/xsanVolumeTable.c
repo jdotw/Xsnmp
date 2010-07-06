@@ -13,6 +13,7 @@
 #include "command.h"
 #include "xsanVolumeTable.h"
 #include "xsanStripeGroupTable.h"
+#include "main.h"
 
 static struct timeval vollist_cache_timestamp = { 0, 0 };
 static int last_index_used = 0;
@@ -204,17 +205,24 @@ void update_vollist ()
   struct timeval now;
   gettimeofday (&now, NULL);
 
-  char *data = x_command_run("cvadmin -e 'fsmlist'", 0);
-  if (!data) return;
-  size_t data_len = strlen(data);
+  char *data = NULL;
+  size_t data_len = 0;
+  if (xsan_debug())
+  {
+    int fd;
+    fd = open ("../examples/fsmlist_example2.txt", O_RDONLY);
+    data = malloc (65536);
+    data_len = read (fd, data, 65535);
+    data[data_len] = '\0';     
+    close (fd);    
+  }
+  else
+  {
+    data = x_command_run("cvadmin -e 'fsmlist'", 0);
+    if (!data) return;
+    data_len = strlen(data);    
+  }
 
-  // Debug
-  // int fd;
-  // fd = open ("../examples/fsmlist_example2.txt", O_RDONLY);
-  // char *data = malloc (65536);
-  // size_t data_len =  read (fd, data, 65535);
-  // data[data_len] = '\0';     
-  // close (fd);
    
   const char *error;
   int erroffset;
@@ -342,19 +350,29 @@ void update_volume(struct xsanVolumeTable_entry *entry)
   struct timeval now;
   gettimeofday (&now, NULL);
 
-  char *command_str;
-  asprintf (&command_str, "echo 'select %s'; show long", entry->xsanVolumeName);
-  char *data = x_command_run(command_str, 0);
-  free (command_str);
-  if (!data) return;
-  size_t data_len = strlen(data);
+  char *data = NULL;
+  size_t data_len = 0;
+  if (xsan_debug())
+  {
+    /* Use example Xsan data */
+    int fd;
+    fd = open ("../examples/show_long_example_AM_01.txt", O_RDONLY);
+    data = malloc (65536);
+    data_len =  read (fd, data, 65536);
+    data[data_len] = '\0';    
+    close (fd);    
+  }
+  else
+  {
+    /* Use live Xsan data */
+    char *command_str;
+    asprintf (&command_str, "echo 'select %s'; show long", entry->xsanVolumeName);
+    data = x_command_run(command_str, 0);
+    free (command_str);
+    if (!data) return;
+    data_len = strlen(data);    
+  }
 
-  // int fd;
-  // fd = open ("../examples/show_long_example_AM_01.txt", O_RDONLY);
-  // char *data = malloc (65536);
-  // size_t data_len =  read (fd, data, 65536);
-  // data[data_len] = '\0';    
-  // close (fd);
   
   extract_string_from_regex (data, data_len, "^[ ]*Created[ ]*:[ \\t]+(.*)$", &entry->xsanVolumeCreated, &entry->xsanVolumeCreated_len);
   entry->xsanVolumeActiveConnections = extract_uint_from_regex (data, data_len, "^[ ]*Active Connections[ ]*:[ \\t]+(.*)$");
