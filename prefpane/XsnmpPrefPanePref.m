@@ -8,8 +8,23 @@
 
 #import "XsnmpPrefPanePref.h"
 
+static NSBundle *ourBundle;
 
 @implementation XsnmpPrefPanePref
+
++ (NSBundle *) bundle
+{
+	return ourBundle;
+}
+
+- (id) initWithBundle:(NSBundle *)bundle
+{
+	self = [super initWithBundle:bundle];
+	
+	ourBundle = bundle;
+	
+	return self;
+}
 
 - (void) mainViewDidLoad
 {

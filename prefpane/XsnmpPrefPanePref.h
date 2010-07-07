@@ -14,6 +14,7 @@
 
 }
 
++ (NSBundle *) bundle;
 - (void) mainViewDidLoad;
 
 @end

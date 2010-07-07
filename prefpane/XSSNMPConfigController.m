@@ -8,6 +8,7 @@
 
 #import "XSSNMPConfigController.h"
 
+#import "XSAuthenticatedCommand.h"
 
 @implementation XSSNMPConfigController
 
@@ -24,8 +25,14 @@
 		 *
 		 * - Move the current config out of the way (backup)
 		 * - Write out a new config based on settings/defaults 
+		 * - (Re-)start snmpd launch daemon
 		 */
-		
+		NSLog (@"Running command enable_config_managenent.rb");
+		NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:@"/Library/Preferences/com.xsnmp.xsnmp.plist"]
+		NSLog (@"Preferences is %@", [ objectForKey:@"foo"]);
+		[XSAuthenticatedCommand runScript:@"enable_config_managenent.rb" arguments:nil];
+		NSLog (@"Preferences is %@", [[NSDictionary dictionaryWithContentsOfFile:@"/Library/Preferences/com.xsnmp.xsnmp.plist"] objectForKey:@"foo"]);
+		[preferences writeToFile:@"/Library/Preferences/com.xsnmp.xsnmp.plist" atomically:YES];
 	}
 	else if (!manageConfig && previouslyManagingConfig)
 	{
@@ -33,6 +40,7 @@
 		 *
 		 * - Move current config out of the way (xsnmp-backup)
 		 * - Move old config back into place
+		 * - (Don't stop snmpd, let the user do that if they want)
 		 */
 		
 	}

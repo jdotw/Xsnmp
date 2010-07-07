@@ -15,8 +15,8 @@
 	BOOL agentExtensionEnabled;
 }
 
-@property (nonatomic, retain) BOOL manageConfig;
-@property (nonatomic, retain) BOOL agentExtensionEnabled;
+@property (nonatomic, assign) BOOL manageConfig;
+@property (nonatomic, assign) BOOL agentExtensionEnabled;
 
 
 @end
