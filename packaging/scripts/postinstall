@@ -1,5 +1,29 @@
 #!/bin/sh
 
 # Link launch daemon into place
-ln -s /Library/Xsnmp/XsnmpAgentExtension.app/Resources/com.xsnmp.xsnmp-agentx.plist /Library/LaunchDaemons
+if test -e /Library/LaunchDaemons/com.xsnmp.xsnmp-agentx.plist; then
+  echo "Leaving existing com.xsnmp.xsnmp-agentx.plist launchdaemon in place"
+else
+  ln -sf /Library/Xsnmp/XsnmpAgentExtension.app/Resources/com.xsnmp.xsnmp-agentx.plist /Library/LaunchDaemons/com.xsnmp.xsnmp-agentx.plist
+fi
+
+# Link preference pane into place
+rm -rf /Library/PreferencePanes/Xsnmp.prefPane
+mv /Library/Xsnmp/XsnmpAgentExtension.app/Resources/Xsnmp.prefPane /Library/PreferencePanes
+
+# Check to see if there's a default set for Xsnmp Agent Enabled 
+defaults read /Library/Preferences/com.xsnmp.xsnmp agentExtensionEnabled
+if test $? -eq "1"; then 
+  # No default is set, enable Xsnmp Agent Extension
+  echo "Enabling Xsnmp Agent Extension"
+  ruby /Library/PreferencePanes/Xsnmp.prefPane/Contents/Resources/enable_xsnmp_agentx.rb
+fi
+
+# Check for default SNMP community
+defaults read /Library/Preferences/com.xsnmp.xsnmp snmpCommunity
+if test $? -eq "1"; then 
+  # No default is set, use 'public' (this wont be active unless xsnmp is
+  # managing the SNMP agent config
+  defaults write /Library/Preferences/com.xsnmp.xsnmp snmpCommunity public
+fi
 

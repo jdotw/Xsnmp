@@ -11,3 +11,14 @@ make distclean
 
 sudo cp launchd/com.xsnmp.xsnmp-agentx.plist /Library/Xsnmp/XsnmpAgentExtension.app/Resources
 sudo cp packaging/Info.plist /Library/Xsnmp/XsnmpAgentExtension.app/Contents 
+
+cd prefpane
+xcodebuild -configuration Release clean
+xcodebuild -configuration Release build
+cd ..
+
+sudo cp -r prefpane/build/release/Xsnmp.prefPane /Library/Xsnmp/XsnmpAgentExtension.app/Resources
+
+/Developer/usr/bin/packagemaker --doc "packaging/XsnmpInstaller.pmdoc" --out "packaging/Xsnmp Installer.pkg" --title "Xsnmp Installer"
+
+sudo rm -rf /Library/Xsnmp

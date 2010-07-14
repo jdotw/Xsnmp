@@ -275,6 +275,54 @@
 					</object>
 					<int key="connectionID">126</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: snmpCommunity</string>
+						<reference key="source" ref="91985919"/>
+						<reference key="destination" ref="57236764"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="91985919"/>
+							<reference key="NSDestination" ref="57236764"/>
+							<string key="NSLabel">value: snmpCommunity</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">snmpCommunity</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">129</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: manageConfig</string>
+						<reference key="source" ref="91985919"/>
+						<reference key="destination" ref="57236764"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="91985919"/>
+							<reference key="NSDestination" ref="57236764"/>
+							<string key="NSLabel">enabled: manageConfig</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">manageConfig</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">131</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: agentExtensionEnabled</string>
+						<reference key="source" ref="992319555"/>
+						<reference key="destination" ref="57236764"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="992319555"/>
+							<reference key="NSDestination" ref="57236764"/>
+							<string key="NSLabel">value: agentExtensionEnabled</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">agentExtensionEnabled</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">132</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -464,9 +512,9 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{964, 962}, {667, 261}}</string>
+					<string>{{432, 734}, {667, 261}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{964, 962}, {667, 261}}</string>
+					<string>{{432, 734}, {667, 261}}</string>
 					<integer value="1"/>
 					<integer value="1"/>
 					<string>{224.664, 10}</string>
@@ -502,7 +550,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">126</int>
+			<int key="maxID">132</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

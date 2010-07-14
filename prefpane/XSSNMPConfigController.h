@@ -13,10 +13,12 @@
 {
 	BOOL manageConfig;
 	BOOL agentExtensionEnabled;
+	NSString *snmpCommunity;
 }
 
 @property (nonatomic, assign) BOOL manageConfig;
 @property (nonatomic, assign) BOOL agentExtensionEnabled;
+@property (nonatomic, retain) NSString *snmpCommunity;
 
 
 @end

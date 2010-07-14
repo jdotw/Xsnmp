@@ -15,6 +15,11 @@
 		103218A211E3E22300A1DA23 /* xsnmp_helpertool.c in Sources */ = {isa = PBXBuildFile; fileRef = 103217EF11E3DCAC00A1DA23 /* xsnmp_helpertool.c */; };
 		10335DF711E3CAF500A4356D /* XSSNMPConfigController.h in Headers */ = {isa = PBXBuildFile; fileRef = 10335DF511E3CAF500A4356D /* XSSNMPConfigController.h */; };
 		10335DF811E3CAF500A4356D /* XSSNMPConfigController.m in Sources */ = {isa = PBXBuildFile; fileRef = 10335DF611E3CAF500A4356D /* XSSNMPConfigController.m */; };
+		109ED35211E439AD00795965 /* disable_config_management.rb in Resources */ = {isa = PBXBuildFile; fileRef = 109ED35111E439AD00795965 /* disable_config_management.rb */; };
+		109ED36A11E43AE900795965 /* enable_xsnmp_agentx.rb in Resources */ = {isa = PBXBuildFile; fileRef = 109ED36911E43AE900795965 /* enable_xsnmp_agentx.rb */; };
+		109ED36C11E43AF800795965 /* disable_xsnmp_agentx.rb in Resources */ = {isa = PBXBuildFile; fileRef = 109ED36B11E43AF800795965 /* disable_xsnmp_agentx.rb */; };
+		109ED3F111E5B5C600795965 /* update_config.rb in Resources */ = {isa = PBXBuildFile; fileRef = 109ED3F011E5B5C600795965 /* update_config.rb */; };
+		109ED41E11E731DF00795965 /* xsnmp_helper.rb in Resources */ = {isa = PBXBuildFile; fileRef = 109ED41D11E731DF00795965 /* xsnmp_helper.rb */; };
 		8D202CEA0486D31800D8A456 /* XsnmpPrefPane_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32DBCFA20370C41700C91783 /* XsnmpPrefPane_Prefix.pch */; };
 		8D202CEB0486D31800D8A456 /* XsnmpPrefPanePref.h in Headers */ = {isa = PBXBuildFile; fileRef = F506C03C013D9D7901CA16C8 /* XsnmpPrefPanePref.h */; };
 		8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
@@ -49,6 +54,11 @@
 		10335DF511E3CAF500A4356D /* XSSNMPConfigController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSSNMPConfigController.h; sourceTree = "<group>"; };
 		10335DF611E3CAF500A4356D /* XSSNMPConfigController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XSSNMPConfigController.m; sourceTree = "<group>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		109ED35111E439AD00795965 /* disable_config_management.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = disable_config_management.rb; sourceTree = "<group>"; };
+		109ED36911E43AE900795965 /* enable_xsnmp_agentx.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = enable_xsnmp_agentx.rb; sourceTree = "<group>"; };
+		109ED36B11E43AF800795965 /* disable_xsnmp_agentx.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = disable_xsnmp_agentx.rb; sourceTree = "<group>"; };
+		109ED3F011E5B5C600795965 /* update_config.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = update_config.rb; sourceTree = "<group>"; };
+		109ED41D11E731DF00795965 /* xsnmp_helper.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = xsnmp_helper.rb; sourceTree = "<group>"; };
 		32DBCFA20370C41700C91783 /* XsnmpPrefPane_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XsnmpPrefPane_Prefix.pch; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* Xsnmp.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Xsnmp.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,6 +150,11 @@
 			isa = PBXGroup;
 			children = (
 				102B4EB911E3F6DB0098C866 /* enable_config_managenent.rb */,
+				109ED35111E439AD00795965 /* disable_config_management.rb */,
+				109ED36911E43AE900795965 /* enable_xsnmp_agentx.rb */,
+				109ED36B11E43AF800795965 /* disable_xsnmp_agentx.rb */,
+				109ED3F011E5B5C600795965 /* update_config.rb */,
+				109ED41D11E731DF00795965 /* xsnmp_helper.rb */,
 			);
 			name = Scripts;
 			sourceTree = "<group>";
@@ -265,6 +280,11 @@
 				8D202CEE0486D31800D8A456 /* XsnmpPrefPanePref.tiff in Resources */,
 				8D202CEF0486D31800D8A456 /* XsnmpPrefPanePref.xib in Resources */,
 				102B4EBA11E3F6DB0098C866 /* enable_config_managenent.rb in Resources */,
+				109ED35211E439AD00795965 /* disable_config_management.rb in Resources */,
+				109ED36A11E43AE900795965 /* enable_xsnmp_agentx.rb in Resources */,
+				109ED36C11E43AF800795965 /* disable_xsnmp_agentx.rb in Resources */,
+				109ED3F111E5B5C600795965 /* update_config.rb in Resources */,
+				109ED41E11E731DF00795965 /* xsnmp_helper.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
