@@ -9,7 +9,7 @@ fi
 
 # Link preference pane into place
 rm -rf /Library/PreferencePanes/Xsnmp.prefPane
-mv /Library/Xsnmp/XsnmpAgentExtension.app/Resources/Xsnmp.prefPane /Library/PreferencePanes
+cp -r /Library/Xsnmp/XsnmpAgentExtension.app/Resources/Xsnmp.prefPane /Library/PreferencePanes
 
 # Check to see if there's a default set for Xsnmp Agent Enabled 
 defaults read /Library/Preferences/com.xsnmp.xsnmp agentExtensionEnabled

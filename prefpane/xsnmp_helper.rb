@@ -101,6 +101,39 @@ def update_config
 
 end
 
+def build_custom_installer
+  
+  # Read template config
+  config_template = File.new("/Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall.template", "r").read
+  
+  # Add custom actions to postinstall script
+  config_template << "\n\n# Xsnmp Custom Installer Actions\n"
+  
+  # Check for config management 
+  if @manageSnmpConfig == 1 then
+    config_template << "ruby /Library/PreferencePanes/Xsnmp.prefPane/Contents/Resources/xsnmp_helper.rb enable_config_management #{ARGV[1..ARGV.length] * ' '}\n"
+  else
+    config_template << "ruby /Library/PreferencePanes/Xsnmp.prefPane/Contents/Resources/xsnmp_helper.rb disable_config_management #{ARGV[1..ARGV.length] * ' '}\n"
+  end
+  
+  # Check for agent status 
+  if @agentExtensionEnabled == 1 then
+    config_template << "ruby /Library/PreferencePanes/Xsnmp.prefPane/Contents/Resources/xsnmp_helper.rb enable_xsnmp_agentx #{ARGV[1..ARGV.length] * ' '}\n"
+  else
+    config_template << "ruby /Library/PreferencePanes/Xsnmp.prefPane/Contents/Resources/xsnmp_helper.rb disable_xsnmp_agentx #{ARGV[1..ARGV.length] * ' '}\n"
+  end
+  
+  # Write actual postinstall file
+  f = File.new("/Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall", File::CREAT|File::TRUNC|File::RDWR, 0644)
+  f.write(config_template)
+  f.close	
+
+  # Build package
+  `/Developer/usr/bin/packagemaker --doc "/Library/Xsnmp/XsnmpAgentExtension.app/Resources/XsnmpInstaller.pmdoc" --out "#{ARGV[4]}" --title "Xsnmp Installer"`
+  
+end
+
+
 #
 # Main Executable
 #

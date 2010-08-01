@@ -35,7 +35,7 @@
 
 @property (nonatomic,assign) NSObject <XSAuthenticatedCommandDelegate> *delegate; 
 + (XSAuthenticatedCommand *) runScript:(NSString *)scriptName arguments:(NSArray *)arguments;
-- (void) runScript:(NSString *)scriptName arguments:(NSArray *)arguments;
+- (BOOL) runScript:(NSString *)scriptName arguments:(NSArray *)arguments;
 
 @end
 

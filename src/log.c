@@ -8,6 +8,7 @@
 #include <syslog.h>
 #include <dlfcn.h>
 
+#include "main.h"
 #include "log.h"
 
 void x_debug (char *format, ...)
@@ -30,10 +31,13 @@ void x_printf (char *format, ...)
 
 void x_perflog (char *format, ...)
 {
-  // va_list ap;
-  // va_start (ap, format);
-  // x_vaprintf (format, ap);
-  // va_end (ap);
+  if (xsan_perflog())
+  {
+    va_list ap;
+    va_start (ap, format);
+    x_vaprintf (format, ap);
+    va_end (ap);
+  }
 }
 
 void x_vaprintf (char *format, va_list ap)

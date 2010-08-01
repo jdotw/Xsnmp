@@ -9,16 +9,16 @@
 #import <Foundation/Foundation.h>
 
 
-@interface XSSNMPConfigController : NSObject 
+@interface XSSNMPConfigController : NSObject <NSAlertDelegate, NSOpenSavePanelDelegate>
 {
-	BOOL manageConfig;
-	BOOL agentExtensionEnabled;
+	NSNumber *manageConfig;
+	NSNumber *agentExtensionEnabled;
 	NSString *snmpCommunity;
 }
 
-@property (nonatomic, assign) BOOL manageConfig;
-@property (nonatomic, assign) BOOL agentExtensionEnabled;
-@property (nonatomic, retain) NSString *snmpCommunity;
-
+@property (nonatomic, copy) NSNumber *manageConfig;
+@property (nonatomic, copy) NSNumber *agentExtensionEnabled;
+@property (nonatomic, copy) NSString *snmpCommunity;
+- (IBAction) buildCustomInstallerClicked:(id)sender;
 
 @end

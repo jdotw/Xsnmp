@@ -20,9 +20,9 @@
 	if (!self) return nil;
 
 	NSDictionary *config = [NSMutableDictionary dictionaryWithContentsOfFile:kPreferencesFile];
-	manageConfig = [[config objectForKey:@"manageConfig"] intValue];
-	agentExtensionEnabled = [[config objectForKey:@"agentExtensionEnabled"] intValue];
-	snmpCommunity = [config objectForKey:@"snmpCommunity"];
+	manageConfig = [[config objectForKey:@"manageConfig"] copy];
+	agentExtensionEnabled = [[config objectForKey:@"agentExtensionEnabled"] copy];
+	snmpCommunity = [[config objectForKey:@"snmpCommunity"] copy];
 	
 	return self;
 }
@@ -31,17 +31,24 @@
 
 - (NSArray *) argumentsForScript
 {
-	return [NSArray arrayWithObjects:[NSString stringWithFormat:@"%i", manageConfig],
-			snmpCommunity, [NSString stringWithFormat:@"%i", agentExtensionEnabled], nil];
+	return [NSArray arrayWithObjects:[manageConfig description], snmpCommunity, [agentExtensionEnabled description], nil];
 }
 
-- (void) setManageConfig:(BOOL)value
+- (void) resetValueTimerCallback:(NSTimer *)timer
 {
-	BOOL previouslyManagingConfig = manageConfig;
-	BOOL scriptRan = NO;
-	manageConfig = value;
+	NSDictionary *userInfo = [timer userInfo];
+	NSLog (@"UserInfo is %@", userInfo);
+	NSLog (@"resetValueTimerCallback restoring %@ to %@", [userInfo objectForKey:@"key"], [userInfo objectForKey:@"value"]);
+	[self setValue:[userInfo objectForKey:@"value"] forKey:[userInfo objectForKey:@"key"]];
+}
+
+- (void) setManageConfig:(NSNumber *)value
+{
+	BOOL previouslyManagingConfig = [manageConfig boolValue];
+	BOOL resetValue = NO;
+	manageConfig = [value copy];
 	
-	if (manageConfig && !previouslyManagingConfig)
+	if ([manageConfig boolValue] && !previouslyManagingConfig)
 	{
 		/* Switch on config management
 		 *
@@ -49,9 +56,21 @@
 		 * - Write out a new config based on settings/defaults 
 		 * - (Re-)start snmpd launch daemon
 		 */
-		scriptRan = [XSAuthenticatedCommand runScript:@"enable_config_management" arguments:[self argumentsForScript]];
+		
+		NSLog (@"Swiching on!");
+		
+		if ([XSAuthenticatedCommand runScript:@"enable_config_management" arguments:[self argumentsForScript]])
+		{
+			resetValue = NO;
+			NSLog (@"Script did run");
+		}
+		else
+		{
+			resetValue = YES;
+			NSLog (@"Sript did NOT run");
+		}
 	}
-	else if (!manageConfig && previouslyManagingConfig)
+	else if (![manageConfig boolValue] && previouslyManagingConfig)
 	{
 		/* Switch off config management
 		 *
@@ -59,19 +78,42 @@
 		 * - Move old config back into place
 		 * - (Don't stop snmpd, let the user do that if they want)
 		 */
-		scriptRan = [XSAuthenticatedCommand runScript:@"disable_config_management" arguments:[self argumentsForScript]];		
+		
+		NSLog (@"Switching off");
+
+		if ([XSAuthenticatedCommand runScript:@"disable_config_management" arguments:[self argumentsForScript]])
+		{
+			resetValue = NO;
+			NSLog (@"Script did run");
+		}
+		else
+		{
+			resetValue = YES;
+			NSLog (@"Sript did NOT run");
+		}
 	}
 
-	if (!scriptRan) manageConfig = previouslyManagingConfig;
+	if (resetValue) 
+	{
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:previouslyManagingConfig], @"value", @"manageConfig", @"key", nil];
+		[NSTimer scheduledTimerWithTimeInterval:0.0
+										 target:self
+									   selector:@selector(resetValueTimerCallback:)
+									   userInfo:userInfo 
+										repeats:NO];		
+		[manageConfig release];
+		manageConfig = [[NSNumber numberWithBool:previouslyManagingConfig] copy];
+		NSLog (@"Restoring previous value");
+	}
 }
 
-- (void) setAgentExtensionEnabled:(BOOL)value;
+- (void) setAgentExtensionEnabled:(NSNumber *)value;
 {
-	BOOL previouslyEnabled = agentExtensionEnabled;
-	BOOL scriptRan = NO;
-	agentExtensionEnabled = value;
+	BOOL previouslyEnabled = [agentExtensionEnabled boolValue];
+	BOOL resetValue = NO;
+	agentExtensionEnabled = [value copy];
 	
-	if (agentExtensionEnabled && !previouslyEnabled)
+	if ([agentExtensionEnabled boolValue] && !previouslyEnabled)
 	{
 		/* Switch on agent extension 
 		 *
@@ -79,27 +121,127 @@
 		 * - (Re-)start snmpd laumch daemon
 		 * - (Re-)start xsnmp launch daemon
 		 */
-		scriptRan = [XSAuthenticatedCommand runScript:@"enable_xsnmp_agentx" arguments:[self argumentsForScript]];		
+		if ([XSAuthenticatedCommand runScript:@"enable_xsnmp_agentx" arguments:[self argumentsForScript]])
+		{
+			resetValue = NO;
+			NSLog (@"Script did run");
+		}
+		else
+		{
+			resetValue = YES;
+			NSLog (@"Sript did NOT run");
+		}
 	}
-	else if (!agentExtensionEnabled && previouslyEnabled)
+	else if (![agentExtensionEnabled boolValue] && previouslyEnabled)
 	{
 		/* Switch off the agent extension 
 		 *
 		 * - (Don't remove the agentx statement -- it might not be there just for us )
 		 * - Stop the xsnmp launch daemon 
 		 */
-		scriptRan = [XSAuthenticatedCommand runScript:@"disable_xsnmp_agentx" arguments:[self argumentsForScript]];				
+		if ([XSAuthenticatedCommand runScript:@"disable_xsnmp_agentx" arguments:[self argumentsForScript]])
+		{
+			resetValue = NO;
+			NSLog (@"Script did run");
+		}
+		else
+		{
+			resetValue = YES;
+			NSLog (@"Sript did NOT run");
+		}		
 	}
 
-	if (!scriptRan) agentExtensionEnabled = previouslyEnabled;
+	if (resetValue) 
+	{
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:previouslyEnabled], @"value", @"agentExtensionEnabled", @"key", nil];
+		[NSTimer scheduledTimerWithTimeInterval:0.0
+										 target:self
+									   selector:@selector(resetValueTimerCallback:)
+									   userInfo:userInfo 
+										repeats:NO];
+		[agentExtensionEnabled release];
+		agentExtensionEnabled = [[NSNumber numberWithBool:previouslyEnabled] retain];
+	}
 }
 
 - (void) setSnmpCommunity:(NSString *)value
 {
+	NSString *previousCommunity = [snmpCommunity copy];
 	[snmpCommunity release];
 	snmpCommunity = [value retain];
+	BOOL resetValue = NO;
 	
-	[XSAuthenticatedCommand runScript:@"update_config" arguments:[self argumentsForScript]];
+	if (![previousCommunity isEqualToString:snmpCommunity])
+	{
+		if ([XSAuthenticatedCommand runScript:@"update_config" arguments:[self argumentsForScript]])
+		{
+			resetValue = NO;
+		}
+		else
+		{
+			resetValue = YES;
+		}
+	}
+
+	if (resetValue)
+	{
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:previousCommunity, @"value", @"snmpCommunity", @"key", nil];
+		[NSTimer scheduledTimerWithTimeInterval:0.0
+										 target:self
+									   selector:@selector(resetValueTimerCallback:)
+									   userInfo:userInfo 
+										repeats:NO];
+		[snmpCommunity release];
+		snmpCommunity = [previousCommunity copy];	
+	}
+	
+	[previousCommunity release];
 }
+
+- (IBAction) buildCustomInstallerClicked:(id)sender
+{
+	/* Shown a sheet explaining what this does, 
+	 * then a file save dialog to choose where to
+	 * put the package. Then build is accordingly
+	 */
+	
+	NSAlert *alert = [NSAlert alertWithMessageText:@"Current Configuration Will Be Used"
+									 defaultButton:@"Create"
+								   alternateButton:@"Cancel"
+									   otherButton:nil
+						 informativeTextWithFormat:@"Xsnmp will create an Xsnmp installer package based on the current Xsnmp configuration this host.\n\nThe custom installer package can then be used to quickly deploy Xsnmp pre-configured on other hosts."];
+	[alert beginSheetModalForWindow:[NSApp mainWindow]
+					  modalDelegate:self
+					 didEndSelector:@selector(customInstallerAlertDidEnd:returnCode:contextInfo:)
+						contextInfo:nil];					  
+}
+
+- (void) customInstallerAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+{
+	if (returnCode == NSAlertDefaultReturn)
+	{
+		/* Proceed with save */
+		[[alert window] orderOut:nil];
+		NSSavePanel *savePanel = [NSSavePanel savePanel];
+		[savePanel beginSheetForDirectory:nil
+									 file:@"Xsnmp Custom Installer.pkg"
+						   modalForWindow:[NSApp mainWindow]
+							modalDelegate:self
+						   didEndSelector:@selector(customInstallerSavePanelDidEnd:returnCode:contextInfo:)
+							  contextInfo:nil];
+	}
+}
+
+- (void) customInstallerSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+{
+	if (returnCode == NSOKButton)
+	{
+		/* Create the package */
+		NSMutableArray *argsArray = [NSMutableArray arrayWithArray:[self argumentsForScript]];
+		[argsArray addObject:[sheet filename]];
+		[XSAuthenticatedCommand runScript:@"build_custom_installer" arguments:argsArray];
+	}
+}
+
 
 @end

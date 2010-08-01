@@ -10,6 +10,9 @@ make distclean
 ./bootstrap.sh && make && sudo make install
 
 sudo cp launchd/com.xsnmp.xsnmp-agentx.plist /Library/Xsnmp/XsnmpAgentExtension.app/Resources
+sudo cp -r packaging/XsnmpInstaller.pmdoc /Library/Xsnmp/XsnmpAgentExtension.app/Resources
+sudo cp -r packaging/scripts /Library/Xsnmp/XsnmpAgentExtension.app/Resources
+sudo cp /Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall.template /Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall
 sudo cp packaging/Info.plist /Library/Xsnmp/XsnmpAgentExtension.app/Contents 
 
 cd prefpane
@@ -19,6 +22,6 @@ cd ..
 
 sudo cp -r prefpane/build/release/Xsnmp.prefPane /Library/Xsnmp/XsnmpAgentExtension.app/Resources
 
-/Developer/usr/bin/packagemaker --doc "packaging/XsnmpInstaller.pmdoc" --out "packaging/Xsnmp Installer.pkg" --title "Xsnmp Installer"
+/Developer/usr/bin/packagemaker --doc "/Library/Xsnmp/XsnmpAgentExtension.app/Resources/XsnmpInstaller.pmdoc" --out "packaging/Xsnmp Installer.pkg" --title "Xsnmp Installer"
 
-sudo rm -rf /Library/Xsnmp
+#sudo rm -rf /Library/Xsnmp

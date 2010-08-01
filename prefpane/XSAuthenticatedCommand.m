@@ -22,8 +22,15 @@
 + (XSAuthenticatedCommand *) runScript:(NSString *)scriptName arguments:(NSArray *)arguments
 {
 	XSAuthenticatedCommand *authCommand = [[XSAuthenticatedCommand alloc] init];
-	[authCommand runScript:scriptName arguments:arguments];
-	return [authCommand autorelease];
+	if ([authCommand runScript:scriptName arguments:arguments]) 
+	{
+		return [authCommand autorelease];
+	}
+	else
+	{
+		[authCommand release];
+		return nil;
+	}
 }
 
 - (BOOL) runScript:(NSString *)scriptName arguments:(NSArray *)arguments

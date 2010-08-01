@@ -313,7 +313,7 @@ void update_node_list ()
    else
    {
      /* Use live Xsan data */
-     data = x_command_run("cvadmin -e 'fsmlist'", 0);
+     data = x_command_run("cvlabel -a -g -l -v", 0);
      if (!data) return;
      data_len = strlen(data);     
    }
@@ -448,17 +448,25 @@ void update_node_list_detail()
    struct timeval now;
    gettimeofday (&now, NULL);
 
-   char *data = x_command_run("cvadmin -e 'fsmlist'", 0);
-   if (!data) return;
-   size_t data_len = strlen(data);
-
-   // Debug
-   // int fd;
-   // fd = open ("../examples/cvlabel_detail_example.txt", O_RDONLY);
-   // char *data = malloc (65536);
-   // size_t data_len =  read (fd, data, 65535);
-   // data[data_len] = '\0';     
-   // close (fd);
+   char *data = NULL;
+   size_t data_len = 0;
+   if (xsan_debug())
+   {
+     /* Use example Xsan data */
+     int fd;
+     fd = open ("../examples/cvlabel_detail_example.txt", O_RDONLY);
+     data = malloc (65536);
+     data_len =  read (fd, data, 65535);
+     data[data_len] = '\0';
+     close (fd);
+   }
+   else
+   {
+     /* Use live Xsan data */
+     data = x_command_run("cvlabel -a -g -L -v", 0);
+     if (!data) return;
+     data_len = strlen(data);
+   }
 
    const char *error;
    int erroffset;
@@ -533,6 +541,9 @@ void update_node_list_detail()
    free (data);
    data = NULL;
    data_len = 0;
+
+   /* Set validity */
+   node_list_detail_invalid = 0;
 }
 
 void update_node_list_detail_if_necessary()

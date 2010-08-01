@@ -31,6 +31,10 @@ static int static_xsan_debug = 0;
 int xsan_debug() 
 { return static_xsan_debug; }
 
+static int static_xsan_perflog = 0;
+int xsan_perflog() 
+{ return static_xsan_perflog; }
+
 static void
 usage(const char *prog)
 {
@@ -63,7 +67,8 @@ usage(const char *prog)
 #endif /* DISABLE_MIB_LOADING */
     fprintf(stderr,
             "  -v\t\t\tdisplay package version number\n"
-            "  -x TRANSPORT\tconnect to master agent using TRANSPORT\n");
+            "  -x TRANSPORT\tconnect to master agent using TRANSPORT\n"
+            "  -p\t\t\tenable Xsnmp performance logging\n");
     exit(1);
 }
 
@@ -81,7 +86,7 @@ main (int argc, char **argv)
   char* cp = NULL;
   int dont_fork = 0, do_help = 0;
 
-  while ((arg = getopt(argc, argv, "dD:fhHL:X"
+  while ((arg = getopt(argc, argv, "dD:fhHL:Xp"
 #ifndef DISABLE_MIB_LOADING
                        "m:M:"
 #endif /* DISABLE_MIB_LOADING */
@@ -107,6 +112,10 @@ main (int argc, char **argv)
 
     case 'X':
       static_xsan_debug = 1;
+      break;
+
+    case 'p':
+      static_xsan_perflog = 1;
       break;
 
     case 'h':
