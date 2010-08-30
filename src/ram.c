@@ -64,7 +64,7 @@ void match_and_scale (char *data, size_t data_len, char *type_str, uint32_t *val
     char *value_str;
     asprintf (&value_str, "%.*s", ovector[3] - ovector[2], data + ovector[2]);
     *val = strtoul(value_str, NULL, 10);
-    scale_value (*(data + ovector[4]), &ram_cache.wired);
+    scale_value (*(data + ovector[4]), val);
     free (value_str);
   }
   else x_printf ("ERROR: match_and_scale got no match for %s", type_str);
