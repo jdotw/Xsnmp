@@ -1,0 +1,17 @@
+Xsan Administrator
+
+Enter command(s)
+For command help, enter "help" or "?".
+
+List FSS
+
+File System Services (* indicates service is in control of FS):
+ 1>*LenoSAN[1]           located on 10.0.0.11:49169 (pid 96)
+ 2>*LenoStor[1]          located on 10.0.0.11:49168 (pid 97)
+ 3> LenoStor[0]          located on 10.0.0.10:49184 (pid 106)
+ 4>*LenoSAN[0]           located on 10.0.0.10:49185 (pid 107)
+
+Select FSM "none"
+
+
+Xsanadmin> 

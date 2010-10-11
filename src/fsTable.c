@@ -177,6 +177,11 @@ void update_volume_disk (struct fsTable_entry *entry)
   asprintf (&command_str, "diskutil info %s", entry->fsFilesystem);
   char *data = x_command_run (command_str, 0);
   free(command_str);
+  if (!data) 
+  {
+    x_printf ("ERROR: Failed to get data from 'diskutil info %s'\n", entry->fsFilesystem);
+    return; 
+  }
   size_t data_len = strlen(data);
   
   entry->fsWriteable = !extract_boolean_from_regex(data, data_len, "Read-Only Volume:[ ]+(\\w+)$");

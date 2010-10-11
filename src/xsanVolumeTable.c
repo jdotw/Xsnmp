@@ -49,6 +49,9 @@ struct xsanVolumeTable_entry {
   u_long xsanVolumeCoreDumpCount;
   char *xsanVolumeFlags;
   size_t xsanVolumeFlags_len;
+  char *xsanVolumeControllerAddress;
+  size_t xsanVolumeControllerAddress_len;
+  u_long xsanVolumeLocalPrimaryMDC;
 
   /* From 'show long' */
   char *xsanVolumeCreated;
@@ -109,7 +112,7 @@ initialize_table_xsanVolumeTable(void)
                          ASN_INTEGER,  /* index: xsanVolumeIndex */
                          0);
   table_info->min_column = COLUMN_XSANVOLUMEINDEX;
-  table_info->max_column = COLUMN_XSANVOLUMEUSEDMBYTES;
+  table_info->max_column = COLUMN_XSANVOLUMELOCALPRIMARYMDC;
   
   iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
   iinfo->get_first_data_point = xsanVolumeTable_get_first_data_point;
@@ -200,8 +203,12 @@ xsanVolumeTable_get_next_data_point(void **my_loop_context,
   }
 }
 
-void update_vollist ()
+void update_vollist_fsmlist ()
 {
+  /* This function uses the output of the 'fsmlist' command
+   * to poll the list of avaiable volumes. It was found to not be 
+   * affective on Xsan clients and/or Xsan versions < 2.2
+   */
   struct timeval now;
   gettimeofday (&now, NULL);
 
@@ -337,6 +344,143 @@ void update_vollist ()
   data_len = 0;
 }
 
+void update_vollist_cvadmin ()
+{
+  /* This function updates the volume list by calling cvadmin with no command 
+   * line opitiosn and parses the basis list provided on launch
+   */
+  struct timeval now;
+  gettimeofday (&now, NULL);
+
+  char *data = NULL;
+  size_t data_len = 0;
+  if (xsan_debug())
+  {
+    int fd;
+    fd = open ("../examples/cvadmin_list_example1.txt", O_RDONLY);
+    data = malloc (65536);
+    data_len = read (fd, data, 65535);
+    data[data_len] = '\0';     
+    close (fd);    
+    x_debug ("Loaded %s\n", data);
+  }
+  else
+  {
+    data = x_command_run("echo q | cvadmin", 0);
+    if (!data) return;
+    data_len = strlen(data);    
+  }
+   
+  const char *error;
+  int erroffset;
+  int ovector[OVECCOUNT];
+  pcre *re = pcre_compile("^[ ]*(\\d*)\\>([\\* ])(\\w+)\\[\\d+\\][ ]*located on ([^\\:]+)\\:(\\d+)[ ]*\\(pid (\\d+)\\)$", PCRE_MULTILINE, &error, &erroffset, NULL);
+
+  if (re == NULL) { x_printf ("ERROR: update_vollist failed to compile regex"); free (data); return; }
+
+  ovector[0] = 0;
+  ovector[1] = 0;
+  while(1)
+  {
+    int options = 0;                 /* Normally no options */
+    int start_offset = ovector[1];   /* Start at end of previous match */
+
+    if (ovector[0] == ovector[1])
+    {
+      if (ovector[0] == (int)data_len) break;
+    }
+
+    int rc = pcre_exec( re,                   /* the compiled pattern */
+                         NULL,                 /* no extra data - we didn't study the pattern */
+                         data,              /* the subject string */
+                         data_len,       /* the length of the subject */
+                         start_offset,         /* starting offset in the subject */
+                         options,              /* options */
+                         ovector,              /* output vector for substring information */
+                         OVECCOUNT);           /* number of elements in the output vector */
+                         
+    if (rc == PCRE_ERROR_NOMATCH)
+    {
+      x_debug ("update_vollist_cvadmin no match found for regex");
+      if (options == 0) break;
+      ovector[1] = start_offset + 1;
+      continue;    /* Go round the loop again */
+    }
+
+    /* Other matching errors are not recoverable. */
+    if (rc > 0)
+    {
+      /* Matched an Xsan Volume. Vectors:
+       * 0=FullString 1(2)=Index 2(4)=Control 3(6)=Volume 4(8)=Address 5(10)=Port 6(12)=PID
+      */
+      
+      /* Get Volume Name */
+      char *volname_str;
+      asprintf (&volname_str, "%.*s", ovector[7] - ovector[6], data + ovector[6]);
+      trim_end(volname_str);
+      x_debug ("update_vollist_cvadmin Matched %.*s\n", ovector[7] - ovector[6], data + ovector[6]);      
+
+      /* Find/Create Volume Entry */
+      struct xsanVolumeTable_entry *entry = xsanVolumeTable_head;
+      while (entry)
+      {
+        if (!strcmp(volname_str, entry->xsanVolumeName)) break;
+        entry = entry->next;
+      }
+      if (!entry)
+      {
+        last_index_used++;
+        entry = xsanVolumeTable_createEntry(last_index_used);
+        entry->xsanVolumeName = strdup(volname_str);
+        entry->xsanVolumeName_len = strlen (entry->xsanVolumeName);
+      }
+      entry->last_seen = now.tv_sec;
+      free (volname_str);
+      volname_str = NULL;
+      
+      /* Extract Data from Regex Match */
+      entry->xsanVolumeFSSIndex = extract_uint_in_range (data + ovector[2], ovector[3] - ovector[2]);
+      entry->xsanVolumeLocalPrimaryMDC = extract_uint_in_range (data + ovector[4], ovector[5] - ovector[4]);
+      extract_string_in_range (data + ovector[8], ovector[9] - ovector[8], &entry->xsanVolumeControllerAddress, &entry->xsanVolumeControllerAddress_len);
+      entry->xsanVolumePort = extract_uint_in_range (data + ovector[10], ovector[11] - ovector[10]);
+      entry->xsanVolumePid = extract_uint_in_range (data + ovector[12], ovector[13] - ovector[12]);
+    }
+    else
+    {
+      pcre_free(re);    /* Release memory used for the compiled pattern */
+      return;
+    }  
+  }
+     
+  pcre_free(re);    /* Release memory used for the compiled pattern */
+
+  /* Check for obsolete entries */
+  struct xsanVolumeTable_entry *entry = xsanVolumeTable_head;
+  while (entry)
+  {
+    struct xsanVolumeTable_entry *next = entry->next;
+    if (entry->last_seen != now.tv_sec)
+    {
+      /* Entry is obsolete */
+      xsanVolumeTable_removeEntry(entry);
+    }
+    entry = next;
+  }
+
+  /* Update cache timestamp */
+  gettimeofday(&vollist_cache_timestamp, NULL);
+     
+  /* Clean up */
+  free (data);
+  data = NULL;
+  data_len = 0;
+}
+
+void update_vollist()
+{
+  update_vollist_cvadmin();
+}
+
 void update_vollist_if_necessry()
 {
   struct timeval now;
@@ -366,7 +510,7 @@ void update_volume(struct xsanVolumeTable_entry *entry)
   {
     /* Use live Xsan data */
     char *command_str;
-    asprintf (&command_str, "echo 'select %s'; show long", entry->xsanVolumeName);
+    asprintf (&command_str, "echo 'select %s; show long' | cvadmin", entry->xsanVolumeName);
     data = x_command_run(command_str, 0);
     free (command_str);
     if (!data) return;

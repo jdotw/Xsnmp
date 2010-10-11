@@ -16,12 +16,14 @@ sudo cp /Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall.tem
 sudo cp packaging/Info.plist /Library/Xsnmp/XsnmpAgentExtension.app/Contents 
 
 cd prefpane
+MVERS=`agvtool mvers | grep 'Found CFBundleShortVersionString' | sed 's/^[^\"]*\"//g' | sed 's/".*//g'`
+VERS=`agvtool vers | egrep '^[ ]*[0-9]+' | sed 's/^[ ]*//g'`
 xcodebuild -configuration Release clean
 xcodebuild -configuration Release build
 cd ..
 
 sudo cp -r prefpane/build/release/Xsnmp.prefPane /Library/Xsnmp/XsnmpAgentExtension.app/Resources
 
-/Developer/usr/bin/packagemaker --doc "/Library/Xsnmp/XsnmpAgentExtension.app/Resources/XsnmpInstaller.pmdoc" --out "packaging/Xsnmp Installer.pkg" --title "Xsnmp Installer"
+/Developer/usr/bin/packagemaker --doc "/Library/Xsnmp/XsnmpAgentExtension.app/Resources/XsnmpInstaller.pmdoc" --out "packaging/Xsnmp-Installer-$MVERS.pkg" --title "Xsnmp $MVERS Installer"
 
 #sudo rm -rf /Library/Xsnmp

@@ -9,7 +9,7 @@ IMPORTS
 
 lcorp MODULE-IDENTITY
 
-    LAST-UPDATED "201006110000Z"
+    LAST-UPDATED "201008300000Z"
 
     ORGANIZATION "LithiumCorp Pty Ltd"
     CONTACT-INFO "LithiumCorp Support
@@ -20,8 +20,8 @@ lcorp MODULE-IDENTITY
           E-mail: support@lithiumcorp.com"
     DESCRIPTION "Xsnmp MIB"
 
-    REVISION "201006110000Z"
-        DESCRIPTION "First release"
+    REVISION "201008300000Z"
+        DESCRIPTION "Add Xsan Controller Address and Primary MDC to Volume Table"
 ::= { enterprises 20038 }
 
 -- Structure
@@ -88,7 +88,9 @@ XsanVolumeEntry ::= SEQUENCE {
     xsanVolumePort                  Gauge32,
     xsanVolumeTotalMBytes           Gauge32,
     xsanVolumeFreeMBytes            Gauge32,
-    xsanVolumeUsedMBytes            Gauge32
+    xsanVolumeUsedMBytes            Gauge32,
+    xsanVolumeControllerAddress     DisplayString,
+    xsanVolumeLocalPrimaryMDC       Integer32
 }
 
 xsanVolumeIndex OBJECT-TYPE
@@ -313,7 +315,24 @@ xsanVolumeUsedMBytes OBJECT-TYPE
     "The number of used bytes divided by 1024 * 1024 (Megabytes)"
 ::= { xsanVolumeEntry 26 }
 
+xsanVolumeControllerAddress OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The IP Address of the metadata controller"
+::= { xsanVolumeEntry 27 }
 
+xsanVolumeLocalPrimaryMDC OBJECT-TYPE
+    SYNTAX  Integer32 {
+        Yes (1), 
+        No (0)
+    }
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Indicates whether the local host if the primary MDC for the Volume, that is, the local host is in control of the volume"
+::= { xsanVolumeEntry 28 }
 
 -- Xsan Storage Pools
 

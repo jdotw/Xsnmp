@@ -16,7 +16,7 @@ void x_debug (char *format, ...)
 #ifdef DEBUG
   va_list ap;
   va_start (ap, format);
-  x_vaprintf (0, format, ap);
+  x_vaprintf (format, ap);
   va_end (ap);
 #endif
 }
