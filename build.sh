@@ -7,7 +7,7 @@ $BASEDIR/util/pcre_build.sh
 cd $BASEDIR
 
 make distclean
-./bootstrap.sh && make && sudo make install
+./bootstrap_osx.sh && make && sudo make install
 
 sudo cp launchd/com.xsnmp.xsnmp-agentx.plist /Library/Xsnmp/XsnmpAgentExtension.app/Resources
 sudo cp -r packaging/XsnmpInstaller.pmdoc /Library/Xsnmp/XsnmpAgentExtension.app/Resources
