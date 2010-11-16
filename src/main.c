@@ -212,12 +212,20 @@ main (int argc, char **argv)
 
   /* initialize your mib code here */
   init_xsnmpInternal();
+
+  /* File Systems (Linux and Mac) */
   init_fsTable();
+
+  /* Xsan (Linux and Mac) */
   init_xsanVolumeTable();
   init_xsanStripeGroupTable();
   init_xsanNodeTable();
   init_xsanAffinityTable();
+
+  /* Ram (Mac Only) */
+#ifdef HOST_MACOSX
   init_ram();
+#endif
 
   /* yeehaw will be used to read yeehaw.conf files. */
   init_snmp("yeehaw");

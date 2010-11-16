@@ -292,7 +292,9 @@ void update_volumes()
       entry->fsUtilization = extract_uint_in_range(data + ovector[10], ovector[11] - ovector[10]);
       
       /* Update extra info on the disk from diskutil */
+#ifdef HOST_MACOSX
       if (entry->fsFilesystem && strstr(entry->fsFilesystem, "/dev/")) update_volume_disk(entry);
+#endif
     }
     else
     {
