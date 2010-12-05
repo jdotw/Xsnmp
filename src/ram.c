@@ -6,10 +6,12 @@
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
+#include <fcntl.h>
 #include <pcre.h>
 #include "log.h"
 #include "ram.h"
 #include "command.h"
+#include "main.h"
 
 struct ram_cache_s
 {
@@ -74,9 +76,26 @@ void match_and_scale (char *data, size_t data_len, char *type_str, uint32_t *val
 
 void update_ram()
 {
-  char *data = x_command_run("top -l 1 -n 0", 0);
+  char *data = NULL;
+  size_t data_len = 0;
+  if (xsan_debug())
+  {
+    /* Use example data */
+    int fd;
+    fd = open ("../examples/top.txt", O_RDONLY);
+    data = malloc (65536);
+    data_len =  read (fd, data, 65535);
+    data[data_len] = '\0';
+    close (fd);
+  }
+  else
+  {
+    /* Use live data */
+    x_command_run("top -l 1 -n 0", 0);
+    data_len = strlen(data);
+  }
+
   if (!data) return;
-  size_t data_len = strlen(data);
   match_and_scale (data, data_len, "wired", &ram_cache.wired);
   match_and_scale (data, data_len, "active", &ram_cache.active);
   match_and_scale (data, data_len, "inactive", &ram_cache.inactive);
