@@ -10,6 +10,9 @@ xsanAffinityTable.c \
 xsanNodeTable.c \
 xsanStripeGroupTable.c \
 xsanVolumeTable.c \
-xsnmpInternal.c
+xsnmpInternal.c \
+raidInfo.c \
+raidSetTable.c \
+raidDriveTable.c
 
 

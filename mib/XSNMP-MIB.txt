@@ -5,23 +5,23 @@ IMPORTS
         enterprises, Integer32, Counter32, Counter64, Gauge32
         FROM SNMPv2-SMI
         DisplayString 
-        FROM RFC1213-MIB;         
+        FROM SNMPv2-TC;         
 
 lcorp MODULE-IDENTITY
 
-    LAST-UPDATED "201008300000Z"
+    LAST-UPDATED "201012060000Z"
 
     ORGANIZATION "LithiumCorp Pty Ltd"
     CONTACT-INFO "LithiumCorp Support
-          Postal: 40 Brooke St
-                  ENGADINE NSW 2233
+          Postal: 9/55 Auburn St
+                  SUTHERLAND NSW 2232
                   Australia
              Tel: +61 2 8517 1001
           E-mail: support@lithiumcorp.com"
     DESCRIPTION "Xsnmp MIB"
 
-    REVISION "201008300000Z"
-        DESCRIPTION "Add Xsan Controller Address and Primary MDC to Volume Table"
+    REVISION "201012060000Z"
+        DESCRIPTION "Add RAID Util tables"
 ::= { enterprises 20038 }
 
 -- Structure
@@ -33,6 +33,7 @@ lcorp MODULE-IDENTITY
 --     |-> ram (3)
 --     |-> fs (4)
 --     |-> xsnmpInternal (5)
+--     |-> raid (6)
 
 xsnmp                OBJECT IDENTIFIER ::= { lcorp 2 }
 xsnmpObjects         OBJECT IDENTIFIER ::= { xsnmp 1 }
@@ -66,7 +67,7 @@ XsanVolumeEntry ::= SEQUENCE {
     xsanVolumeIndex                 Integer32,
     xsanVolumeName                  DisplayString,
     xsanVolumeFSSIndex              Integer32,
-    xsanVolumeState                 Integer32,
+    xsanVolumeState                 INTEGER,
     xsanVolumeStateMessage          DisplayString,
     xsanVolumeLastAdminAction       DisplayString,
     xsanVolumeLastTermination       DisplayString,
@@ -90,12 +91,12 @@ XsanVolumeEntry ::= SEQUENCE {
     xsanVolumeFreeMBytes            Gauge32,
     xsanVolumeUsedMBytes            Gauge32,
     xsanVolumeControllerAddress     DisplayString,
-    xsanVolumeLocalPrimaryMDC       Integer32
+    xsanVolumeLocalPrimaryMDC       INTEGER
 }
 
 xsanVolumeIndex OBJECT-TYPE
     SYNTAX  Integer32 (1..65535)
-    MAX-ACCESS  read-only
+    MAX-ACCESS  not-accessible
     STATUS  current
     DESCRIPTION
     "Volume index assigned by Xsnmp."
@@ -118,10 +119,10 @@ xsanVolumeFSSIndex OBJECT-TYPE
 ::= { xsanVolumeEntry 3 }
 
 xsanVolumeState OBJECT-TYPE
-    SYNTAX  Integer32 {
-        Registered (1), 
-        Stopped (2),
-        Unknown (0)
+    SYNTAX INTEGER {
+        registered (1), 
+        stopped (2),
+        unknown (0)
     }
     MAX-ACCESS  read-only
     STATUS  current
@@ -324,9 +325,9 @@ xsanVolumeControllerAddress OBJECT-TYPE
 ::= { xsanVolumeEntry 27 }
 
 xsanVolumeLocalPrimaryMDC OBJECT-TYPE
-    SYNTAX  Integer32 {
-        Yes (1), 
-        No (0)
+    SYNTAX INTEGER {
+        yes (1), 
+        no (0)
     }
     MAX-ACCESS  read-only
     STATUS  current
@@ -341,7 +342,7 @@ xsanVolumeLocalPrimaryMDC OBJECT-TYPE
 -- configured under a particular
 
 xsanStripeGroupTable OBJECT-TYPE
-    SYNTAX      SEQUENCE OF xsanStripeGroupEntry
+    SYNTAX      SEQUENCE OF XsanStripeGroupEntry
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -359,10 +360,10 @@ xsanStripeGroupEntry OBJECT-TYPE
 
 XsanStripeGroupEntry ::= SEQUENCE
 {
-    xsanVolumeIndex         Integer32,
+    xsanStringGroupVolumeIndex         Integer32,
     xsanStripeGroupIndex    Integer32,
     xsanStripeGroupName     DisplayString,
-    xsanStripeGroupStatus              Integer32,
+    xsanStripeGroupStatus              INTEGER,
     xsanStripeGroupTotalBlocks  Counter64,
     xsanStripeGroupReservedBlocks   Counter64,
     xsanStripeGroupFreeBlocks   Counter64,
@@ -384,8 +385,8 @@ XsanStripeGroupEntry ::= SEQUENCE
     xsanStripeGroupUsedMBytes Gauge32
 }
 
-xsanVolumeIndex OBJECT-TYPE
-    SYNTAX      Integer32
+xsanStringGroupVolumeIndex OBJECT-TYPE
+    SYNTAX      Integer32 (1..65535)
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -393,7 +394,7 @@ xsanVolumeIndex OBJECT-TYPE
 ::= { xsanStripeGroupEntry 1 }
 
 xsanStripeGroupIndex OBJECT-TYPE
-    SYNTAX      Integer32
+    SYNTAX      Integer32 (1..65535)
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -402,67 +403,67 @@ xsanStripeGroupIndex OBJECT-TYPE
 
 xsanStripeGroupName OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The name of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 3 }
 
 xsanStripeGroupStatus OBJECT-TYPE
-    SYNTAX Integer32 {
+    SYNTAX INTEGER {
         unknown (0),
         up (1)
     }
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The state of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 4 }
 
 xsanStripeGroupTotalBlocks OBJECT-TYPE
     SYNTAX Counter64
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The number of blocks in the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 5 }
 
 xsanStripeGroupReservedBlocks OBJECT-TYPE
     SYNTAX Counter64
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The number of reserved blocks in the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 6 }
 
 xsanStripeGroupFreeBlocks OBJECT-TYPE
     SYNTAX Counter64
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The number of free blocks in the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 7 }
 
 xsanStripeGroupTotalKBlocks OBJECT-TYPE
     SYNTAX Gauge32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The number of blocks in the Stripe Group as reported in 'show long' divided by 1000 (KiloBlocks)"
 ::= { xsanStripeGroupEntry 8 }
 
 xsanStripeGroupReservedKBlocks OBJECT-TYPE
     SYNTAX Gauge32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The number of reserved blocks in the Stripe Group as reported in 'show long' divided by 1000 (KiloBlocks)"
 ::= { xsanStripeGroupEntry 9 }
 
 xsanStripeGroupFreeKBlocks OBJECT-TYPE
     SYNTAX Gauge32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The number of free blocks in the Stripe Group as reported in 'show long' divided by 1000 (KiloBlocks)"
 ::= { xsanStripeGroupEntry 10 }
@@ -470,80 +471,80 @@ xsanStripeGroupFreeKBlocks OBJECT-TYPE
 xsanStripeGroupUtilization OBJECT-TYPE
     SYNTAX Gauge32
     UNITS "%"
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The Utilization of the Stripe Group as reported in 'show long' (reserved blocks over total blocks)"
 ::= { xsanStripeGroupEntry 11 }
 
 xsanStripeGroupMultiPathMethod OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The MultipPath Method of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 12 }
 
 xsanStripeGroupStripeDepth OBJECT-TYPE
     SYNTAX Integer32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The stripe depth of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 13 }
 
 xsanStripeGroupStripeBreadth OBJECT-TYPE
     SYNTAX Integer32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The stripe breadth (in blocks) of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 14 }
 
 xsanStripeGroupAffinityKey OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The affinity of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 15 }
 
 xsanStripeGroupRTLimitIOPerSecond OBJECT-TYPE
     SYNTAX Gauge32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The 'Realtime limit IO/sec' of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 16 }
 
 xsanStripeGroupNonRTReserveIOPerSecond OBJECT-TYPE
     SYNTAX Gauge32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The 'Non-Realtime reserve IO/sec' of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 17 }
 
 xsanStripeGroupRTCommittedIOPerSecond OBJECT-TYPE
     SYNTAX Gauge32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The 'Committed RTIO/sec' of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 18 }
 
 xsanStripeGroupNonRTClients OBJECT-TYPE
     SYNTAX Gauge32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The 'Non-RTIO clients' of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 19 }
 
 xsanStripeGroupNonRTHostIOPerSecond OBJECT-TYPE
     SYNTAX Gauge32
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The 'Non-RTIO hint IO/sec' of the Stripe Group as reported in 'show long'"
 ::= { xsanStripeGroupEntry 20 }
@@ -579,7 +580,7 @@ xsanStripeGroupUsedMBytes OBJECT-TYPE
 -- Xsan Nodes (LUNs in Stripe Groups)
 
 xsanNodeTable OBJECT-TYPE
-    SYNTAX      SEQUENCE OF xsanNodeEntry
+    SYNTAX      SEQUENCE OF XsanNodeEntry
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -597,8 +598,8 @@ xsanNodeEntry OBJECT-TYPE
 
 XsanNodeEntry ::= SEQUENCE
 {
-    xsanVolumeIndex             Integer32,
-    xsanStripeGroupIndex        Integer32,
+    xsanNodeVolumeIndex             Integer32,
+    xsanNodeStripeGroupIndex        Integer32,
     xsanNodeIndex               Integer32,
     xsanNodeName                DisplayString,
     xsanNodeController          DisplayString,
@@ -612,19 +613,20 @@ XsanNodeEntry ::= SEQUENCE
     xsanNodeMaxSectors          Counter64,
     xsanNodeKSectors            Gauge32,
     xsanNodeMaxKSectors         Gauge32,
-    xsanNodeVisible             Integer32
+    xsanNodeVisible             INTEGER,
+    xsanNodeSize                Gauge32
 }
 
-xsanVolumeIndex OBJECT-TYPE
-    SYNTAX      Integer32
+xsanNodeVolumeIndex OBJECT-TYPE
+    SYNTAX      Integer32 (1..65535)
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
     "The index of the xsanVolume to which this stripe group belongs"
 ::= { xsanNodeEntry 1 }
 
-xsanStripeGroupIndex OBJECT-TYPE
-    SYNTAX      Integer32
+xsanNodeStripeGroupIndex OBJECT-TYPE
+    SYNTAX      Integer32 (1..65535)
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -632,7 +634,7 @@ xsanStripeGroupIndex OBJECT-TYPE
 ::= { xsanNodeEntry 2 }
 
 xsanNodeIndex OBJECT-TYPE
-    SYNTAX      Integer32
+    SYNTAX      Integer32 (1..65535)
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION
@@ -641,56 +643,56 @@ xsanNodeIndex OBJECT-TYPE
 
 xsanNodeName OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The name of the LUN as reported in 'show long'"
 ::= { xsanNodeEntry 4 }
 
 xsanNodeController OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The Controller of the Node as reported by cvlabel"
 ::= { xsanNodeEntry 5 }
 
 xsanNodeSerial OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The Serial of the Node (WWN for FibreChannel) as reported by cvlabel"
 ::= { xsanNodeEntry 6 }
 
 xsanNodeGUID OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The GUID of the Node as reported by cvlabel"
 ::= { xsanNodeEntry 7 }
 
 xsanNodeDevice OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The Disk Device of the Node (e.g. /dev/rdisk0) as reported by cvlabel"
 ::= { xsanNodeEntry 8 }
 
 xsanNodeDeviceLabel OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The Disk Device Label of the Node as reported by cvlabel"
 ::= { xsanNodeEntry 9 }
 
 xsanNodeFSType OBJECT-TYPE
     SYNTAX DisplayString
-    ACCESS read-only
-    STATUS mandatory
+    MAX-ACCESS read-only
+    STATUS current
     DESCRIPTION
     "The File System used by the Node as reported by cvlabel"
 ::= { xsanNodeEntry 10 }
@@ -741,9 +743,9 @@ xsanNodeMaxKSectors OBJECT-TYPE
 ::= { xsanNodeEntry 15 }
 
 xsanNodeVisible OBJECT-TYPE
-    SYNTAX  Integer32 {
-        Yes (1),
-        No (0)
+    SYNTAX  INTEGER {
+        yes (1),
+        no (0)
     }
     MAX-ACCESS  read-only
     STATUS  current
@@ -781,7 +783,7 @@ xsanAffinityEntry OBJECT-TYPE
 ::= { xsanAffinityTable 1 }
 
 XsanAffinityEntry ::= SEQUENCE {
-    xsanVolumeIndex                 Integer32,
+    xsanAffinityVolumeIndex         Integer32,
     xsanAffinityIndex               Integer32,
     xsanAffinityName                DisplayString,
     xsanAffinityStripeGroups        Gauge32,
@@ -795,9 +797,9 @@ XsanAffinityEntry ::= SEQUENCE {
     xsanAffinityUsedMBytes     Gauge32
 }
 
-xsanVolumeIndex OBJECT-TYPE
+xsanAffinityVolumeIndex OBJECT-TYPE
     SYNTAX  Integer32 (1..65535)
-    MAX-ACCESS  read-only
+    MAX-ACCESS  not-accessible
     STATUS  current
     DESCRIPTION
     "Volume index that the affinity belongs to."
@@ -805,7 +807,7 @@ xsanVolumeIndex OBJECT-TYPE
 
 xsanAffinityIndex OBJECT-TYPE
     SYNTAX  Integer32 (1..65535)
-    MAX-ACCESS  read-only
+    MAX-ACCESS  not-accessible
     STATUS  current
     DESCRIPTION
     "Volume index assigned by Xsnmp."
@@ -820,7 +822,7 @@ xsanAffinityName OBJECT-TYPE
 ::= { xsanAffinityEntry 3 }
 
 xsanAffinityStripeGroups OBJECT-TYPE
-    SYNTAX  Integer32
+    SYNTAX  Gauge32
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
@@ -940,12 +942,17 @@ FsEntry ::= SEQUENCE {
     fsSize       Gauge32,
     fsUsed       Gauge32,
     fsAvail      Gauge32,
-    fsUtilization   Gauge32
+    fsUtilization   Gauge32,
+    fsWriteable INTEGER,
+    fsRemovable INTEGER,
+    fsBootable INTEGER,
+    fsSmartStatus INTEGER,
+    fsSmartMessage DisplayString
 }
 
 fsIndex OBJECT-TYPE
     SYNTAX  Integer32 (1..65535)
-    MAX-ACCESS  read-only
+    MAX-ACCESS  not-accessible
     STATUS  current
     DESCRIPTION
     "Row number for the output from df."
@@ -1004,10 +1011,10 @@ fsUtilization OBJECT-TYPE
 ::= { fsEntry 7 }
 
 fsWriteable OBJECT-TYPE
-    SYNTAX  Integer32 {
-      Unknown (-1),
-      Yes (1),
-      No (0)
+    SYNTAX  INTEGER {
+      unknown (-1),
+      yes (1),
+      no (0)
     }
     MAX-ACCESS  read-only
     STATUS  current
@@ -1016,10 +1023,10 @@ fsWriteable OBJECT-TYPE
 ::= { fsEntry 8 }
 
 fsRemovable OBJECT-TYPE
-    SYNTAX  Integer32 {
-      Unknown (-1),
-      Yes (1),
-      No (0)
+    SYNTAX  INTEGER {
+      unknown (-1),
+      yes (1),
+      no (0)
     }
     MAX-ACCESS  read-only
     STATUS  current
@@ -1028,10 +1035,10 @@ fsRemovable OBJECT-TYPE
 ::= { fsEntry 9 }
 
 fsBootable OBJECT-TYPE
-    SYNTAX  Integer32 {
-      Unknown (-1),
-      Yes (1),
-      No (0)
+    SYNTAX  INTEGER {
+      unknown (-1),
+      yes (1),
+      no (0)
     }
     MAX-ACCESS  read-only
     STATUS  current
@@ -1040,11 +1047,11 @@ fsBootable OBJECT-TYPE
 ::= { fsEntry 10 }
 
 fsSmartStatus OBJECT-TYPE
-    SYNTAX  Integer32 {
-      Unknown (-1),
-      NotSupported (0),
-      Verified (1),
-      Warning (2)
+    SYNTAX  INTEGER {
+      unknown (-1),
+      notSupported (0),
+      verified (1),
+      warning (2)
     }
     MAX-ACCESS  read-only
     STATUS  current
@@ -1124,5 +1131,368 @@ xsnmpVersion OBJECT-TYPE
     DESCRIPTION
         "Version number for Xsnmp"
     ::= { xsnmpInternal 1 }
+
+--
+-- RAID (Host RAID Card)
+--
+
+raid OBJECT IDENTIFIER ::= { xsnmpObjects 6 }
+
+-- RAID Info
+
+raidInfo OBJECT IDENTIFIER ::= { raid 1 }
+
+raidGeneralStatus OBJECT-TYPE
+    SYNTAX  INTEGER {
+        good (1), 
+        issuesFound (2),
+        unknown (0)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The General Status of the RAID card"
+    ::= { raidInfo 1 }
+
+raidGeneralStatusMessage OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The General Status of the RAID card direct from raidutil"
+    ::= { raidInfo 2 }
+
+raidBatteryStatus OBJECT-TYPE
+    SYNTAX  INTEGER {
+        charged (1), 
+        conditioning (2),
+        chargingInsufficientCharge (3),
+        notChargingInsufficientCharge (4),
+        unknown (0)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The Battery Status of the RAID card"
+    ::= { raidInfo 3 }
+
+raidBatteryStatusMessage OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The Battery Status message for the RAID card from raidutil"
+    ::= { raidInfo 4 }
+
+raidHardwareVersion OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The hardware version of the RAID card"
+    ::= { raidInfo 5 }
+
+raidFirmwareVersion OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The firmware version of the RAID card"
+    ::= { raidInfo 6 }
+
+raidWriteCache OBJECT-TYPE
+    SYNTAX  INTEGER {
+        enabled (1), 
+        disabled (2),
+        unknown (0)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The Write Cache status of the RAID card"
+    ::= { raidInfo 7 }
+
+-- RAID Sets
+
+raidSetTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF RaidSetEntry
+    MAX-ACCESS not-accessible
+    STATUS  current
+    DESCRIPTION
+    "RAID sets reported by raidutil"
+::= { raid 2 }
+
+raidSetEntry OBJECT-TYPE
+    SYNTAX     RaidSetEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+        "An entry per RAID Set in raidutil"
+    INDEX      { raidSetIndex }
+::= { raidSetTable 1 }
+
+RaidSetEntry ::= SEQUENCE {
+    raidSetIndex    Integer32,
+    raidSetName     DisplayString,
+    raidSetType     DisplayString,
+    raidSetSize     Gauge32,
+    raidSetUnused   Gauge32,
+    raidSetComments DisplayString
+}
+
+raidSetIndex OBJECT-TYPE
+    SYNTAX  Integer32 (1..65535)
+    MAX-ACCESS  not-accessible
+    STATUS  current
+    DESCRIPTION
+    "Row number for the output from raidutil."
+::= { raidSetEntry 1 }
+
+raidSetName OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The name of the RAID Set"
+::= { raidSetEntry 2 }
+
+raidSetType OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The type of the RAID set (e.g. RAID5, RAID0, etc)"
+::= { raidSetEntry 3 }
+
+raidSetSize OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The total size of the RAID Set in Megabytes"
+::= { raidSetEntry 4 }
+
+raidSetUnused OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The amount of unallocated capacity in Megabytes"
+::= { raidSetEntry 5 }
+
+raidSetComments OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "RAID Set comments directly from raidutil"
+::= { raidSetEntry 6 }
+
+-- RAID Drives
+
+raidDriveTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF RaidDriveEntry
+    MAX-ACCESS not-accessible
+    STATUS  current
+    DESCRIPTION
+    "RAID drives reported by raidutil"
+::= { raid 3 }
+
+raidDriveEntry OBJECT-TYPE
+    SYNTAX     RaidDriveEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+        "An entry per RAID Drive in raidutil"
+    INDEX      { raidDriveIndex }
+::= { raidDriveTable 1 }
+
+RaidDriveEntry ::= SEQUENCE {
+    raidDriveIndex         Integer32,
+    raidDriveLocation      DisplayString,
+    raidDriveSetName       DisplayString,
+    raidDriveSize          Gauge32,
+    raidDriveStatus        INTEGER,
+    raidDriveStatusMessage DisplayString,
+    raidDriveSetIndex      Integer32
+}
+
+raidDriveIndex OBJECT-TYPE
+    SYNTAX  Integer32 (1..65535)
+    MAX-ACCESS  not-accessible
+    STATUS  current
+    DESCRIPTION
+    "Row number for the output from raidutil."
+::= { raidDriveEntry 1 }
+
+raidDriveLocation OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The location or name of the drive"
+::= { raidDriveEntry 2 }
+
+raidDriveSetName OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The name of the RAID Set that this drive belongs to"
+::= { raidDriveEntry 3 }
+
+raidDriveSize OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The total size of the drive in Megabytes"
+::= { raidDriveEntry 4 }
+
+raidDriveStatus OBJECT-TYPE
+    SYNTAX  INTEGER {
+        reliable (1), 
+        failurePredicted (2),
+        failed (3),
+        missing (4),
+        incompatMetaData (5),
+        spare (6),
+        notAssigned (7),
+        unknown (0)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The status of the drive"
+::= { raidDriveEntry 5 }
+
+raidDriveStatusMessage OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The drive status message from raidutil"
+::= { raidDriveEntry 6 }
+
+raidDriveSetIndex OBJECT-TYPE
+    SYNTAX  Integer32 (1..65535)
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Row number of the RAID Set that this drive belongs to."
+::= { raidDriveEntry 7 }
+
+-- RAID Volumes
+
+raidVolumeTable OBJECT-TYPE
+    SYNTAX SEQUENCE OF RaidVolumeEntry
+    MAX-ACCESS not-accessible
+    STATUS  current
+    DESCRIPTION
+    "RAID volumes reported by raidutil"
+::= { raid 4 }
+
+raidVolumeEntry OBJECT-TYPE
+    SYNTAX     RaidVolumeEntry
+    MAX-ACCESS not-accessible
+    STATUS     current
+    DESCRIPTION
+        "An entry per RAID Volume in raidutil"
+    INDEX      { raidVolumeIndex }
+::= { raidVolumeTable 1 }
+
+RaidVolumeEntry ::= SEQUENCE {
+    raidVolumeIndex         Integer32,
+    raidVolumeName          DisplayString,
+    raidVolumeSetName       DisplayString,
+    raidVolumeType          DisplayString,
+    raidVolumeSize          Gauge32,
+    raidVolumeStatus        INTEGER,
+    raidVolumeStatusMessage DisplayString,
+    raidVolumeComments      DisplayString,
+    raidVolumeSetIndex      Integer32
+}
+
+raidVolumeIndex OBJECT-TYPE
+    SYNTAX  Integer32 (1..65535)
+    MAX-ACCESS  not-accessible
+    STATUS  current
+    DESCRIPTION
+    "Row number for the output from raidutil."
+::= { raidVolumeEntry 1 }
+
+raidVolumeName OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The name of the volume"
+::= { raidVolumeEntry 2 }
+
+raidVolumeSetName OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The name of the RAID Set that this volume belongs to"
+::= { raidVolumeEntry 3 }
+
+raidVolumeType OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The RAID type of the volume"
+::= { raidVolumeEntry 4 }
+
+raidVolumeSize OBJECT-TYPE
+    SYNTAX  Gauge32
+    UNITS   "MBytes"
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The total size of the volume in Megabytes"
+::= { raidVolumeEntry 5 }
+
+raidVolumeStatus OBJECT-TYPE
+    SYNTAX  INTEGER {
+        niable (1), 
+        notViable (2),
+        notInitialized (3),
+        degraded (4),
+        unknown (0)
+    }
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The status of the volume"
+::= { raidVolumeEntry 6 }
+
+raidVolumeStatusMessage OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION
+        "The volume status message from raidutil"
+::= { raidVolumeEntry 7 }
+
+raidVolumeComments OBJECT-TYPE
+    SYNTAX  DisplayString
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "The volume comments directly from raidutil"
+::= { raidVolumeEntry 8 }
+
+raidVolumeSetIndex OBJECT-TYPE
+    SYNTAX  Integer32 (1..65535)
+    MAX-ACCESS  read-only
+    STATUS  current
+    DESCRIPTION
+    "Row number of the RAID Set that this volume belongs to."
+::= { raidVolumeEntry 9 }
 
 END

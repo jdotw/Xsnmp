@@ -95,13 +95,18 @@ void update_ram()
     data_len = strlen(data);
   }
 
+  /* Match and scale data */
   if (!data) return;
   match_and_scale (data, data_len, "wired", &ram_cache.wired);
   match_and_scale (data, data_len, "active", &ram_cache.active);
   match_and_scale (data, data_len, "inactive", &ram_cache.inactive);
   match_and_scale (data, data_len, "used", &ram_cache.used);
   match_and_scale (data, data_len, "free", &ram_cache.free);
+
+  /* Set cache timestamp */
   gettimeofday(&ram_cache_timestamp, NULL);  
+
+  /* Cleanup */
   free (data);
   data = NULL;
   data_len = 0;

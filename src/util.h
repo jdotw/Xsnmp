@@ -1,3 +1,4 @@
+void scale_value_to_m(char unit_char, uint32_t *val);
 uint32_t extract_uint_in_range (char *start, size_t len);
 uint32_t extract_uint_from_regex (char *data, size_t data_len, char *expression);
 void trim_end (char *str);

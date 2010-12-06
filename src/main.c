@@ -12,6 +12,9 @@
   #include "xsanNodeTable.h"
   #include "xsanAffinityTable.h"
   #include "ram.h"
+  #include "raidInfo.h"
+  #include "raidSetTable.h"
+  #include "raidDriveTable.h"
 const char *app_name = "yeehaw";
 
 extern int netsnmp_running;
@@ -227,8 +230,15 @@ main (int argc, char **argv)
   init_ram();
 #endif
 
-  /* yeehaw will be used to read yeehaw.conf files. */
-  init_snmp("yeehaw");
+  /* Raidutil (Mac Only) */
+#ifdef HOST_MACOSX
+  init_raidInfo();
+  init_raidSetTable();
+  init_raidDriveTable();
+#endif
+
+  /* xsnmp will be used to read xsnmp.conf files. */
+  init_snmp("xsnmp");
 
   if (do_help) {
     fprintf(stderr, "Configuration directives understood:\n");

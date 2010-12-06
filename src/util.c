@@ -11,6 +11,26 @@
 
 #define OVECCOUNT 90
 
+void scale_value_to_m(char unit_char, uint32_t *val)
+{
+  switch(unit_char)
+  {
+    case 'K':
+      *val /= 1024;
+      break;
+    case 'M':
+      break;
+    case 'G':
+      *val *= 1024;
+      break;
+    case 'T':
+      *val *= 1024 * 1024;
+      break;
+    default:
+      x_printf ("ERROR: scale_value unknown unit '%c'", unit_char);
+  }
+}
+
 uint32_t extract_uint_in_range (char *start, size_t len)
 {
   char *val_str;
