@@ -6,5 +6,6 @@ Controller  #1: Hardware Version 1.00/Firmware M-2.0.5.5
 
 Volume            Status            Type       Drives       Size  Comments
 ------------------------------------------------------------------------------------
-R2V1              Is Viable         RAID 5     1,2,3    160.38GB  Condition: Good                  
-
+System            Is Viable         RAID 5     2,3,4    120.00GB  Condition: Good                  
+Data              Is Viable         RAID 5     2,3,4      3.80TB  Condition: Good                  
+R2V1              Is Viable         Enh. JBOD  1          2.00TB  Condition: Good                  
