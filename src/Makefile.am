@@ -13,6 +13,7 @@ xsanVolumeTable.c \
 xsnmpInternal.c \
 raidInfo.c \
 raidSetTable.c \
+raidVolumeTable.c \
 raidDriveTable.c
 
 

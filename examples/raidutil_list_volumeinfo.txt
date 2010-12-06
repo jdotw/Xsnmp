@@ -1,0 +1,5 @@
+Volumes       Status      Raidset       Type          Size  Comments
+----------------------------------------------------------------------------
+System        Is Viable   Raid5Set      RAID 5     120.00GB  Condition: Good
+Data          Is Viable   Raid5Set      RAID 5       3.80TB  Condition: Good
+R2V1          Is Viable   RS1           Enh.JBOD     2.00TB  Condition: Good

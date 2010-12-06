@@ -1,0 +1,6 @@
+Drives  Raidset       Size      Flags
+-----------------------------------------------------------------
+Bay #1  RS1             2.00TB   IsMemberOfRAIDSet:RS1 IsReliable
+Bay #2  Raid5Set        2.00TB   IsMemberOfRAIDSet:Raid5Set IsReliable
+Bay #3  Raid5Set        2.00TB   IsMemberOfRAIDSet:Raid5Set IsReliable
+Bay #4  Raid5Set        2.00TB   IsMemberOfRAIDSet:Raid5Set IsReliable

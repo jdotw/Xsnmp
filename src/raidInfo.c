@@ -129,7 +129,16 @@ void update_raid ()
   else raid_cache.batteryStatus = 0;  // Unknown
 
   /* Verions */
-  extract_string_from_regex(data, data_len, "Hardware Version ([^/]*)", &raid_cache.batteryStatusMessage, &raid_cache.batteryStatusMessage_len);
+  extract_string_from_regex(data, data_len, "Hardware Version ([^/]*)", &raid_cache.hardwareVersion, &raid_cache.hardwareVersion_len);
+  extract_string_from_regex(data, data_len, "Firmware (.*)$", &raid_cache.firmwareVersion, &raid_cache.firmwareVersion_len);
+
+  /* Write cache */
+  char *writecache_str = NULL;
+  size_t writecache_len = 0;
+  extract_string_from_regex(data, data_len, "Write Cache (.*)$", &writecache_str, &writecache_len);
+  printf ("WRITE CACHE: %s\n", writecache_str);
+  if (strstr(writecache_str, "enabled")) raid_cache.writeCache = 1;
+  else raid_cache.writeCache = 0;
 
   /* Set cache timestamp */
   gettimeofday(&raid_cache_timestamp,NULL);

@@ -1,0 +1,5 @@
+Total     Avail
+Raidsets      Type       Drives       Size      Size  Comments
+----------------------------------------------------------------------
+Raid5Set      RAID 5     2,3,4      3.92TB    0.00MB  No tasks running                 
+RS1           Enh.JBOD   1          2.00TB    0.00MB  No tasks running                 

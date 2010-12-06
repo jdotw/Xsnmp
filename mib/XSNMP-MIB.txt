@@ -1459,7 +1459,7 @@ raidVolumeSize OBJECT-TYPE
 
 raidVolumeStatus OBJECT-TYPE
     SYNTAX  INTEGER {
-        niable (1), 
+        viable (1), 
         notViable (2),
         notInitialized (3),
         degraded (4),

@@ -15,6 +15,7 @@
   #include "raidInfo.h"
   #include "raidSetTable.h"
   #include "raidDriveTable.h"
+  #include "raidVolumeTable.h"
 const char *app_name = "yeehaw";
 
 extern int netsnmp_running;
@@ -235,6 +236,7 @@ main (int argc, char **argv)
   init_raidInfo();
   init_raidSetTable();
   init_raidDriveTable();
+  init_raidVolumeTable();
 #endif
 
   /* xsnmp will be used to read xsnmp.conf files. */

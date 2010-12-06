@@ -6,7 +6,20 @@
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
+#include <fcntl.h>
+#include <pcre.h>
+#include "log.h"
+#include "util.h"
+#include "command.h"
+#include "main.h"
+#include "raidSetTable.h"
 #include "raidVolumeTable.h"
+
+static struct timeval cache_timestamp = { 0, 0 };
+static int last_index_used = 0;
+
+#define MAX_CACHE_AGE 10
+#define OVECCOUNT 90
 
 /** Initializes the raidVolumeTable module */
 void
@@ -15,8 +28,6 @@ init_raidVolumeTable(void)
   /* here we initialize all the tables we're planning on supporting */
     initialize_table_raidVolumeTable();
 }
-
-  # Determine the first/last column names
 
 /** Initialize the raidVolumeTable table by defining its contents and how it's structured */
 void
@@ -57,19 +68,22 @@ struct raidVolumeTable_entry {
     long raidVolumeIndex;
 
     /* Column values */
-    char raidVolumeName[NNN];
+    char *raidVolumeName;
     size_t raidVolumeName_len;
-    char raidVolumeSetName[NNN];
+    char *raidVolumeSetName;
     size_t raidVolumeSetName_len;
-    char raidVolumeType[NNN];
+    char *raidVolumeType;
     size_t raidVolumeType_len;
-    u_long raidVolumeSize;
+    uint32_t raidVolumeSize;
     long raidVolumeStatus;
-    char raidVolumeStatusMessage[NNN];
+    char *raidVolumeStatusMessage;
     size_t raidVolumeStatusMessage_len;
-    char raidVolumeComments[NNN];
+    char *raidVolumeComments;
     size_t raidVolumeComments_len;
     long raidVolumeSetIndex;
+
+    /* Obsolete Checking */
+    time_t last_seen;
 
     /* Illustrate using a simple linked list */
     int   valid;
@@ -80,9 +94,8 @@ struct raidVolumeTable_entry  *raidVolumeTable_head;
 
 /* create a new row in the (unsorted) table */
 struct raidVolumeTable_entry *
-raidVolumeTable_createEntry(
-                 long  raidVolumeIndex,
-                ) {
+raidVolumeTable_createEntry(long  raidVolumeIndex) 
+{
     struct raidVolumeTable_entry *entry;
 
     entry = SNMP_MALLOC_TYPEDEF(struct raidVolumeTable_entry);
@@ -117,7 +130,13 @@ raidVolumeTable_removeEntry( struct raidVolumeTable_entry *entry ) {
     else
         prev->next = ptr->next;
 
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+    if (entry->raidVolumeName) free (entry->raidVolumeName);
+    if (entry->raidVolumeSetName) free (entry->raidVolumeSetName);
+    if (entry->raidVolumeType) free (entry->raidVolumeType);
+    if (entry->raidVolumeStatusMessage) free (entry->raidVolumeStatusMessage);
+    if (entry->raidVolumeComments) free (entry->raidVolumeComments);
+
+    SNMP_FREE( entry );
 }
 
 
@@ -153,6 +172,172 @@ raidVolumeTable_get_next_data_point(void **my_loop_context,
     }
 }
 
+/* Volume List */
+
+void update_volumelist()
+{
+  /* Calls 'raidutil list volumeinfo' */
+  struct timeval now;
+  gettimeofday (&now, NULL);
+  char *data = NULL;
+  size_t data_len = 0;
+  if (xsan_debug())
+  {
+    /* Use example data */
+    int fd = open ("../examples/raidutil_list_volumeinfo.txt", O_RDONLY);
+    data = malloc (65536);
+    data_len = read (fd, data, 65535);
+    data[data_len] = '\0';
+    close (fd);
+  }
+  else
+  {
+    /* Use live data */
+    data = x_command_run("raidutil list volumeinfo", 0);
+    if (!data) return;
+    data_len = strlen(data);
+  }
+
+  printf ("Data is '%s'\n", data);
+
+  /* Regex and loop through each raid set row */
+  const char *error;
+  int erroffset;
+  int ovector[OVECCOUNT];
+  /* Looks like 'Data          Is Viable   Raid5Set      RAID 5       3.80TB  Condition: Good' */
+  pcre *re = pcre_compile("^(\\w[^ ]*)\\s+([^ ]+(?: [^ ]*))\\s+([^ ]+)\\s+(.*)\\s+(\\d+\\.\\d\\d)([MGT])B\\s+(.*)$", PCRE_MULTILINE, &error, &erroffset, NULL);
+
+  if (re == NULL) { x_printf ("ERROR: update_volumelist failed to compile regex"); free (data); return; }
+
+  ovector[0] = 0;
+  ovector[1] = 0;
+  while(1)
+  {
+    int options = 0;                 /* Normally no options */
+    int start_offset = ovector[1];   /* Start at end of previous match */
+
+    if (ovector[0] == ovector[1])
+    {
+      if (ovector[0] == (int)data_len) break;
+    }
+
+    int rc = pcre_exec( re,                   /* the compiled pattern */
+                         NULL,                 /* no extra data - we didn't study the pattern */
+                         data,              /* the subject string */
+                         data_len,       /* the length of the subject */
+                         start_offset,         /* starting offset in the subject */
+                         options,              /* options */
+                         ovector,              /* output vector for substring information */
+                         OVECCOUNT);           /* number of elements in the output vector */
+
+    if (rc == PCRE_ERROR_NOMATCH)
+    {
+      x_printf ("update_drivelist no match found for regex");
+      if (options == 0) break;
+      ovector[1] = start_offset + 1;
+      continue;    /* Go round the loop again */
+    }
+    /* Other matching errors are not recoverable. */
+    if (rc > 0)
+    {
+      /* Matched an RAID Drive. Vectors:
+       * 0=FullString 1(2)=Name 2(4)=Status 3(6)=RAIDSet 4(8)=Type 5(10)=Size 6(12)=SizeUnits 7(14)=Comments
+      */
+
+      /* Get Name */
+      char *name_str;
+      asprintf (&name_str, "%.*s", ovector[3] - ovector[2], data + ovector[2]);
+      trim_end(name_str);
+      x_debug ("update_volumelist Matched %.*s\n", ovector[3] - ovector[2], data + ovector[2]);
+
+      /* Find/Create Entry */
+      struct raidVolumeTable_entry *entry = raidVolumeTable_head;
+      while (entry)
+      {
+        if (!strcmp(name_str, entry->raidVolumeName)) break;
+        entry = entry->next;
+      }
+      if (!entry)
+      {
+        last_index_used++;
+        entry = raidVolumeTable_createEntry(last_index_used);
+        entry->raidVolumeName = strdup(name_str);
+        entry->raidVolumeName_len = strlen (entry->raidVolumeName);
+      }
+      entry->last_seen = now.tv_sec;
+      free (name_str);
+      name_str = NULL;
+
+      /* Extract Data from Regex Match */
+      extract_string_in_range(data+ovector[4], ovector[5]-ovector[4], &entry->raidVolumeStatusMessage, &entry->raidVolumeStatusMessage_len);
+      if (entry->raidVolumeStatusMessage && entry->raidVolumeStatusMessage_len > 0)
+      {
+        if (strstr(entry->raidVolumeStatusMessage, "Is Viable")) entry->raidVolumeStatus = 1;
+        else if (strstr(entry->raidVolumeStatusMessage, "Not Viable")) entry->raidVolumeStatus = 2;
+        else if (strstr(entry->raidVolumeStatusMessage, "Not Initialized")) entry->raidVolumeStatus = 3;
+        else if (strstr(entry->raidVolumeStatusMessage, "Is Degraded")) entry->raidVolumeStatus = 4;
+        else entry->raidVolumeStatus = 0;
+      }
+      else entry->raidVolumeStatus = 0;
+      extract_string_in_range(data+ovector[6], ovector[7]-ovector[6], &entry->raidVolumeSetName, &entry->raidVolumeSetName_len);
+      extract_string_in_range(data+ovector[8], ovector[9]-ovector[8], &entry->raidVolumeType, &entry->raidVolumeType_len);
+      entry->raidVolumeSize = extract_uint_in_range(data+ovector[10], ovector[11]-ovector[10]);
+      scale_value_to_m(data[ovector[12]], &entry->raidVolumeSize);
+      extract_string_in_range(data+ovector[14], ovector[15]-ovector[14], &entry->raidVolumeComments, &entry->raidVolumeComments_len);
+
+      /* Find Index */
+      struct raidSetTable_entry *set = raidSetTable_get_head();
+      while (set)
+      {
+        if (!strcmp(entry->raidVolumeSetName, set->raidSetName)) break;
+        set = set->next;
+      }
+      if (set)
+      {
+        entry->raidVolumeSetIndex = set->raidSetIndex;
+      }
+      else
+      {
+        entry->raidVolumeSetIndex = 0;
+      }
+    }
+    else
+    {
+      pcre_free(re);    /* Release memory used for the compiled pattern */
+      return;
+    }
+  }
+  pcre_free(re);    /* Release memory used for the compiled pattern */
+
+  /* Check for obsolete entries */
+  struct raidVolumeTable_entry *entry = raidVolumeTable_head;
+  while (entry)
+  {
+    struct raidVolumeTable_entry *next = entry->next;
+    if (entry->last_seen != now.tv_sec)
+    {
+      /* Entry is obsolete */
+      raidVolumeTable_removeEntry(entry);
+    }
+    entry = next;
+  }
+
+  /* Update cache timestamp */
+  gettimeofday(&cache_timestamp, NULL);
+
+  /* Clean up */
+  free (data);
+  data = NULL;
+  data_len = 0;
+}
+
+void update_volumelist_if_necessary()
+{
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  if (now.tv_sec - cache_timestamp.tv_sec > MAX_CACHE_AGE)
+  { update_volumelist(); }
+}
 
 /** handles requests for the raidVolumeTable table */
 int
@@ -170,7 +355,8 @@ raidVolumeTable_handler(
         /*
          * Read-support (also covers GetNext requests)
          */
-    case MODE_GET:
+      case MODE_GET:
+        update_volumelist_if_necessary();
         for (request=requests; request; request=request->next) {
             table_entry = (struct raidVolumeTable_entry *)
                               netsnmp_extract_iterator_context(request);
