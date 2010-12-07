@@ -14,6 +14,8 @@ sudo cp -r packaging/XsnmpInstaller.pmdoc /Library/Xsnmp/XsnmpAgentExtension.app
 sudo cp -r packaging/scripts /Library/Xsnmp/XsnmpAgentExtension.app/Resources
 sudo cp /Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall.template /Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall
 sudo cp packaging/Info.plist /Library/Xsnmp/XsnmpAgentExtension.app/Contents 
+sudo cp util/xsnmp_debug_info.sh /Library/Xsnmp/XsnmpAgentExtension.app/Contents/MacOS
+chnod ug+x /Library/Xsnmp/XsnmpAgentExtension.app/Contents/MacOS/xsnmp_debug_info.sh
 
 cd prefpane
 MVERS=`agvtool mvers | grep 'Found CFBundleShortVersionString' | sed 's/^[^\"]*\"//g' | sed 's/".*//g'`
