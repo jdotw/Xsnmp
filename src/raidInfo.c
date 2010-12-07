@@ -100,7 +100,7 @@ void update_raid ()
   else
   {
     /* Use live data */
-    x_command_run("raidutil list status", 0);
+    data = x_command_run("raidutil list status", 0);
     data_len = strlen(data);
   }
 

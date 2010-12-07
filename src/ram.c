@@ -91,7 +91,7 @@ void update_ram()
   else
   {
     /* Use live data */
-    x_command_run("top -l 1 -n 0", 0);
+    data = x_command_run("top -l 1 -n 0", 0);
     data_len = strlen(data);
   }
 

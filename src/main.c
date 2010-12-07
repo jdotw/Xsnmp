@@ -233,14 +233,14 @@ main (int argc, char **argv)
 
   /* Raidutil (Mac Only) */
 #ifdef HOST_MACOSX
-  init_raidInfo();
-  init_raidSetTable();
-  init_raidDriveTable();
-  init_raidVolumeTable();
+//  init_raidInfo();
+//  init_raidSetTable();
+//  init_raidDriveTable();
+//  init_raidVolumeTable();
 #endif
 
   /* xsnmp will be used to read xsnmp.conf files. */
-  init_snmp("xsnmp");
+  init_snmp("yeehaw");
 
   if (do_help) {
     fprintf(stderr, "Configuration directives understood:\n");

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 PKGDIR="$PWD"
-SRCDIR="$PWD/.."
-DMGDIR="$PWD"
+SRCDIR="$PWD/src"
+DMGDIR="$PWD/packaging"
 BASEDIR=$PWD
 
 
@@ -10,7 +10,7 @@ BASEDIR=$PWD
 # Get Build Number
 #
 
-PKGSRCDIR="$PWD/../prefpane"
+PKGSRCDIR="$PWD/prefpane"
 cd "$PKGSRCDIR"
 BUILDNUM=`agvtool mvers | grep '^Found CFBundleShortVersionString of'  | awk '{ print $4 }' | sed 's/\"//g'`
 BUILDNUM_SHORT=`agvtool vers | grep '^ '  | sed 's/^    //g'`
