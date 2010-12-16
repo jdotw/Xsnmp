@@ -111,6 +111,75 @@
 	</table>
 	
 	<hr />
+	
+	<h2>RAID Status</h2>
+	<p>The data shown in this portion of the MIB is taken from 'raidutil' by parsing the output of the 'raidutil list status' command.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::raidGeneralStatus.0</td><td>INTEGER: good(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidGeneralStatusMessage.0</td><td>STRING: Good</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidBatteryStatus.0</td><td>INTEGER: charged(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidBatteryStatusMessage.0</td><td>STRING: Charged</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidHardwareVersion.0</td><td>STRING: 1.00</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidFirmwareVersion.0</td><td>STRING: M-2.0.5.5</td><td>&nbsp;</td></tr>
+	</table>
+	
+	<hr />
+	
+	<h2>RAID Sets</h2>
+	<p>The data shown in this portion of the MIB is taken from 'raidutil' by parsing the output of the 'raidutil list raidsetinfo' command.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::raidSetName.1</td><td>STRING: R0-1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidSetType.1</td><td>STRING: RAID 5</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidSetSize.1</td><td>Gauge32: 163840 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidSetUnused.1</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidSetComments.1</td><td>STRING: No tasks running</td><td>&nbsp;</td></tr>
+	</table>
+	
+	<hr />
+
+	<h2>RAID Drives</h2>
+	<p>The data shown in this portion of the MIB is taken from 'raidutil' by parsing the output of the 'raidutil list driveinfo' command.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::raidDriveLocation.1</td><td>STRING: Bay #1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveLocation.2</td><td>STRING: Bay #2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveLocation.3</td><td>STRING: Bay #3</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveSetName.1</td><td>STRING: R0-1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveSetName.2</td><td>STRING: R0-1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveSetName.3</td><td>STRING: R0-1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveSize.1</td><td>Gauge32: 82944 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveSize.2</td><td>Gauge32: 82944 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveSize.3</td><td>Gauge32: 82944 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveStatus.1</td><td>INTEGER: reliable(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveStatus.2</td><td>INTEGER: reliable(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveStatus.3</td><td>INTEGER: reliable(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveStatusMessage.1</td><td>STRING: IsReliable</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveStatusMessage.2</td><td>STRING: IsReliable</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveStatusMessage.3</td><td>STRING: IsReliable</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveSetIndex.1</td><td>INTEGER: 1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveSetIndex.2</td><td>INTEGER: 1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidDriveSetIndex.3</td><td>INTEGER: 1</td><td>&nbsp;</td></tr>
+	</table>
+	
+	<hr />
+
+	<h2>RAID Volumes</h2>
+	<p>The data shown in this portion of the MIB is taken from 'raidutil' by parsing the output of the 'raidutil list volumeinfo' command.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::raidVolumeName.1</td><td>STRING: R2V1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidVolumeSetName.1</td><td>STRING: R0-1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidVolumeType.1</td><td>STRING: RAID 5</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidVolumeSize.1</td><td>Gauge32: 163840 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidVolumeStatus.1</td><td>INTEGER: viable(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidVolumeStatusMessage.1</td><td>STRING: Is Viable</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidVolumeComments.1</td><td>STRING: Condition: Good</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::raidVolumeSetIndex.1</td><td>INTEGER: 1</td><td>&nbsp;</td></tr>
+	</table>
+	
+	<hr />
 
 	<h2>Xsan Volumes</h2>
 	<p>The data shown in this portion of the MIB is taken from cvadmin by parsing the 'fsmlist' and 'show long' commands.</p>
