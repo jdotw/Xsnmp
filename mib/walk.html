@@ -1,0 +1,756 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<title></title>
+	</head>
+	<style type="text/css">
+
+	body {
+		font-size: 14px;
+		font-family: Helvetica, Verdana, Arial, sans-serif;
+	}
+
+	th {
+		padding-left: 2px;
+		padding-bottom: 4px;
+		padding-right: 2px;
+		padding-top: 4px;
+		border-bottom-color: #4c4c4c;
+		border-bottom-width: 1px;
+		background-color: #cccccc;
+		text-align: left;
+	}
+
+	td {
+		font-size: 0.9em;
+	}
+
+	</style>
+	<body>
+	
+	<h1>Xsnmp Annotated Walk</h1>
+	
+	<p>Below is an example of the information available through the Xsnmp Agent Extension on Mac OS X. The output was taken from the 'snmpwalk -v 2c -m "+XSNMP-MIB.txt" -c public 127.0.0.1 enterprises.20038' command run with the <a href="http://xsnmp.com/XSNMP-MIB.txt">XSNMP-MIB.txt</a> MIB file in the directory from which the command was run and using a host configured with the default 'public' SNMP community string.</p>
+
+	<hr />
+
+	<h2>Xsnmp</h2>
+	<p>The data in this portion of this MIB identifies the instance of Xsnmp.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::xsnmpVersion.0</td><td>Gauge32: 1</td><td>This OID can be polled to determine whether or not the host is running the Xsnmp Agent Extension.</td></tr>
+	</table>
+
+	<hr />
+
+	<h2>RAM</h2>
+	<p>The data shown in this portion of the MIB is taken from 'top' by parsing the memory utilisation data shown at the top of a 'top -l 1 -n 0' command.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::ramWired.0</td><td>Gauge32: 818 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::ramActive.0</td><td>Gauge32: 1669 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::ramInactive.0</td><td>Gauge32: 1438 MBytes</td><td>This is RAM that is being used for cache or as buffers by the operating system but can be made available to applications if required.</td></tr>
+		<tr><td>XSNMP-MIB::ramUsed.0</td><td>Gauge32: 3925 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::ramFree.0</td><td>Gauge32: 174 MBytes</td><td>This is the amount of completely unused RAM present on the host. A more accurate indicator of the RAM available to applications can be taken as ramFree + ramInactive.</td></tr>
+	</table>
+
+	<hr />
+
+	<h2>File Systems</h2>
+	<p>The data shown in this portion of the MIB is taken from 'df' by parsing the output of the 'df -m' command with additional information taken from running 'diskutil info' for each file system.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::fsIndex.1</td><td>INTEGER: 1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsIndex.2</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsIndex.3</td><td>INTEGER: 3</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsIndex.4</td><td>INTEGER: 4</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsFilesystem.1</td><td>STRING: "/dev/disk0s2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsFilesystem.2</td><td>STRING: "devfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsFilesystem.3</td><td>STRING: "map -hosts"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsFilesystem.4</td><td>STRING: "map auto_home"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsMountpoint.1</td><td>STRING: "/"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsMountpoint.2</td><td>STRING: "/dev"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsMountpoint.3</td><td>STRING: "/net"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsMountpoint.4</td><td>STRING: "/home"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSize.1</td><td>Gauge32: 476611 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSize.2</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSize.3</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSize.4</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsUsed.1</td><td>Gauge32: 233478 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsUsed.2</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsUsed.3</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsUsed.4</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsAvail.1</td><td>Gauge32: 242883 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsAvail.2</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsAvail.3</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsAvail.4</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsUtilization.1</td><td>Gauge32: 50 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsUtilization.2</td><td>Gauge32: 100 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsUtilization.3</td><td>Gauge32: 100 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsUtilization.4</td><td>Gauge32: 100 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsWriteable.1</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsWriteable.2</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsWriteable.3</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsWriteable.4</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsRemovable.1</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsRemovable.2</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsRemovable.3</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsRemovable.4</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsBootable.1</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsBootable.2</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsBootable.3</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsBootable.4</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSmartStatus.1</td><td>INTEGER: Verified(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSmartStatus.2</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSmartStatus.3</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSmartStatus.4</td><td>INTEGER: Unknown(-1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSmartMessage.1</td><td>STRING: "Verified"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSmartMessage.2</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSmartMessage.3</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::fsSmartMessage.4</td><td>""</td><td>&nbsp;</td></tr>
+	</table>
+	
+	<hr />
+
+	<h2>Xsan Volumes</h2>
+	<p>The data shown in this portion of the MIB is taken from cvadmin by parsing the 'fsmlist' and 'show long' commands.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeIndex.1</td><td>INTEGER: 1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeName.1</td><td>STRING: "AM_01"</td><td>The Name of the Xsan Volume</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeFSSIndex.1</td><td>INTEGER: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeState.1</td><td>INTEGER: Registered(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeStateMessage.1</td><td>STRING: "2010-05-29 21:58:59"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeLastAdminAction.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeLastTermination.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeLaunchCount.1</td><td>Counter32: 1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeCoreDumpCount.1</td><td>Counter32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeFlags.1</td><td>STRING: "<CONFIGURED,AUTO-START>"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeCreated.1</td><td>STRING: "Tue Jun  9 17:34:52 2009"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeActiveConnections.1</td><td>Gauge32: 8 connections</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeFsBlockSize.1</td><td>Gauge32: 64 KBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeMsgBufferSize.1</td><td>Gauge32: 4</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeDiskDevices.1</td><td>Gauge32: 21</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeStripeGroups.1</td><td>Gauge32: 11</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeTotalKBlocks.1</td><td>Gauge32: 1831050 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeFreeKBlocks.1</td><td>Gauge32: 898845 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeTotalBlocks.1</td><td>Counter64: 1831050880 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeFreeBlocks.1</td><td>Counter64: 898845014 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeUtilization.1</td><td>Gauge32: 51 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumePid.1</td><td>Gauge32: 126</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumePort.1</td><td>Gauge32: 49177</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeTotalMBytes.1</td><td>Gauge32: 117187200 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeFreeMBytes.1</td><td>Gauge32: 57526080 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanVolumeUsedMBytes.1</td><td>Gauge32: 59661120 MBytes</td><td>&nbsp;</td></tr>
+	</table>
+	
+	<hr />
+
+	<h2>Xsan Stripe Groups (Storage Pools)</h2>
+	<p>The data shown in this portion of the MIB is taken from cvadmin by parsing the 'show long' command for a particular Volume.</p>
+	<p>The objects in this portion of the MIB are indexed by the xsanVolumeIndex to which the Stripe Group belongs. For example, xsanStripeGroupName.1.2 is the second stripe group for the Xsan Volume at xsanVolumeName.1 in the MIB.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.0</td><td>STRING: "MetadataAndJournal"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.1</td><td>STRING: "Data-1"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.2</td><td>STRING: "Data-2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.3</td><td>STRING: "Data2-1"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.4</td><td>STRING: "Data2-2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.5</td><td>STRING: "Data3-1"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.6</td><td>STRING: "Data3-2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.7</td><td>STRING: "Data5"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.8</td><td>STRING: "Data5-2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.9</td><td>STRING: "Data4"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupName.1.10</td><td>STRING: "Data4-2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.0</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.1</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.2</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.3</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.4</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.5</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.6</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.7</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.8</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.9</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStatus.1.10</td><td>INTEGER: up(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.0</td><td>Counter64: 7630336</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.1</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.2</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.3</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.4</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.5</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.6</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.7</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.8</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.9</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalBlocks.1.10</td><td>Counter64: 183105088</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.0</td><td>Counter64: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.1</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.2</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.3</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.4</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.5</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.6</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.7</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.8</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.9</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedBlocks.1.10</td><td>Counter64: 67680</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.0</td><td>Counter64: 6810494</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.1</td><td>Counter64: 73398424</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.2</td><td>Counter64: 67478291</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.3</td><td>Counter64: 71066863</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.4</td><td>Counter64: 74462652</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.5</td><td>Counter64: 74292971</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.6</td><td>Counter64: 73824171</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.7</td><td>Counter64: 116080871</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.8</td><td>Counter64: 116080364</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.9</td><td>Counter64: 116080720</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeBlocks.1.10</td><td>Counter64: 116079687</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.0</td><td>Gauge32: 7630</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.1</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.2</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.3</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.4</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.5</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.6</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.7</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.8</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.9</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalKBlocks.1.10</td><td>Gauge32: 183105</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.0</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.1</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.2</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.3</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.4</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.5</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.6</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.7</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.8</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.9</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupReservedKBlocks.1.10</td><td>Gauge32: 67</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.0</td><td>Gauge32: 6810</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.1</td><td>Gauge32: 73398</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.2</td><td>Gauge32: 67478</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.3</td><td>Gauge32: 71066</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.4</td><td>Gauge32: 74462</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.5</td><td>Gauge32: 74292</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.6</td><td>Gauge32: 73824</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.7</td><td>Gauge32: 116080</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.8</td><td>Gauge32: 116080</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.9</td><td>Gauge32: 116080</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeKBlocks.1.10</td><td>Gauge32: 116079</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.0</td><td>Gauge32: 11 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.1</td><td>Gauge32: 60 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.2</td><td>Gauge32: 64 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.3</td><td>Gauge32: 62 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.4</td><td>Gauge32: 60 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.5</td><td>Gauge32: 60 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.6</td><td>Gauge32: 60 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.7</td><td>Gauge32: 37 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.8</td><td>Gauge32: 37 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.9</td><td>Gauge32: 37 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUtilization.1.10</td><td>Gauge32: 37 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.0</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.1</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.2</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.3</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.4</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.5</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.6</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.7</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.8</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.9</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupMultiPathMethod.1.10</td><td>STRING: "Rotate"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.0</td><td>INTEGER: 1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.1</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.2</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.3</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.4</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.5</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.6</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.7</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.8</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.9</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeDepth.1.10</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.0</td><td>INTEGER: 256</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.1</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.2</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.3</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.4</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.5</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.6</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.7</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.8</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.9</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupStripeBreadth.1.10</td><td>INTEGER: 32</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.1</td><td>STRING: "Data"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.2</td><td>STRING: "Data"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.3</td><td>STRING: "Data2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.4</td><td>STRING: "Data2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.5</td><td>STRING: "Data3"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.6</td><td>STRING: "Data3"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.7</td><td>STRING: "Data5"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.8</td><td>STRING: "Data5"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.9</td><td>STRING: "Data4"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupAffinityKey.1.10</td><td>STRING: "Data4"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.0</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.1</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.2</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.3</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.4</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.5</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.6</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.7</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.8</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.9</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTLimitIOPerSecond.1.10</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.0</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.1</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.2</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.3</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.4</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.5</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.6</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.7</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.8</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.9</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTReserveIOPerSecond.1.10</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.0</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.1</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.2</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.3</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.4</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.5</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.6</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.7</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.8</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.9</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupRTCommittedIOPerSecond.1.10</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.0</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.1</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.2</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.3</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.4</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.5</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.6</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.7</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.8</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.9</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTClients.1.10</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.0</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.1</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.2</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.3</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.4</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.5</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.6</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.7</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.8</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.9</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupNonRTHostIOPerSecond.1.10</td><td>Gauge32: 0</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.0</td><td>Gauge32: 488320 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.1</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.2</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.3</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.4</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.5</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.6</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.7</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.8</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.9</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupTotalMBytes.1.10</td><td>Gauge32: 11718720 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.0</td><td>Gauge32: 435840 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.1</td><td>Gauge32: 4697472 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.2</td><td>Gauge32: 4318592 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.3</td><td>Gauge32: 4548224 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.4</td><td>Gauge32: 4765568 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.5</td><td>Gauge32: 4754688 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.6</td><td>Gauge32: 4724736 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.7</td><td>Gauge32: 7429120 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.8</td><td>Gauge32: 7429120 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.9</td><td>Gauge32: 7429120 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupFreeMBytes.1.10</td><td>Gauge32: 7429056 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.0</td><td>Gauge32: 52480 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.1</td><td>Gauge32: 7021248 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.2</td><td>Gauge32: 7400128 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.3</td><td>Gauge32: 7170496 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.4</td><td>Gauge32: 6953152 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.5</td><td>Gauge32: 6964032 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.6</td><td>Gauge32: 6993984 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.7</td><td>Gauge32: 4289600 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.8</td><td>Gauge32: 4289600 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.9</td><td>Gauge32: 4289600 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanStripeGroupUsedMBytes.1.10</td><td>Gauge32: 4289664 MBytes</td><td>&nbsp;</td></tr>
+	</table>
+
+	<hr />
+
+	<h2>Xsan Nodes (LUNs, Disks or Arrays)</h2>
+	<p>The data shown in this portion of the MIB is populated from cvadmin by parsing the 'show long' command for a particular Volume with additional node-specific data being taken from parsing 'cvlabel'.</p>
+	<p>Under normal operation, the 'cvlabel -a -g -l -v' command is used to retrieve the Node list. When a new Node is added to the MIB, the more intrusive 'cvlabel -a -g -L -v' command is run once and then cached.</p>
+	<p>The objects in this portion of the MIB are indexed by the xsanVolumeIndex and xsanStripeGroupIndex to which the Node belongs. For example, xsanNodeName.1.3.1 is the second Node in the Xsan Stripe Group at xsanStripeGroupName.3 that is part of the Xsan Volume at xsanVolumeName.1 in the MIB.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.0.0</td><td>STRING: "GD03_MD"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.1.0</td><td>STRING: "GD03_LUN_01"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.1.1</td><td>STRING: "GD03_LUN_02"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.2.0</td><td>STRING: "GD03_LUN_03"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.2.1</td><td>STRING: "GD03_LUN_04"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.3.0</td><td>STRING: "GD03_LUN_05"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.3.1</td><td>STRING: "GD03_LUN_06"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.4.0</td><td>STRING: "GD03_LUN_07"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.4.1</td><td>STRING: "GD03_LUN_08"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.5.0</td><td>STRING: "GD03_LUN_09"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.5.1</td><td>STRING: "GD03_LUN_10"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.6.0</td><td>STRING: "GD03_LUN_11"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.6.1</td><td>STRING: "GD03_LUN_12"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.7.0</td><td>STRING: "GD03_LUN_17"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.7.1</td><td>STRING: "GD03_LUN_18"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.8.0</td><td>STRING: "GD03_LUN_19"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.8.1</td><td>STRING: "GD03_LUN_20"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.9.0</td><td>STRING: "GD03_LUN_13"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.9.1</td><td>STRING: "GD03_LUN_14"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.10.0</td><td>STRING: "GD03_LUN_15"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeName.1.10.1</td><td>STRING: "GD03_LUN_16"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.0.0</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.1.0</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.1.1</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.2.0</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.2.1</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.3.0</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.3.1</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.4.0</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.4.1</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.5.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.5.1</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.6.0</td><td>STRING: "default"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.6.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.7.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.7.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.8.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.8.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.9.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.9.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.10.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeController.1.10.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.0.0</td><td>STRING: "2239000123F488CA"</td><td>The Fibre Channel WWN of the LUN</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.1.0</td><td>STRING: "2239000123F488CA"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.1.1</td><td>STRING: "223D0001232074AB"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.2.0</td><td>STRING: "2271000123F2F31B"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.2.1</td><td>STRING: "223D0001232074AB"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.3.0</td><td>STRING: "22090001232D7CFE"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.3.1</td><td>STRING: "22090001232D7CFE"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.4.0</td><td>STRING: "2201000123D6B7EF"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.4.1</td><td>STRING: "222A0001231DC814"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.5.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.5.1</td><td>STRING: "222A0001231DC814"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.6.0</td><td>STRING: "22F30001238FEC37"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.6.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.7.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.7.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.8.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.8.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.9.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.9.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.10.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSerial.1.10.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.0.0</td><td>STRING: "df910416-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.1.0</td><td>STRING: "df910416-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.1.1</td><td>STRING: "df7fdfa6-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.2.0</td><td>STRING: "df87211c-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.2.1</td><td>STRING: "df7fdfa6-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.3.0</td><td>STRING: "df727744-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.3.1</td><td>STRING: "df727744-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.4.0</td><td>STRING: "df6919d8-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.4.1</td><td>STRING: "dfa2be18-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.5.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.5.1</td><td>STRING: "dfa2be18-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.6.0</td><td>STRING: "df661fe4-2730-11e1-32ac-00123456abce"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.6.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.7.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.7.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.8.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.8.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.9.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.9.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.10.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeGUID.1.10.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.0.0</td><td>STRING: "/dev/rdisk0"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.1.0</td><td>STRING: "/dev/rdisk2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.1.1</td><td>STRING: "/dev/rdisk7"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.2.0</td><td>STRING: "/dev/rdisk9"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.2.1</td><td>STRING: "/dev/rdisk6"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.3.0</td><td>STRING: "/dev/rdisk11"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.3.1</td><td>STRING: "/dev/rdisk12"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.4.0</td><td>STRING: "/dev/rdisk10"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.4.1</td><td>STRING: "/dev/rdisk14"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.5.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.5.1</td><td>STRING: "/dev/rdisk13"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.6.0</td><td>STRING: "/dev/rdisk1"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.6.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.7.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.7.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.8.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.8.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.9.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.9.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.10.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDevice.1.10.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.0.0</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.1.0</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.1.1</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.2.0</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.2.1</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.3.0</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.3.1</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.4.0</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.4.1</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.5.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.5.1</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.6.0</td><td>STRING: "Promise VTrak E610f     1006"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.6.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.7.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.7.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.8.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.8.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.9.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.9.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.10.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeDeviceLabel.1.10.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.0.0</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.1.0</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.1.1</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.2.0</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.2.1</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.3.0</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.3.1</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.4.0</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.4.1</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.5.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.5.1</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.6.0</td><td>STRING: "acfs"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.6.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.7.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.7.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.8.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.8.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.9.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.9.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.10.0</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeFSType.1.10.1</td><td>""</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.0.0</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.1.0</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.1.1</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.2.0</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.2.1</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.3.0</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.3.1</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.4.0</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.4.1</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.5.0</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.5.1</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.6.0</td><td>Gauge32: 512 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.6.1</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.7.0</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.7.1</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.8.0</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.8.1</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.9.0</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.9.1</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.10.0</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectorSize.1.10.1</td><td>Gauge32: 0 Bytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.0.0</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.1.0</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.1.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.2.0</td><td>Counter64: 11718729183 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.2.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.3.0</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.3.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.4.0</td><td>Counter64: 11718729183 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.4.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.5.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.5.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.6.0</td><td>Counter64: 11718729183 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.6.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.7.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.7.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.8.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.8.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.9.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.9.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.10.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSectors.1.10.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.0.0</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.1.0</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.1.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.2.0</td><td>Counter64: 11718729183 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.2.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.3.0</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.3.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.4.0</td><td>Counter64: 11718729183 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.4.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.5.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.5.1</td><td>Counter64: 1464824799 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.6.0</td><td>Counter64: 11718729183 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.6.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.7.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.7.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.8.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.8.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.9.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.9.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.10.0</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxSectors.1.10.1</td><td>Counter64: 0 Sectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.0.0</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.1.0</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.1.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.2.0</td><td>Gauge32: 11718729 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.2.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.3.0</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.3.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.4.0</td><td>Gauge32: 11718729 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.4.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.5.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.5.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.6.0</td><td>Gauge32: 11718729 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.6.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.7.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.7.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.8.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.8.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.9.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.9.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.10.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeKSectors.1.10.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.0.0</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.1.0</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.1.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.2.0</td><td>Gauge32: 11718729 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.2.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.3.0</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.3.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.4.0</td><td>Gauge32: 11718729 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.4.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.5.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.5.1</td><td>Gauge32: 1464824 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.6.0</td><td>Gauge32: 11718729 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.6.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.7.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.7.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.8.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.8.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.9.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.9.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.10.0</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeMaxKSectors.1.10.1</td><td>Gauge32: 0 KSectors</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.0.0</td><td>INTEGER: Yes(1)</td><td>A value of 'Yes' indicates that the Node was referenced in a cvadmin 'show long' output for the Volume but the Node itself was not visible in the output of the 'cvlabel' command. That is, a Volume is configured to use the Node but the Node is not attached to or visible from the host.</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.1.0</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.1.1</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.2.0</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.2.1</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.3.0</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.3.1</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.4.0</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.4.1</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.5.0</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.5.1</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.6.0</td><td>INTEGER: Yes(1)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.6.1</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.7.0</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.7.1</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.8.0</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.8.1</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.9.0</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.9.1</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.10.0</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeVisible.1.10.1</td><td>INTEGER: No(0)</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.0.0</td><td>Gauge32: 749568 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.1.0</td><td>Gauge32: 749568 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.1.1</td><td>Gauge32: 749568 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.2.0</td><td>Gauge32: 5999616 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.2.1</td><td>Gauge32: 749568 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.3.0</td><td>Gauge32: 749568 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.3.1</td><td>Gauge32: 749568 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.4.0</td><td>Gauge32: 5999616 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.4.1</td><td>Gauge32: 749568 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.5.0</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.5.1</td><td>Gauge32: 749568 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.6.0</td><td>Gauge32: 5999616 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.6.1</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.7.0</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.7.1</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.8.0</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.8.1</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.9.0</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.9.1</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.10.0</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanNodeSize.1.10.1</td><td>Gauge32: 0 MBytes</td><td>&nbsp;</td></tr>
+	</table>
+
+	<hr />
+
+	<h2>Xsan Affinities</h2>
+	<p>The data shown in this portion of the MIB is populated from cvadmin by parsing the 'show long' command for a particular Volume with additional affinity-specific data being taken from parsing 'cvlabel'. The size and utilization figures are calculated as totals of all the Stripe Groups that are in the Affinity.</p>
+	<p>The objects in this portion of the MIB are indexed by the xsanVolumeIndex to which the Affinity belongs. For example, xsanAffinityName.1.2 is the second Affinity in the Xsan Volume at xsanVolumeName.1 in the MIB.</p>
+	<table width=100%>
+		<tr><th width=40%>OID</th><th width=30%>Example Value</th><th width=30%>Comment</th></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityIndex.1.1</td><td>INTEGER: 1</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityIndex.1.2</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityIndex.1.3</td><td>INTEGER: 3</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityIndex.1.4</td><td>INTEGER: 4</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityIndex.1.5</td><td>INTEGER: 5</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityName.1.1</td><td>STRING: "Data"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityName.1.2</td><td>STRING: "Data2"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityName.1.3</td><td>STRING: "Data3"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityName.1.4</td><td>STRING: "Data5"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityName.1.5</td><td>STRING: "Data4"</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityStripeGroups.1.1</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityStripeGroups.1.2</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityStripeGroups.1.3</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityStripeGroups.1.4</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityStripeGroups.1.5</td><td>INTEGER: 2</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalKBlocks.1.1</td><td>Gauge32: 366210 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalKBlocks.1.2</td><td>Gauge32: 366210 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalKBlocks.1.3</td><td>Gauge32: 366210 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalKBlocks.1.4</td><td>Gauge32: 366210 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalKBlocks.1.5</td><td>Gauge32: 366210 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeKBlocks.1.1</td><td>Gauge32: 140876 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeKBlocks.1.2</td><td>Gauge32: 145528 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeKBlocks.1.3</td><td>Gauge32: 148116 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeKBlocks.1.4</td><td>Gauge32: 232160 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeKBlocks.1.5</td><td>Gauge32: 232159 KBlocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalBlocks.1.1</td><td>Counter64: 366210176 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalBlocks.1.2</td><td>Counter64: 366210176 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalBlocks.1.3</td><td>Counter64: 366210176 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalBlocks.1.4</td><td>Counter64: 366210176 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalBlocks.1.5</td><td>Counter64: 366210176 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeBlocks.1.1</td><td>Counter64: 140876715 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeBlocks.1.2</td><td>Counter64: 145529515 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeBlocks.1.3</td><td>Counter64: 148117142 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeBlocks.1.4</td><td>Counter64: 232161235 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeBlocks.1.5</td><td>Counter64: 232160407 Blocks</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUtilization.1.1</td><td>Gauge32: 61 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUtilization.1.2</td><td>Gauge32: 60 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUtilization.1.3</td><td>Gauge32: 59 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUtilization.1.4</td><td>Gauge32: 36 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUtilization.1.5</td><td>Gauge32: 36 %</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalMBytes.1.1</td><td>Gauge32: 23437440 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalMBytes.1.2</td><td>Gauge32: 23437440 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalMBytes.1.3</td><td>Gauge32: 23437440 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalMBytes.1.4</td><td>Gauge32: 23437440 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityTotalMBytes.1.5</td><td>Gauge32: 23437440 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeMBytes.1.1</td><td>Gauge32: 9016064 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeMBytes.1.2</td><td>Gauge32: 9313792 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeMBytes.1.3</td><td>Gauge32: 9479424 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeMBytes.1.4</td><td>Gauge32: 14858240 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityFreeMBytes.1.5</td><td>Gauge32: 14858176 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUsedMBytes.1.1</td><td>Gauge32: 14421376 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUsedMBytes.1.2</td><td>Gauge32: 14123648 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUsedMBytes.1.3</td><td>Gauge32: 13958016 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUsedMBytes.1.4</td><td>Gauge32: 8579200 MBytes</td><td>&nbsp;</td></tr>
+		<tr><td>XSNMP-MIB::xsanAffinityUsedMBytes.1.5</td><td>Gauge32: 8579264 MBytes</td><td>&nbsp;</td></tr>
+	</table>
+
+	</body>
+</html>
