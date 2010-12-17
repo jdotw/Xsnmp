@@ -22,13 +22,13 @@ cd $BASEDIR
 #
 
 cd "$DMGDIR"
-scp Xsnmp-Installer-$BUILDNUM.pkg www.lithiumcorp.com:/www/xsnmp.com/download/prerelease/Xsnmp-Installer-$BUILDNUM.pkg
+scp Xsnmp-Installer-$BUILDNUM.pkg www.lithiumcorp.com:/www/download.lithiumcorp.com/xsnmp/Xsnmp-Installer-$BUILDNUM.pkg
 
 #
 # Update web page
 #
 
-ssh www.lithiumcorp.com sed -i '' -e "s/0\.9\.[0-9]*/$BUILDNUM/g" /www/xsnmp.com/index.html
+ssh www.lithiumcorp.com ln -sf /www/download.lithiumcorp.com/xsnmp/Xsnmp-Installer-$BUILDNUM.pkg /www/download.lithiumcorp.com/xsnmp/Xsnmp-Installer-CURRENT.pkg
 
 # 
 # Clean up
