@@ -1,0 +1,32 @@
+Apple raidutil version: 1.2.0
+General Status: Issues Found
+		Battery fault.  See Battery Status below.
+Battery Status: Battery failed (other than expired)
+Controller  #1: Hardware Version 1.00/Firmware M-2.0.5.5
+                Write Cache disabled
+
+Volumes       Status      Raidset       Type          Size  Comments
+----------------------------------------------------------------------------
+R1V1          Is Viable   R0-1          RAID 5     160.38GB  Condition: Good
+
+                                     Total     Avail
+Raidsets      Type       Drives       Size      Size  Comments
+----------------------------------------------------------------------
+R0-1          RAID 5     1,2,3    160.38GB    0.00MB  No tasks running                 
+
+
+Drives  Raidset       Size      Flags
+------------------------------------------------------------------
+Bay #1  R0-1           81.96GB   IsMemberOfRAIDSet:R0-1 IsReliable
+Bay #2  R0-1           81.96GB   IsMemberOfRAIDSet:R0-1 IsReliable
+Bay #3  R0-1           81.96GB   IsMemberOfRAIDSet:R0-1 IsReliable
+
+
+Alert ID    Date and Time         Severity  Acknowledgement  Alert Message
+--------------------------------------------------------------------------------------------------------------------------
+       8    1/2/11 12:04 PM       critical   ACK is needed   Battery failed (code 0x#0 = 18)
+------------------
+Total events:    1
+
+
+There are no tasks running at this time.
