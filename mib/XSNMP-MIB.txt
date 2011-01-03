@@ -9,7 +9,7 @@ IMPORTS
 
 lcorp MODULE-IDENTITY
 
-    LAST-UPDATED "201012060000Z"
+    LAST-UPDATED "201101040000Z"
 
     ORGANIZATION "LithiumCorp Pty Ltd"
     CONTACT-INFO "LithiumCorp Support
@@ -20,8 +20,8 @@ lcorp MODULE-IDENTITY
           E-mail: support@lithiumcorp.com"
     DESCRIPTION "Xsnmp MIB"
 
-    REVISION "201012060000Z"
-        DESCRIPTION "Add RAID Util tables"
+    REVISION "201101040000Z"
+        DESCRIPTION "Added failed enumerator to battery status"
 ::= { enterprises 20038 }
 
 -- Structure
@@ -1168,6 +1168,7 @@ raidBatteryStatus OBJECT-TYPE
         conditioning (2),
         chargingInsufficientCharge (3),
         notChargingInsufficientCharge (4),
+        failed (5),
         unknown (0)
     }
     MAX-ACCESS read-only

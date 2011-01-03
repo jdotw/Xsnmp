@@ -2,7 +2,9 @@ BASEDIR=$PWD
 
 sudo rm -rf /Library/Xsnmp
 
-cd ~/Source/External/pcre-8.02
+cd deps
+tar zxvf pcre-8.02.tar.gz
+cd pcre-8.02
 $BASEDIR/util/pcre_build.sh
 cd $BASEDIR
 

@@ -125,6 +125,7 @@ void update_raid ()
     else if (strstr(raid_cache.batteryStatusMessage, "Conditioning")) raid_cache.batteryStatus = 2;
     else if (strstr(raid_cache.batteryStatusMessage, "Charging (insufficient charge)")) raid_cache.batteryStatus = 3;
     else if (strstr(raid_cache.batteryStatusMessage, "Not Charging (insufficient charge)")) raid_cache.batteryStatus = 4;
+    else if (strstr(raid_cache.batteryStatusMessage, "Battery failed")) raid_cache.batteryStatus = 5;
   }
   else raid_cache.batteryStatus = 0;  // Unknown
 
@@ -137,8 +138,12 @@ void update_raid ()
   size_t writecache_len = 0;
   extract_string_from_regex(data, data_len, "Write Cache (.*)$", &writecache_str, &writecache_len);
   printf ("WRITE CACHE: %s\n", writecache_str);
-  if (strstr(writecache_str, "enabled")) raid_cache.writeCache = 1;
-  else raid_cache.writeCache = 0;
+  if (writecache_str)
+  {
+    if (strstr(writecache_str, "enabled")) raid_cache.writeCache = 1;
+    if (strstr(writecache_str, "disabled")) raid_cache.writeCache = 2;
+    else raid_cache.writeCache = 0;
+  }
 
   /* Set cache timestamp */
   gettimeofday(&raid_cache_timestamp,NULL);
