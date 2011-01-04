@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/main.c)
 
-VERSION=0.9.17
+VERSION=0.9.19
 PACKAGE=xsnmp
 
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
