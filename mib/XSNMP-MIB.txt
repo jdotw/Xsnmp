@@ -21,7 +21,7 @@ lcorp MODULE-IDENTITY
     DESCRIPTION "Xsnmp MIB"
 
     REVISION "201101040000Z"
-        DESCRIPTION "Added failed enumerator to battery status"
+        DESCRIPTION "Added failed enumerator to battery status, removed LocalMDC from Xsan Volume"
 ::= { enterprises 20038 }
 
 -- Structure
@@ -91,7 +91,7 @@ XsanVolumeEntry ::= SEQUENCE {
     xsanVolumeFreeMBytes            Gauge32,
     xsanVolumeUsedMBytes            Gauge32,
     xsanVolumeControllerAddress     DisplayString,
-    xsanVolumeLocalPrimaryMDC       INTEGER
+    xsanVolumeControllerIndex       INTEGER
 }
 
 xsanVolumeIndex OBJECT-TYPE
@@ -324,15 +324,12 @@ xsanVolumeControllerAddress OBJECT-TYPE
     "The IP Address of the metadata controller"
 ::= { xsanVolumeEntry 27 }
 
-xsanVolumeLocalPrimaryMDC OBJECT-TYPE
-    SYNTAX INTEGER {
-        yes (1), 
-        no (0)
-    }
+xsanVolumeControllerIndex OBJECT-TYPE
+    SYNTAX  INTEGER
     MAX-ACCESS  read-only
     STATUS  current
     DESCRIPTION
-    "Indicates whether the local host if the primary MDC for the Volume, that is, the local host is in control of the volume"
+    "The MDC Index of the metadata controller"
 ::= { xsanVolumeEntry 28 }
 
 -- Xsan Storage Pools

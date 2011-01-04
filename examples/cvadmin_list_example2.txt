@@ -1,0 +1,21 @@
+snltranfarm1:~ nimda$ sudo cvadmin
+Password:
+Xsan Administrator
+
+Enter command(s)
+For command help, enter "help" or "?".
+
+List FSS
+
+File System Services (* indicates service is in control of FS):
+ 1>*SNL_Library_B[1]     located on 10.21.24.51:50232 (pid 20428)
+ 2> SNL_Library_B[1]     located on 10.21.24.52:44684 (pid 12026)
+ 3>*ProductionSAN[0]     located on 10.21.24.52:33121 (pid 14917)
+ 4>*SNL_Library_A[1]     located on 10.21.24.51:56200 (pid 25499)
+ 5> SNL_Library_A[1]     located on 10.21.24.52:52296 (pid 15487)
+ 6> ProductionSAN[0]     located on 10.21.24.51:36102 (pid 25606)
+
+Select FSM "none"
+
+
+Xsanadmin> 

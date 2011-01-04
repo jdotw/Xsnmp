@@ -51,7 +51,7 @@ struct xsanVolumeTable_entry {
   size_t xsanVolumeFlags_len;
   char *xsanVolumeControllerAddress;
   size_t xsanVolumeControllerAddress_len;
-  u_long xsanVolumeLocalPrimaryMDC;
+  u_long xsanVolumeControllerIndex;
 
   /* From 'show long' */
   char *xsanVolumeCreated;
@@ -71,7 +71,6 @@ struct xsanVolumeTable_entry {
   u_long xsanVolumeTotalMBytes;
   u_long xsanVolumeFreeMBytes;
   u_long xsanVolumeUsedMBytes;
-  
   
   /* From 'fsmlist' */
   u_long xsanVolumePid;
@@ -112,7 +111,7 @@ initialize_table_xsanVolumeTable(void)
                          ASN_INTEGER,  /* index: xsanVolumeIndex */
                          0);
   table_info->min_column = COLUMN_XSANVOLUMEINDEX;
-  table_info->max_column = COLUMN_XSANVOLUMELOCALPRIMARYMDC;
+  table_info->max_column = COLUMN_XSANVOLUMECONTROLLERINDEX;
   
   iinfo = SNMP_MALLOC_TYPEDEF( netsnmp_iterator_info );
   iinfo->get_first_data_point = xsanVolumeTable_get_first_data_point;
@@ -352,12 +351,26 @@ void update_vollist_cvadmin ()
   struct timeval now;
   gettimeofday (&now, NULL);
 
+  /* Reset the volumes Xsan MDC address 
+   *
+   * This is done to ensure that only data from the current refresh
+   * is used to determine where the volume is currently hosted 
+   */
+  struct xsanVolumeTable_entry *entry = xsanVolumeTable_head;
+  while (entry)
+  {
+    entry->xsanVolumeControllerAddress = NULL;
+    entry->xsanVolumeControllerAddress_len = 0;
+    entry = entry->next;
+  }
+
+  /* Get Data */
   char *data = NULL;
   size_t data_len = 0;
   if (xsan_debug())
   {
     int fd;
-    fd = open ("../examples/cvadmin_list_example1.txt", O_RDONLY);
+    fd = open ("../examples/cvadmin_list_example2.txt", O_RDONLY);
     data = malloc (65536);
     data_len = read (fd, data, 65535);
     data[data_len] = '\0';     
@@ -374,7 +387,7 @@ void update_vollist_cvadmin ()
   const char *error;
   int erroffset;
   int ovector[OVECCOUNT];
-  pcre *re = pcre_compile("^[ ]*(\\d*)\\>([\\* ])(\\w+)\\[\\d+\\][ ]*located on ([^\\:]+)\\:(\\d+)[ ]*\\(pid (\\d+)\\)$", PCRE_MULTILINE, &error, &erroffset, NULL);
+  pcre *re = pcre_compile("^[ ]*(\\d*)\\>([\\* ])(\\w+)\\[(\\d+)\\][ ]*located on ([^\\:]+)\\:(\\d+)[ ]*\\(pid (\\d+)\\)$", PCRE_MULTILINE, &error, &erroffset, NULL);
 
   if (re == NULL) { x_printf ("ERROR: update_vollist failed to compile regex"); free (data); return; }
 
@@ -411,8 +424,12 @@ void update_vollist_cvadmin ()
     if (rc > 0)
     {
       /* Matched an Xsan Volume. Vectors:
-       * 0=FullString 1(2)=Index 2(4)=Control 3(6)=Volume 4(8)=Address 5(10)=Port 6(12)=PID
-      */
+       * 0=FullString 1(2)=Index 2(4)=Control 3(6)=Volume 4(8)=MDC_Index 5(10)=Address 6(12)=Port 7(14)=PID
+       *
+       * It is likely that the same volume will be matched multiple times.
+       * Where there is a primary and backup MDC there will be two entries
+       * for the volume in this output.
+       */
       
       /* Get Volume Name */
       char *volname_str;
@@ -421,7 +438,7 @@ void update_vollist_cvadmin ()
       x_debug ("update_vollist_cvadmin Matched %.*s\n", ovector[7] - ovector[6], data + ovector[6]);      
 
       /* Find/Create Volume Entry */
-      struct xsanVolumeTable_entry *entry = xsanVolumeTable_head;
+      entry = xsanVolumeTable_head;
       while (entry)
       {
         if (!strcmp(volname_str, entry->xsanVolumeName)) break;
@@ -438,12 +455,19 @@ void update_vollist_cvadmin ()
       free (volname_str);
       volname_str = NULL;
       
-      /* Extract Data from Regex Match */
-      entry->xsanVolumeFSSIndex = extract_uint_in_range (data + ovector[2], ovector[3] - ovector[2]);
-      entry->xsanVolumeLocalPrimaryMDC = extract_uint_in_range (data + ovector[4], ovector[5] - ovector[4]);
-      extract_string_in_range (data + ovector[8], ovector[9] - ovector[8], &entry->xsanVolumeControllerAddress, &entry->xsanVolumeControllerAddress_len);
-      entry->xsanVolumePort = extract_uint_in_range (data + ovector[10], ovector[11] - ovector[10]);
-      entry->xsanVolumePid = extract_uint_in_range (data + ovector[12], ovector[13] - ovector[12]);
+      /* Check to see if this row describes the controlling MDC */
+      char *control_str = NULL;
+      size_t control_len = 0;
+      extract_string_in_range (data + ovector[4], ovector[5] - ovector[4], &control_str, &control_len);
+      if (control_str && strstr(control_str, "*"))
+      {
+        /* This row describes the controlling MDC, use these values only */
+        entry->xsanVolumeFSSIndex = extract_uint_in_range (data + ovector[2], ovector[3] - ovector[2]);
+        entry->xsanVolumeControllerIndex = extract_uint_in_range (data + ovector[8], ovector[9] - ovector[8]);
+        extract_string_in_range (data + ovector[10], ovector[11] - ovector[10], &entry->xsanVolumeControllerAddress, &entry->xsanVolumeControllerAddress_len);
+        entry->xsanVolumePort = extract_uint_in_range (data + ovector[12], ovector[13] - ovector[12]);
+        entry->xsanVolumePid = extract_uint_in_range (data + ovector[14], ovector[15] - ovector[14]);
+      }
     }
     else
     {
@@ -455,7 +479,7 @@ void update_vollist_cvadmin ()
   pcre_free(re);    /* Release memory used for the compiled pattern */
 
   /* Check for obsolete entries */
-  struct xsanVolumeTable_entry *entry = xsanVolumeTable_head;
+  entry = xsanVolumeTable_head;
   while (entry)
   {
     struct xsanVolumeTable_entry *next = entry->next;
@@ -822,6 +846,25 @@ xsanVolumeTable_handler(
             }
             snmp_set_var_typed_integer( request->requestvb, ASN_GAUGE,
                                         table_entry->xsanVolumeUsedMBytes);
+            break;
+        case COLUMN_XSANVOLUMECONTROLLERADDRESS:
+            if ( !table_entry ) {
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHINSTANCE);
+                continue;
+            }
+            snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                             (u_char*)table_entry->xsanVolumeControllerAddress,
+                                      table_entry->xsanVolumeControllerAddress_len);
+            break;
+        case COLUMN_XSANVOLUMECONTROLLERINDEX:
+            if ( !table_entry ) {
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHINSTANCE);
+                continue;
+            }
+            snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                        table_entry->xsanVolumeControllerIndex);
             break;
         default:
             netsnmp_set_request_error(reqinfo, request,
