@@ -1,0 +1,34 @@
+snltranfarm2 (3.199.70.182)
+Apple raidutil version: 1.2.0
+General Status: Issues Found
+		Battery fault.  See Battery Status below.
+Battery Status: Battery is precharging and can't be read
+Controller  #1: Hardware Version 1.00/Firmware M-2.0.5.5
+                Write Cache disabled
+
+Volumes       Status      Raidset       Type          Size  Comments
+----------------------------------------------------------------------------
+R1V1          Is Viable   RS1           RAID 5     160.38GB  Condition: Good
+
+                                     Total     Avail
+Raidsets      Type       Drives       Size      Size  Comments
+----------------------------------------------------------------------
+RS1           RAID 5     1,2,3    160.38GB    0.00MB  No tasks running                 
+
+
+Drives  Raidset       Size      Flags
+-----------------------------------------------------------------
+Bay #1  RS1            81.96GB   IsMemberOfRAIDSet:RS1 IsReliable
+Bay #2  RS1            81.96GB   IsMemberOfRAIDSet:RS1 IsReliable
+Bay #3  RS1            81.96GB   IsMemberOfRAIDSet:RS1 IsReliable
+
+
+Alert ID    Date and Time         Severity  Acknowledgement  Alert Message
+--------------------------------------------------------------------------------------------------------------------------
+No events found.
+
+
+There are no tasks running at this time.
+
+
+

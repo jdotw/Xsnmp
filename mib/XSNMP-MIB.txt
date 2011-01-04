@@ -1166,6 +1166,7 @@ raidBatteryStatus OBJECT-TYPE
         chargingInsufficientCharge (3),
         notChargingInsufficientCharge (4),
         failed (5),
+        precharging (6),
         unknown (0)
     }
     MAX-ACCESS read-only
