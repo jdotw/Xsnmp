@@ -15,6 +15,7 @@
 		103218A211E3E22300A1DA23 /* xsnmp_helpertool.c in Sources */ = {isa = PBXBuildFile; fileRef = 103217EF11E3DCAC00A1DA23 /* xsnmp_helpertool.c */; };
 		10335DF711E3CAF500A4356D /* XSSNMPConfigController.h in Headers */ = {isa = PBXBuildFile; fileRef = 10335DF511E3CAF500A4356D /* XSSNMPConfigController.h */; };
 		10335DF811E3CAF500A4356D /* XSSNMPConfigController.m in Sources */ = {isa = PBXBuildFile; fileRef = 10335DF611E3CAF500A4356D /* XSSNMPConfigController.m */; };
+		10838ECB1329B426000D26A0 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 10838ECA1329B426000D26A0 /* Icon.icns */; };
 		109ED35211E439AD00795965 /* disable_config_management.rb in Resources */ = {isa = PBXBuildFile; fileRef = 109ED35111E439AD00795965 /* disable_config_management.rb */; };
 		109ED36A11E43AE900795965 /* enable_xsnmp_agentx.rb in Resources */ = {isa = PBXBuildFile; fileRef = 109ED36911E43AE900795965 /* enable_xsnmp_agentx.rb */; };
 		109ED36C11E43AF800795965 /* disable_xsnmp_agentx.rb in Resources */ = {isa = PBXBuildFile; fileRef = 109ED36B11E43AF800795965 /* disable_xsnmp_agentx.rb */; };
@@ -54,6 +55,7 @@
 		10335DF511E3CAF500A4356D /* XSSNMPConfigController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSSNMPConfigController.h; sourceTree = "<group>"; };
 		10335DF611E3CAF500A4356D /* XSSNMPConfigController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XSSNMPConfigController.m; sourceTree = "<group>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		10838ECA1329B426000D26A0 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = "<group>"; };
 		109ED35111E439AD00795965 /* disable_config_management.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = disable_config_management.rb; sourceTree = "<group>"; };
 		109ED36911E43AE900795965 /* enable_xsnmp_agentx.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = enable_xsnmp_agentx.rb; sourceTree = "<group>"; };
 		109ED36B11E43AF800795965 /* disable_xsnmp_agentx.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = disable_xsnmp_agentx.rb; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				10838ECA1329B426000D26A0 /* Icon.icns */,
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				F506C040013D9D8001CA16C8 /* XsnmpPrefPanePref.tiff */,
@@ -260,7 +263,11 @@
 			};
 			buildConfigurationList = 1DBD214C08BA80EA00186707 /* Build configuration list for PBXProject "XsnmpPrefPane" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 089C166AFE841209C02AAC07 /* XsnmpPrefPane */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -285,6 +292,7 @@
 				109ED36C11E43AF800795965 /* disable_xsnmp_agentx.rb in Resources */,
 				109ED3F111E5B5C600795965 /* update_config.rb in Resources */,
 				109ED41E11E731DF00795965 /* xsnmp_helper.rb in Resources */,
+				10838ECB1329B426000D26A0 /* Icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,7 +425,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CURRENT_PROJECT_VERSION = 300696;
+				CURRENT_PROJECT_VERSION = 300698;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -434,7 +442,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CURRENT_PROJECT_VERSION = 300696;
+				CURRENT_PROJECT_VERSION = 300698;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

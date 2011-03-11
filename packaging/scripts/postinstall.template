@@ -27,9 +27,6 @@ if test $? -eq "1"; then
   defaults write /Library/Preferences/com.xsnmp.xsnmp snmpCommunity public
 fi
 
-# Restarting Xsnmp
+# Restart Xsnmp
 killall xsnmp
 
-#Return 0 to ensure installer is happy 
-# (the killall may return != 0 if xsnmp isnt running 
-exit 0

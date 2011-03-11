@@ -122,6 +122,10 @@ def build_custom_installer
   else
     config_template << "ruby /Library/PreferencePanes/Xsnmp.prefPane/Contents/Resources/xsnmp_helper.rb disable_xsnmp_agentx #{ARGV[1..ARGV.length] * ' '}\n"
   end
+    
+  # Add exit 0 to file to keep installer happy
+  config_template << "\n\n# Exit with 0 to keep installer happy\n"
+  config_template << "exit 0\n"
   
   # Write actual postinstall file
   f = File.new("/Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall", File::CREAT|File::TRUNC|File::RDWR, 0644)

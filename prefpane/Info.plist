@@ -17,15 +17,15 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.9.19</string>
+	<string>1.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>300696</string>
+	<string>300698</string>
 	<key>NSMainNibFile</key>
 	<string>XsnmpPrefPanePref</string>
 	<key>NSPrefPaneIconFile</key>
-	<string>XsnmpPrefPanePref.tiff</string>
+	<string>Icon.icns</string>
 	<key>NSPrefPaneIconLabel</key>
 	<string>Xsnmp</string>
 	<key>NSPrincipalClass</key>

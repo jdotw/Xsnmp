@@ -200,6 +200,22 @@
 
 - (IBAction) buildCustomInstallerClicked:(id)sender
 {
+    /* Check to see that packagemaker is installed */
+    if (![[NSFileManager defaultManager] fileExistsAtPath:@"/Developer/usr/bin/packagemaker"])
+    {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"Xcode is Required"
+                                         defaultButton:@"OK"
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:@"Xsnmp requires the 'packagemaker' utility in Xcode 3 or Xcode 4 to be installed in /Developer"];
+        [alert setAlertStyle:NSCriticalAlertStyle];
+        [alert beginSheetModalForWindow:[NSApp mainWindow]
+                          modalDelegate:nil
+                         didEndSelector:nil
+                            contextInfo:nil];
+    }
+    
+    
 	/* Shown a sheet explaining what this does, 
 	 * then a file save dialog to choose where to
 	 * put the package. Then build is accordingly
