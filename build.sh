@@ -14,6 +14,7 @@ PATH="/Xcode3/usr/bin:/Xcode3/usr/sbin:$PATH" \
 
 sudo cp launchd/com.xsnmp.xsnmp-agentx.plist /Library/Xsnmp/XsnmpAgentExtension.app/Resources
 sudo cp -r packaging/XsnmpInstaller.pmdoc /Library/Xsnmp/XsnmpAgentExtension.app/Resources
+sudo cp -r packaging/Finished.rtfd /Library/Xsnmp/XsnmpAgentExtension.app/Resources
 sudo cp -r packaging/scripts /Library/Xsnmp/XsnmpAgentExtension.app/Resources
 sudo cp /Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall.template /Library/Xsnmp/XsnmpAgentExtension.app/Resources/scripts/postinstall
 sudo ./packaging/scripts/prepare_postinstall.sh
@@ -24,8 +25,10 @@ chnod ug+x /Library/Xsnmp/XsnmpAgentExtension.app/Contents/MacOS/xsnmp_debug_inf
 cd prefpane
 MVERS=`agvtool mvers | grep 'Found CFBundleShortVersionString' | sed 's/^[^\"]*\"//g' | sed 's/".*//g'`
 VERS=`agvtool vers | egrep '^[ ]*[0-9]+' | sed 's/^[ ]*//g'`
-xcodebuild -configuration Release clean
-xcodebuild -configuration Release build
+PATH="/Xcode3/usr/bin:/Xcode3/usr/sbin:$PATH" \
+/Xcode3/usr/bin/xcodebuild -configuration Release clean
+PATH="/Xcode3/usr/bin:/Xcode3/usr/sbin:$PATH" \
+/Xcode3/usr/bin/xcodebuild -configuration Release build
 cd ..
 
 sudo cp -r prefpane/build/release/Xsnmp.prefPane /Library/Xsnmp/XsnmpAgentExtension.app/Resources
