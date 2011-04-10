@@ -106,8 +106,6 @@ void update_raid ()
 
   if (!data) return;
 
-  printf("Data: '%s'\n", data);
-
   /* General Status */
   if (extract_string_from_regex(data, data_len, "^General Status:\\s+(.*)$", &raid_cache.generalStatusMessage, &raid_cache.generalStatusMessage_len))
   {
@@ -139,7 +137,6 @@ void update_raid ()
   char *writecache_str = NULL;
   size_t writecache_len = 0;
   extract_string_from_regex(data, data_len, "Write Cache (.*)$", &writecache_str, &writecache_len);
-  printf ("WRITE CACHE: %s\n", writecache_str);
   if (writecache_str)
   {
     if (strstr(writecache_str, "enabled")) raid_cache.writeCache = 1;

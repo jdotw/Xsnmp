@@ -198,8 +198,6 @@ void update_volumelist()
     data_len = strlen(data);
   }
 
-  printf ("Data is '%s'\n", data);
-
   /* Regex and loop through each raid set row */
   const char *error;
   int erroffset;
