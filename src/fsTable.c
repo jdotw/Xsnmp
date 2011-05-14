@@ -183,8 +183,18 @@ void update_volume_disk (struct fsTable_entry *entry)
     return; 
   }
   size_t data_len = strlen(data);
-  
-  entry->fsWriteable = !extract_boolean_from_regex(data, data_len, "Read-Only Volume:[ ]+(\\w+)$");
+
+  char *writeable_str = NULL;
+  size_t writeablestr_len = 0;
+  if (extract_string_from_regex(data, data_len, "Read-Only Volume:[ ]+(\\w+)$", &writeable_str, &writeable_str_len))
+  {
+    entry->fsWriteable = !extract_boolean_from_regex(data, data_len, "Read-Only Volume:[ ]+(\\w+)$");
+  }
+  else
+  {
+    entry->fsWriteable = !extract_boolean_from_regex(data, data_len, "Read Only:[ ]+(\\w+)$");
+  }
+
   entry->fsRemovable = extract_boolean_from_regex(data, data_len, "Ejectable:[ ]+(\\w+)$");
   
   char *boot_str = NULL;
