@@ -24,6 +24,7 @@ init_fsTable(void)
 
 static struct timeval volume_cache_timestamp = { 0, 0 };
 static int last_index_used = 0;
+void update_volumes();
 
 /** Initialize the fsTable table by defining its contents and how it's structured */
 void
@@ -56,6 +57,7 @@ initialize_table_fsTable(void)
     netsnmp_register_table_iterator( reg, iinfo );
 
     /* Initialise the contents of the table here */
+    update_volumes();
 }
 
     /* Typical data structure for a row entry */
@@ -185,7 +187,7 @@ void update_volume_disk (struct fsTable_entry *entry)
   size_t data_len = strlen(data);
 
   char *writeable_str = NULL;
-  size_t writeablestr_len = 0;
+  size_t writeable_str_len = 0;
   if (extract_string_from_regex(data, data_len, "Read-Only Volume:[ ]+(\\w+)$", &writeable_str, &writeable_str_len))
   {
     entry->fsWriteable = !extract_boolean_from_regex(data, data_len, "Read-Only Volume:[ ]+(\\w+)$");
@@ -300,7 +302,7 @@ void update_volumes()
       entry->fsUsed = extract_uint_in_range(data + ovector[6], ovector[7] - ovector[6]);
       entry->fsAvail = extract_uint_in_range(data + ovector[8], ovector[9] - ovector[8]);
       entry->fsUtilization = extract_uint_in_range(data + ovector[10], ovector[11] - ovector[10]);
-      
+
       /* Update extra info on the disk from diskutil */
 #ifdef HOST_MACOSX
       if (entry->fsFilesystem && strstr(entry->fsFilesystem, "/dev/")) update_volume_disk(entry);
@@ -345,7 +347,9 @@ void update_volumes_if_necessary()
   struct timeval now;
   gettimeofday(&now, NULL);
   if ((now.tv_sec - volume_cache_timestamp.tv_sec) > MAX_CACHE_TIMEOUT)
-  { update_volumes(); }
+  { 
+    update_volumes(); 
+  }
 }
 
 /** handles requests for the fsTable table */

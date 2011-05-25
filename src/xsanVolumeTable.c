@@ -414,7 +414,6 @@ void update_vollist_cvadmin ()
                          
     if (rc == PCRE_ERROR_NOMATCH)
     {
-      x_debug ("update_vollist_cvadmin no match found for regex");
       if (options == 0) break;
       ovector[1] = start_offset + 1;
       continue;    /* Go round the loop again */

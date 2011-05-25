@@ -12,6 +12,7 @@
 #include "util.h"
 
 static struct timeval affinity_cache_timestamp = { 0, 0 };
+void update_affinities();
 #define MAX_CACHE_AGE 90
 
 /** Initializes the xsanAffinityTable module */
@@ -54,6 +55,7 @@ initialize_table_xsanAffinityTable(void)
     netsnmp_register_table_iterator( reg, iinfo );
 
     /* Initialise the contents of the table here */
+    update_affinities();
 }
 
     /* Typical data structure for a row entry */

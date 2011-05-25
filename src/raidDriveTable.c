@@ -17,6 +17,7 @@
 
 static struct timeval cache_timestamp = { 0, 0 };
 static int last_index_used = 0;
+void update_drivelist();
 
 #define MAX_CACHE_AGE 10
 #define OVECCOUNT 90
@@ -60,6 +61,7 @@ initialize_table_raidDriveTable(void)
     netsnmp_register_table_iterator( reg, iinfo );
 
     /* Initialise the contents of the table here */
+    update_drivelist();
 }
 
     /* Typical data structure for a row entry */
@@ -223,7 +225,6 @@ void update_drivelist()
 
     if (rc == PCRE_ERROR_NOMATCH)
     {
-      x_printf ("update_drivelist no match found for regex");
       if (options == 0) break;
       ovector[1] = start_offset + 1;
       continue;    /* Go round the loop again */
