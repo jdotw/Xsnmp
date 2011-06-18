@@ -18,17 +18,16 @@ echo "Build number is $BUILDNUM ($BUILDNUM_SHORT)"
 cd $BASEDIR
 
 #
-# Scp 
+# Amazon AWS
 #
 
 cd "$DMGDIR"
-scp Xsnmp-Installer-$BUILDNUM.pkg www.lithiumcorp.com:/www/download.lithiumcorp.com/xsnmp/Xsnmp-Installer-$BUILDNUM.pkg
+mkdir -p "AWS/release"
+cp Xsnmp-Installer-$BUILDNUM.pkg "AWS/release/Xsnmp-Installer-$BUILDNUM.$BUILDNUM_SHORT.pkg"
+s3put -d 2 -c 100 -b xsnmp -g public-read -p "$PWD/AWS/" "$PWD/AWS/release"
+rm -rf "AWS"
 
-#
-# Update web page
-#
-
-ssh www.lithiumcorp.com ln -sf /www/download.lithiumcorp.com/xsnmp/Xsnmp-Installer-$BUILDNUM.pkg /www/download.lithiumcorp.com/xsnmp/Xsnmp-Installer-CURRENT.pkg
+echo "Uploaded to http://s3.amazonaws.com/xsnmp/release/Xsnmp-Installer-$BUILDNUM.$BUILDNUM_SHORT.pkg"
 
 # 
 # Clean up

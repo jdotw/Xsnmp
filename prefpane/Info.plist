@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>300702</string>
+	<string>300703</string>
 	<key>NSMainNibFile</key>
 	<string>XsnmpPrefPanePref</string>
 	<key>NSPrefPaneIconFile</key>
